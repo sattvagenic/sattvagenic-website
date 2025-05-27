@@ -1,0 +1,14 @@
+/* ConsciousnessSlider.module.css */
+.container {
+    font-family: 'Courier New', monospace;
+    color: #00f0ff;
+    background-color: #1a1a2e;
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    border: 1px solid #00f0ff;
+  }
+  
+  /* Add more specific styles here that match what you saw in my design */

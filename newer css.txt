@@ -1,0 +1,1454 @@
+:root {
+  --saffron: #D4804D; /* the robe color - more muted orange */
+  --cyber-blue: #4FD4C6; /* the tech elements */
+  --stone-grey: #D4D0C6; /* light stone background */
+  --deep-forest: #1A2621; /* dark elements/text */
+  --moss-green: #4D5E4A; /* accent color from foliage */
+  --yantra-color: #4FD4C6;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Karma:wght@400;500&display=swap');
+
+
+.image-overlay h3 {
+  font-family: 'Orbitron', serif;
+  color: white;
+  margin: 0;
+}
+
+/* Add or modify body styles to ensure consistent background */
+body {
+  background-color: var(--stone-grey);
+  color: var(--deep-forest);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh; /* Ensure background covers full height */
+}
+
+.App {
+  text-align: center;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 40px;
+  border: 30px solid #9a958e;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  background: var(--stone-grey);
+  position: relative;
+  
+  @media (max-width: 768px) {
+    margin: 10px auto; /* Added 'auto' to center horizontally */
+    padding: 20px;
+    border-width: 15px;
+    width: calc(100% - 50px); /* Account for border and some margin */
+    box-sizing: border-box; /* Include padding and border in width */
+  }
+}
+
+/* Make sure the background texture follows the border */
+.App::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #8a8580,
+    #9a958e 10px
+  );
+  z-index: -1;
+
+  @media (max-width: 768px) {
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+  }
+}
+
+header {
+  padding: 20px 0;
+}
+
+/* Base Navigation Styles */
+.desktop-nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.desktop-nav li {
+  cursor: pointer;
+  color: var(--deep-forest);
+  transition: color 0.3s ease;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+.desktop-nav li:hover {
+  color: var(--cyber-blue);
+}
+
+.desktop-nav li:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--cyber-blue);
+  transition: width 0.3s ease;
+}
+
+.desktop-nav li:hover:after {
+  width: 100%;
+}
+
+/* Mobile Navigation Styles */
+.hamburger, .mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+  
+  .hamburger, .mobile-nav {
+    display: block;
+  }
+
+  .hamburger {
+    width: 40px;
+    height: 60px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 110px;
+    border: 2px solid black;
+    border-radius: 25px 25px 15px 15px;
+    background: var(--deep-forest);  /* Fill with deep forest color */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .hamburger::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    width: 40px;
+    height: 20px;
+    background: var(--stone-grey);
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+
+  .hamburger span:not(.middle-line) {
+    width: 24px;
+    height: 2px;
+    background: var(--cyber-blue);
+    transition: all 0.3s ease;
+  }
+
+  /* Add this for the middle line container */
+  .hamburger .middle-line {
+    position: relative;
+    width: 24px;
+    height: 2px;
+    background: var(--cyber-blue);
+  }
+
+/* Add the bindu */
+.hamburger .middle-line::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--saffron);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+  
+  .hamburger span {
+    width: 24px;
+    height: 2px;
+    background: var(white); /* Your orange color */
+    transition: all 0.3s ease;
+  }
+
+  
+  
+/* When menu is open */
+.hamburger.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background: var(--stone-grey);
+    transition: right 0.3s ease;
+    padding: 2rem;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  }
+
+  .nav-menu.open {
+    right: 0;
+  }
+
+  .nav-menu ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 2rem;
+  }
+
+  .nav-menu li {
+    cursor: pointer;
+    color: var(--deep-forest);
+    width: 100%;
+    text-align: center;
+  }
+}
+
+main {
+  padding: 40px 0;
+}
+
+section {
+  margin: 40px 0;
+  padding: 10px;
+}
+
+.hero {
+  margin-top: 0;
+}
+
+/* Headings */
+h1 {
+  font-size: 3rem;
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+h2 {
+  color: var(--saffron);  /* Add this line */
+  font-size: 2rem;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin-top: 40px;
+    margin-bottom: 15px; 
+  }
+}
+
+/* And specifically for the hero section to ensure it's not overridden */
+.hero h2 {
+  color: var(--saffron);
+}
+
+.featured, .latest-writings {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+
+/* Logo sizing */
+.site-logo {
+  max-width: 600px;
+  height: auto;
+  margin: 20px 0;
+  /* Add responsive sizing */
+  @media (max-width: 768px) {
+    max-width: 90%; /* Relative to container width */
+    margin: 10px 0;
+  }
+}
+
+/* Gallery grid */
+
+.gallery {
+  margin-top: -40px;  /* Smaller gap before Gallery */
+}
+
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  /* Add mobile adjustments */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* Gallery items */
+.gallery-item {
+  /* Add centering for mobile */
+  @media (max-width: 768px) {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-overlay h3 {
+  color: white;
+  margin: 0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  max-width: 70%;
+  max-height: 90vh;
+  display: flex;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.2rem;
+    justify-content: center;
+  }
+  
+  .modal-image-container img {
+    max-width: 105%; /* Ensure image doesn't overflow */
+    max-height: 60vh; /* Limit height relative to viewport */
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Maintain aspect ratio */
+  }
+  
+  
+}
+
+@media (max-width: 768px) {
+  .modal-description-container {
+    width: 90%;
+    overflow-y: visible;
+    margin-top: 30px;
+    padding: 1rem;
+    max-height: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .glitch-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100%; /* Ensure container takes full height */
+  }
+
+  .modal {
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+
+  .modal-content.expanded {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+  }
+
+  /* Hide scrollbar for Chrome/Safari/Opera */
+  .modal-description-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modal-description {
+    color: #4FD4C6;
+    padding-top: 15px; /* Remove top padding that might push content up */
+    margin-top: 0;
+    position: relative;
+    height: 100%;
+    overflow: visible; /* Allow content to be fully visible */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .modal-content.expanded .modal-image-container {
+    max-height: 40vh; /* Reduce image height to give more room for text */
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  
+  .modal-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    
+  }
+}
+
+.modal-content.expanded {
+  width: 95%; /* Slightly wider container */
+  justify-content: space-between;
+  gap: 2rem; /* Space between image and description */
+}
+
+.modal-content.expanded .modal-image-container {
+  width: 90%; /* Slightly reduced to give some margin */
+    margin: 0 auto; /* Center horizontally */
+}
+
+.modal-content.expanded .modal-image-container img {
+  max-height: 85vh; /* Taller maximum height */
+  width: auto;
+  object-fit: contain;
+}
+
+.modal-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0px; 
+  transition: all 0.3s ease;
+}
+
+.modal-image-container img {
+  max-height: 70vh;
+  width: auto;
+}
+
+.modal-description-container {
+  width: 48%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertical centering */
+  align-items: center; /* Horizontal centering */
+  align-self: center; /* Centers the container itself */
+  z-index: 1;
+}
+
+.modal-title {
+  color: #D4804D;
+  font-family: 'Karma', serif;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(79, 212, 198, 0.3);
+  animation: signalFlicker 8s infinite;
+  position: relative;
+}
+
+@keyframes signalFlicker {
+  0%, 95%, 100% {
+    opacity: 1;
+    transform: skew(0deg);
+    filter: none;
+  }
+  95.5% {
+    opacity: 0.8;
+    transform: skew(-3deg);
+    filter: hue-rotate(90deg) saturate(150%);
+  }
+  96% {
+    opacity: 0.4;
+    transform: skew(5deg) translateX(-2px);
+    filter: hue-rotate(-30deg) saturate(200%);
+  }
+  96.5% {
+    opacity: 0.9;
+    transform: skew(-1deg) translateX(3px);
+    filter: none;
+  }
+  97% {
+    opacity: 0.6;
+    transform: skew(0deg);
+    filter: brightness(2);
+  }
+}
+
+@media (max-width: 768px) {
+  @media (max-width: 768px) {
+    .modal-image-container .glyph-button {
+      transform: scale(1.2) !important; /* More specific with !important */
+      width: 70px !important;  /* Set explicit width */
+      height: 70px !important; /* Set explicit height */
+    }
+  
+    /* If you're using the svg element directly */
+    .glyph-button svg {
+      width: 50px !important;
+      height: 50px !important;
+    }
+  }
+
+  .modal-title {
+    margin-bottom: 1px; /* Give less space below title */
+  }
+
+  .modal-image-container {
+    gap: 10px; /* Control spacing between elements */
+  }
+}
+
+/* Add this for extra digital noise effect during the flicker */
+.modal-title::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  text-shadow: 2px 0 var(--cyber-blue);
+  width: 100%;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitchNoise 5s infinite;
+  display: none;
+}
+
+@keyframes glitchNoise {
+  0% {
+    clip: rect(44px, 450px, 56px, 0);
+  }
+  5% {
+    clip: rect(83px, 450px, 96px, 0);
+  }
+  10% {
+    clip: rect(31px, 450px, 48px, 0);
+  }
+  15% {
+    clip: rect(13px, 450px, 25px, 0);
+  }
+}
+
+/* Make the glitch effect appear during the flicker */
+.modal-title:not(:hover)::before {
+  display: block;
+  animation: glitchNoise 0.3s steps(1) reverse;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .modal-content.expanded {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .modal-content.expanded .modal-image-container {
+    width: 100%;
+  }
+
+  .modal-description-container {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .close-glyph {
+    right: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .close-glyph {
+      right: auto; /* Remove the right positioning */
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%); /* Offset by half its width to truly center */
+      top: 20px;
+    }
+  }
+}
+
+.modal-description {
+  color: #4FD4C6;
+  background: rgba(0, 0, 0, 0.85);  /* Add this back for text readability */
+  padding: 13px;
+  border-radius: 2px;
+  padding-top: 65px; 
+  font-size: 19px;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  width: 100%;
+  white-space: pre-line;
+  text-align: center;
+  margin: auto;
+  position: relative;
+}
+
+.modal-description span {
+  font-family: 'Iceland', cursive;
+  font-size: 1.2em;  /* Slightly larger */
+  letter-spacing: 0.05em;  /* Subtle spacing */
+  color: white;
+  position: relative;
+  text-shadow: 
+      0 0 10px rgba(79, 212, 198, 0.9),
+      0 0 20px rgba(79, 212, 198, 0.7),
+      0 0 30px rgba(79, 212, 198, 0.5),
+      0 0 40px rgba(79, 212, 198, 0.3);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+      text-shadow: 
+          0 0 10px rgba(79, 212, 198, 0.9),
+          0 0 20px rgba(79, 212, 198, 0.7),
+          0 0 30px rgba(79, 212, 198, 0.5),
+          0 0 40px rgba(79, 212, 198, 0.3);
+  }
+  50% {
+      text-shadow: 
+          0 0 20px rgba(79, 212, 198, 1),
+          0 0 40px rgba(79, 212, 198, 0.8),
+          0 0 60px rgba(79, 212, 198, 0.6),
+          0 0 80px rgba(79, 212, 198, 0.4);
+  }
+}
+
+.vortex-expanded .modal-description span {
+  color: #FF9B4F;  /* Your orange color */
+  text-shadow: 
+      0 0 10px rgba(255, 155, 79, 0.8),
+      0 0 20px rgba(255, 155, 79, 0.4),
+      0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+.glitch-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+.glitch-wrapper span {
+  animation: glitchText 10s infinite;
+  position: relative;
+  display: block;
+}
+
+@keyframes glitchText {
+  0%, 98%, 100% { 
+    transform: none;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    filter: none;
+  }
+  98.1% {
+    transform: translate(-2px, 0);
+    text-shadow: 2px 0 var(--cyber-blue), 0 0 15px var(--cyber-blue);
+    filter: brightness(1.5);
+  }
+  98.2% {
+    transform: translate(2px, 0);
+    text-shadow: -2px 0 var(--cyber-blue), 0 0 15px var(--cyber-blue);
+    filter: hue-rotate(45deg);
+  }
+  98.3% {
+    transform: none;
+    text-shadow: -1px 0 var(--cyber-blue), 1px 0 var(--cyber-blue), 0 0 20px var(--cyber-blue);
+    filter: brightness(2);
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content.expanded {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal-content.expanded .modal-image-container {
+    width: 90%;
+    transition: transform 0.5s ease;
+    transform: translateY(-20px); /* Slide up slightly */
+    position: relative;
+    z-index: 3; /* Highest z-index */
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  
+  .modal-content.expanded .modal-title {
+    display: block; /* Override the previous display: none */
+    font-size: 1.2rem; /* Reduced from original size */
+    margin-bottom: 5px; /* Tighter spacing */
+    padding: 5px 10px; /* Slightly smaller padding */
+    z-index: 2; /* Higher z-index to stay on top */
+    position: relative;
+  }
+
+  .modal-description-container {
+    width: 100%;
+    margin-top: 20px;
+    /* Remove any perspective/3D transforms that might be affecting performance */
+    transform: none;
+    animation: none;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content.expanded .modal-description-container {
+    padding-top: 100px !important; /* More specific selector and !important */
+    width: 90%;
+    margin: 0 auto; /* Center horizontally */
+    left: 4%;
+    transform: translateX(-4%); /* Center using transform */
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .glitch-wrapper span:first-child {
+    margin-top: 20px; /* Add space before the first line */
+  }
+
+  .glitch-wrapper span {
+    margin-bottom: 0.8rem !important; /* Reduce from 1.5rem */
+  }
+
+  .modal-description-container {
+    max-height: 50vh; /* Set maximum height */
+    overflow-y: auto; /* Enable scrolling */
+    padding: 0.5rem; /* Reduce padding */
+  }
+
+  .modal-description {
+    padding-top: 30px; /* Reduce from 65px */
+    font-size: 16px; /* Slightly smaller font */
+    line-height: 1.4; /* Tighter line height */
+  }
+
+  .modal-description span {
+    color: #4FD4C6;
+    text-shadow: 
+      0 0 1px rgba(0, 0, 0, 0.9), /* Thin dark outline */
+      0 0 4px rgba(79, 212, 198, 0.95), /* Closer, more intense glow */
+      0 0 8px rgba(79, 212, 198, 0.7), /* Medium glow */
+      0 0 12px rgba(79, 212, 198, 0.4); /* Outer glow */
+    font-weight: 500;
+  }
+}
+
+
+
+@media (max-width: 768px) {
+  .modal-description {
+    background: transparent;
+    transform: none;
+    animation: none;
+    padding: 1rem;
+  }
+
+  .temp-char {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.7;
+  }
+
+  /* Simpler text appearance animation for mobile */
+  .modal-description span {
+    animation: simpleFadeIn 0.3s ease-out;
+  }
+}
+
+@keyframes simpleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scan-line {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(79, 212, 198, 0.22) 50%,
+    transparent 100%
+  );
+  animation: holoScan 12s linear infinite;
+  z-index: 1;
+  mix-blend-mode: screen; 
+}
+
+@keyframes holoReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    text-shadow: 0 0 0 rgba(79, 212, 198, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    text-shadow: 
+      0 0 10px rgba(79, 212, 198, 1),
+      0 0 20px rgba(79, 212, 198, 0.8);
+  }
+}
+
+@keyframes holoScan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes holoGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(79, 212, 198, 0.5),
+      0 0 20px rgba(79, 212, 198, 0.3);
+  }
+  50% {
+    text-shadow: 
+      0 0 15px rgba(79, 212, 198, 1),
+      0 0 25px rgba(79, 212, 198, 0.8);
+  }
+}
+
+.sanskrit-rain-canvas {
+  position: fixed;
+  right: 143px;  
+  width: 36%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.temp-char {
+  font-family: 'Iceland', cursive;
+  color: #4FD4C6;  /* Cyan */
+  animation: textFlash 0.5s infinite;
+}
+
+@keyframes textFlash {
+  0%, 100% { 
+      color: #4FD4C6;
+      text-shadow: 0 0 10px rgba(79, 212, 198, 0.8);
+  }
+  50% { 
+      color: white;
+      text-shadow: 
+          0 0 10px rgba(255, 255, 255, 0.8),
+          0 0 20px rgba(79, 212, 198, 0.6);
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.modal-description::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(79, 212, 198, 0.03) 0px,
+    transparent 3px,
+    rgba(79, 212, 198, 0.03) 6px
+  );
+  animation: interferenceShift 25s linear infinite;
+}
+
+@keyframes interferenceShift {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+
+.modal-content .modal-title {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.modal-content .modal-description {
+  font-family: 'Karma', serif !important; /* Adding !important as a last resort */
+}
+
+.glyph-button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Add space between title and button */
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 50%;
+  transform: scale(2);
+}
+
+.glyph-base {
+  fill: rgba(0, 0, 0, 0.9);
+  stroke: #4FD4C6;
+  stroke-width: 2; /* Made thicker */
+}
+
+.glyph-geometry {
+  fill: none;
+  stroke: #4FD4C6;
+  stroke-width: 2;
+  opacity: 0.8; /* Increased opacity */
+}
+
+.glyph-circuit {
+  stroke: #4FD4C6;
+  stroke-width: 2;
+  opacity: 0.9;
+}
+
+.glyph-center {
+  fill: #4FD4C6;
+  filter: url(#glow);
+}
+
+.glyph-core {
+  fill: #4FD4C6;
+  filter: url(#glow);
+  opacity: 0.9;
+}
+
+.glyph-button:hover .glyph-geometry {
+  animation: rotate 4s linear infinite;
+  transform-origin: center;
+}
+
+.glyph-button:hover .glyph-circuit {
+  animation: pulse-opacity 2s ease-in-out infinite;
+}
+
+.glyph-button:hover .glyph-center {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { r: 5; }
+  50% { r: 7; }
+  100% { r: 5; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-opacity {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+@media (max-width: 768px) {
+  /* Make geometries rotate constantly on mobile */
+  .glyph-button .glyph-geometry {
+    animation: rotate 4s linear infinite;
+    transform-origin: center;
+  }
+
+  /* Make circuits pulse constantly on mobile */
+  .glyph-button .glyph-circuit {
+    animation: pulse-opacity 2s ease-in-out infinite;
+  }
+
+  /* Make center pulse constantly on mobile */
+  .glyph-button .glyph-center {
+    animation: pulse 2s infinite;
+  }
+}
+
+.modal-description span {
+  position: relative;
+}
+
+.close-glyph {
+  position: absolute;
+  z-index: 10;
+  top: 20px;
+  cursor: pointer;
+}
+
+/* Add media queries for responsive positioning */
+@media (max-width: 768px) {
+  .close-glyph {
+    right: 20px;
+  }
+}
+
+@media (min-width: 769px) {
+  .close-glyph {
+    right: 167px; /* Adjust based on your stone column width */
+  }
+  
+}
+
+/* First row with varied spacing */
+.modal-description span::after {
+  --artifacts1: "ॐ     ࿗   ॱ      ࿘    ः     ॥     श्री    ꣳ       हूं     क्षः      ऐं    क्लीं     सौः      नमः     स्वाहा";
+  content: var(--artifacts1);
+  position: absolute;
+  left: -2rem;
+  right: 0;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts1 7s infinite;
+  letter-spacing: random(0.5rem, 1.2rem);  /* varied spacing */
+  white-space: pre;
+}
+
+/* Second row with different symbols and spacing */
+.modal-description span > div:after {
+  --artifacts2: "राम    ࿘     कृष्ण    ॐ     हरे     ॱ    गं     नमः     शिवाय    ࿗     ः";
+  content: var(--artifacts2);
+  position: absolute;
+  left: 1rem;
+  top: 1.8rem;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts2 7s infinite;
+  letter-spacing: 1.5rem;  /* wider spacing */
+  white-space: pre;
+}
+
+/* Third row with another variation */
+.modal-description span > div:before {
+  --artifacts3: "मणि    पद्मे    ࿗     हूं     ॐ     ࿘    श्री    गणेश     नमः";
+  content: var(--artifacts3);
+  position: absolute;
+  left: -3rem;
+  top: 3.2rem;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts3 7s infinite;
+  letter-spacing: 0.8rem;  /* tighter spacing */
+  white-space: pre;
+}
+
+@keyframes artifacts1 {
+  0%, 95%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.5% { 
+    opacity: 0.7;
+    transform: translateY(5px) translateX(1rem);  /* added horizontal movement */
+  }
+  96% { 
+    opacity: 0;
+    transform: translateY(15px) translateX(-0.5rem);
+  }
+}
+
+@keyframes artifacts2 {
+  0%, 94.7%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.2% { 
+    opacity: 0.5;
+    transform: translateY(10px) translateX(-1rem);
+  }
+  95.7% {
+    opacity: 0.3;
+    transform: translateY(20px) translateX(0.5rem);
+  }
+}
+
+@keyframes artifacts3 {
+  0%, 95.2%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.7% { 
+    opacity: 0.4;
+    transform: translateY(8px) translateX(0.8rem);
+  }
+  96.2% {
+    opacity: 0.2;
+    transform: translateY(18px) translateX(-0.3rem);
+  }
+}
+
+/* Add this to your existing CSS */
+.modal-description {
+  position: relative; /* Make sure this is set */
+  z-index: 1; 
+}
+
+.modal-description::before {
+  --large-om: "ॐ";
+  content: var(--large-om);
+  position: absolute;
+  font-size: 8rem;
+  opacity: 0;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--cyber-blue);
+  text-shadow: 
+    0 0 20px var(--cyber-blue),
+    0 0 40px rgba(79, 212, 198, 0.5);
+  animation: flashOm 7s infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes flashOm {
+  0%, 97%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  97.2% {
+    opacity: 0.5; /* Brighter appearance */
+    transform: translate(-20%, -70%) scale(1.1);
+    text-shadow: 0 0 30px var(--cyber-blue), 0 0 50px rgba(79, 212, 198, 0.7);
+  }
+  97.4% {
+    opacity: 0.15; /* Very subtle */
+    transform: translate(-80%, -30%) scale(1);
+    text-shadow: 0 0 15px var(--cyber-blue), 0 0 25px rgba(79, 212, 198, 0.3);
+  }
+  97.6% {
+    opacity: 0.35; /* Medium visibility */
+    transform: translate(-30%, -40%) scale(0.9);
+    text-shadow: 0 0 25px var(--cyber-blue), 0 0 35px rgba(79, 212, 198, 0.5);
+  }
+  97.8% {
+    opacity: 0.6; /* Most visible */
+    transform: translate(-60%, -60%) scale(1.05);
+    text-shadow: 0 0 35px var(--cyber-blue), 0 0 55px rgba(79, 212, 198, 0.8);
+  }
+}
+
+.modal-description {
+  position: relative;
+  background: transparent;
+  /*border: 1px solid rgba(79, 212, 198, 0.3);*/
+  transform-style: preserve-3d;
+  perspective: 2000px;
+  transform: rotateX(5deg);
+  animation: screenFloat 10s ease-in-out infinite;
+  box-shadow: 
+    0 0 20px rgba(79, 212, 198, 0.1),
+    inset 0 0 30px rgba(79, 212, 198, 0.1);
+  backdrop-filter: blur(0px);
+}
+
+@keyframes screenFloat {
+  0%, 100% { transform: rotateX(5deg) translateZ(0px); }
+  50% { transform: rotateX(3deg) translateZ(10px); }
+}
+
+
+
+.stone-columns {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.stone-column {
+  width: 167px;  /* Update to your new pillar width */
+  height: 100%;
+  background-image: url('./images/pillar.jpg');  /* Change this to new image */
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  position: relative;
+}
+
+/* If needed, specific positioning for left/right columns */
+.stone-column.left {
+  margin-left: 0;
+}
+
+.stone-column.right {
+  margin-right: 0;
+}
+
+
+/* Optional: Add a darkening overlay to make glyphs stand out better */
+.stone-column::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);  /* Subtle darkening */
+  z-index: 1;
+}
+
+.glyph-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(79, 212, 198, 0.1),
+    transparent
+  );
+}
+
+.column-glyphs {
+  position: absolute;
+  inset: 0;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px var(--cyber-blue));
+}
+
+.column-glyphs {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.glyph {
+  fill: none;
+  stroke: var(--cyber-blue);
+  stroke-width: 1.5;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px var(--cyber-blue));
+}
+
+.tech-circle, .tech-inner {
+  fill: rgba(79, 212, 198, 0.1);
+}
+
+.energy-node {
+  fill: var(--cyber-blue);
+}
+
+.energy-flow {
+  stroke-dasharray: 10 5;
+}
+
+/* More varied and complex animations */
+@keyframes glyphReveal {
+  0%, 100% {
+    opacity: 0;
+    filter: drop-shadow(0 0 2px var(--cyber-blue));
+    transform: scale(0.95);
+  }
+  25%, 75% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 12px var(--cyber-blue));
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px var(--cyber-blue));
+    transform: scale(1.05);
+  }
+}
+
+/* Different animation delays for each glyph */
+.glyph-1 {
+  animation: glyphReveal 8s infinite 0s;
+}
+
+.glyph-2 {
+  animation: glyphReveal 8s infinite 2s;
+}
+
+.glyph-3 {
+  animation: glyphReveal 8s infinite 4s;
+}
+
+.glyph-4 {
+  animation: glyphPulse 4s infinite 1s;
+}
+
+.glyph-5 {
+  animation: powerFlow 6s infinite;
+}
+
+@keyframes glyphReveal {
+  0%, 20%, 100% {
+    opacity: 0;
+    filter: drop-shadow(0 0 2px var(--cyber-blue));
+  }
+  30%, 90% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px var(--cyber-blue));
+  }
+}
+
+@keyframes glyphPulse {
+  0%, 100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 5px var(--cyber-blue));
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 15px var(--cyber-blue));
+    transform: scale(1.1);
+  }
+}
+
+@keyframes powerFlow {
+  0% {
+    stroke-dasharray: 10;
+    stroke-dashoffset: 100;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dasharray: 10;
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+}
+
+.close-glyph {
+  position: absolute;
+  top: 20px;
+  right: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.close-glyph:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(79, 212, 198, 0.8));
+}
+
+/* Add subtle scanning effect */
+.glyph-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(79, 212, 198, 0.1),
+    transparent
+  );
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.subtle-body-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}
+
+.subtle-body {
+  max-height: 80vh;
+  width: auto;
+}
+
+
+
+

@@ -1,0 +1,1240 @@
+:root {
+  --saffron: #D4804D; /* the robe color - more muted orange */
+  --cyber-blue: #4FD4C6; /* the tech elements */
+  --stone-grey: #D4D0C6; /* light stone background */
+  --deep-forest: #1A2621; /* dark elements/text */
+  --moss-green: #4D5E4A; /* accent color from foliage */
+  --yantra-color: #4FD4C6;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Karma:wght@400;500&display=swap');
+
+
+.image-overlay h3 {
+  font-family: 'Orbitron', serif;
+  color: white;
+  margin: 0;
+}
+
+body {
+  background-color: var(--stone-grey);
+  color: var(--deep-forest);
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  text-align: center;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 40px;
+  border: 30px solid #9a958e;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  background: var(--stone-grey);
+  position: relative;
+}
+
+/* Add some texture to the border */
+.App::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #8a8580,
+    #9a958e 10px
+  );
+  z-index: -1;
+}
+
+header {
+  padding: 20px 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav li {
+  cursor: pointer;
+  color: var(--deep-forest);
+  transition: color 0.3s ease;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+nav li:hover {
+  color: var(--cyber-blue);
+}
+
+nav li:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--cyber-blue);
+  transition: width 0.3s ease;
+}
+
+nav li:hover:after {
+  width: 100%;
+}
+
+main {
+  padding: 40px 0;
+}
+
+section {
+  margin: 40px 0;
+  padding: 20px;
+}
+
+.hero {
+  margin-top: 0;
+}
+
+h1 {
+  color: var(--saffron);
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  color: var(--saffron);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.featured, .latest-writings {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+
+.site-logo {
+  max-width: 600px;  /* adjust size as needed */
+  height: auto;
+  margin: 20px 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-overlay h3 {
+  color: white;
+  margin: 0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  max-width: 70%;
+  max-height: 90vh;
+  display: flex;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.modal-content.expanded {
+  width: 95%; /* Slightly wider container */
+  justify-content: space-between;
+  gap: 2rem; /* Space between image and description */
+}
+
+.modal-content.expanded .modal-image-container {
+  width: 65%; /* Bigger image container */
+}
+
+.modal-content.expanded .modal-image-container img {
+  max-height: 85vh; /* Taller maximum height */
+  width: auto;
+  object-fit: contain;
+}
+
+.modal-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.modal-image-container img {
+  max-height: 70vh;
+  width: auto;
+}
+
+.modal-description-container {
+  width: 35%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertical centering */
+  align-items: center; /* Horizontal centering */
+  align-self: center; /* Centers the container itself */
+}
+
+.modal-title {
+  color: #D4804D;
+  font-family: 'Karma', serif;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(79, 212, 198, 0.3);
+  animation: signalFlicker 8s infinite;
+  position: relative;
+}
+
+@keyframes signalFlicker {
+  0%, 95%, 100% {
+    opacity: 1;
+    transform: skew(0deg);
+    filter: none;
+  }
+  95.5% {
+    opacity: 0.8;
+    transform: skew(-3deg);
+    filter: hue-rotate(90deg) saturate(150%);
+  }
+  96% {
+    opacity: 0.4;
+    transform: skew(5deg) translateX(-2px);
+    filter: hue-rotate(-30deg) saturate(200%);
+  }
+  96.5% {
+    opacity: 0.9;
+    transform: skew(-1deg) translateX(3px);
+    filter: none;
+  }
+  97% {
+    opacity: 0.6;
+    transform: skew(0deg);
+    filter: brightness(2);
+  }
+}
+
+/* Add this for extra digital noise effect during the flicker */
+.modal-title::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  text-shadow: 2px 0 var(--cyber-blue);
+  width: 100%;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitchNoise 5s infinite;
+  display: none;
+}
+
+@keyframes glitchNoise {
+  0% {
+    clip: rect(44px, 450px, 56px, 0);
+  }
+  5% {
+    clip: rect(83px, 450px, 96px, 0);
+  }
+  10% {
+    clip: rect(31px, 450px, 48px, 0);
+  }
+  15% {
+    clip: rect(13px, 450px, 25px, 0);
+  }
+}
+
+/* Make the glitch effect appear during the flicker */
+.modal-title:not(:hover)::before {
+  display: block;
+  animation: glitchNoise 0.3s steps(1) reverse;
+  opacity: 0.8;
+}
+
+.modal-description {
+  color: #4FD4C6;
+  background: rgba(0, 0, 0, 0.85);  /* Add this back for text readability */
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 19px;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  width: 100%;
+  white-space: pre-line;
+  text-align: center;
+  margin: auto;
+  position: relative;
+}
+
+.glitch-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+.glitch-wrapper span {
+  animation: glitchText 10s infinite;
+  position: relative;
+  display: block;
+}
+
+@keyframes glitchText {
+  0%, 98%, 100% { 
+    transform: none;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    filter: none;
+  }
+  98.1% {
+    transform: translate(-2px, 0);
+    text-shadow: 2px 0 var(--cyber-blue), 0 0 15px var(--cyber-blue);
+    filter: brightness(1.5);
+  }
+  98.2% {
+    transform: translate(2px, 0);
+    text-shadow: -2px 0 var(--cyber-blue), 0 0 15px var(--cyber-blue);
+    filter: hue-rotate(45deg);
+  }
+  98.3% {
+    transform: none;
+    text-shadow: -1px 0 var(--cyber-blue), 1px 0 var(--cyber-blue), 0 0 20px var(--cyber-blue);
+    filter: brightness(2);
+  }
+}
+
+.scan-line {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(79, 212, 198, 0.22) 50%,
+    transparent 100%
+  );
+  animation: holoScan 12s linear infinite;
+  z-index: 1;
+  mix-blend-mode: screen; 
+}
+
+@keyframes holoReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    text-shadow: 0 0 0 rgba(79, 212, 198, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    text-shadow: 
+      0 0 10px rgba(79, 212, 198, 1),
+      0 0 20px rgba(79, 212, 198, 0.8);
+  }
+}
+
+@keyframes holoScan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes holoGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(79, 212, 198, 0.5),
+      0 0 20px rgba(79, 212, 198, 0.3);
+  }
+  50% {
+    text-shadow: 
+      0 0 15px rgba(79, 212, 198, 1),
+      0 0 25px rgba(79, 212, 198, 0.8);
+  }
+}
+
+.modal-description::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(79, 212, 198, 0.03) 0px,
+    transparent 3px,
+    rgba(79, 212, 198, 0.03) 6px
+  );
+  animation: interferenceShift 25s linear infinite;
+}
+
+@keyframes interferenceShift {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+
+.modal-content .modal-title {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.modal-content .modal-description {
+  font-family: 'Karma', serif !important; /* Adding !important as a last resort */
+}
+
+.glyph-button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px; /* Add space between title and button */
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 50%;
+  transform: scale(2);
+}
+
+.glyph-base {
+  fill: rgba(0, 0, 0, 0.9);
+  stroke: #4FD4C6;
+  stroke-width: 2; /* Made thicker */
+}
+
+.glyph-geometry {
+  fill: none;
+  stroke: #4FD4C6;
+  stroke-width: 2;
+  opacity: 0.8; /* Increased opacity */
+}
+
+.glyph-circuit {
+  stroke: #4FD4C6;
+  stroke-width: 2;
+  opacity: 0.9;
+}
+
+.glyph-center {
+  fill: #4FD4C6;
+  filter: url(#glow);
+}
+
+.glyph-core {
+  fill: #4FD4C6;
+  filter: url(#glow);
+  opacity: 0.9;
+}
+
+.glyph-button:hover .glyph-geometry {
+  animation: rotate 4s linear infinite;
+  transform-origin: center;
+}
+
+.glyph-button:hover .glyph-circuit {
+  animation: pulse-opacity 2s ease-in-out infinite;
+}
+
+.glyph-button:hover .glyph-center {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { r: 5; }
+  50% { r: 7; }
+  100% { r: 5; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-opacity {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.modal-description span {
+  position: relative;
+}
+
+/* First row with varied spacing */
+.modal-description span::after {
+  --artifacts1: "ॐ     ࿗   ॱ      ࿘    ः     ॥     श्री    ꣳ       हूं     क्षः      ऐं    क्लीं     सौः      नमः     स्वाहा";
+  content: var(--artifacts1);
+  position: absolute;
+  left: -2rem;
+  right: 0;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts1 7s infinite;
+  letter-spacing: random(0.5rem, 1.2rem);  /* varied spacing */
+  white-space: pre;
+}
+
+/* Second row with different symbols and spacing */
+.modal-description span > div:after {
+  --artifacts2: "राम    ࿘     कृष्ण    ॐ     हरे     ॱ    गं     नमः     शिवाय    ࿗     ः";
+  content: var(--artifacts2);
+  position: absolute;
+  left: 1rem;
+  top: 1.8rem;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts2 7s infinite;
+  letter-spacing: 1.5rem;  /* wider spacing */
+  white-space: pre;
+}
+
+/* Third row with another variation */
+.modal-description span > div:before {
+  --artifacts3: "मणि    पद्मे    ࿗     हूं     ॐ     ࿘    श्री    गणेश     नमः";
+  content: var(--artifacts3);
+  position: absolute;
+  left: -3rem;
+  top: 3.2rem;
+  text-shadow: 0 0 10px var(--cyber-blue);
+  opacity: 0;
+  animation: artifacts3 7s infinite;
+  letter-spacing: 0.8rem;  /* tighter spacing */
+  white-space: pre;
+}
+
+@keyframes artifacts1 {
+  0%, 95%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.5% { 
+    opacity: 0.7;
+    transform: translateY(5px) translateX(1rem);  /* added horizontal movement */
+  }
+  96% { 
+    opacity: 0;
+    transform: translateY(15px) translateX(-0.5rem);
+  }
+}
+
+@keyframes artifacts2 {
+  0%, 94.7%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.2% { 
+    opacity: 0.5;
+    transform: translateY(10px) translateX(-1rem);
+  }
+  95.7% {
+    opacity: 0.3;
+    transform: translateY(20px) translateX(0.5rem);
+  }
+}
+
+@keyframes artifacts3 {
+  0%, 95.2%, 100% { 
+    opacity: 0;
+    transform: translateY(0);
+  }
+  95.7% { 
+    opacity: 0.4;
+    transform: translateY(8px) translateX(0.8rem);
+  }
+  96.2% {
+    opacity: 0.2;
+    transform: translateY(18px) translateX(-0.3rem);
+  }
+}
+
+/* Add this to your existing CSS */
+.modal-description {
+  position: relative; /* Make sure this is set */
+  z-index: 1; 
+}
+
+.modal-description::before {
+  --large-om: "ॐ";
+  content: var(--large-om);
+  position: absolute;
+  font-size: 8rem;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--cyber-blue);
+  text-shadow: 
+    0 0 20px var(--cyber-blue),
+    0 0 40px rgba(79, 212, 198, 0.5);
+  animation: flashOm 7s infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes flashOm {
+  0%, 97%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  97.2% {
+    opacity: 0.5; /* Brighter appearance */
+    transform: translate(-20%, -70%) scale(1.1);
+    text-shadow: 0 0 30px var(--cyber-blue), 0 0 50px rgba(79, 212, 198, 0.7);
+  }
+  97.4% {
+    opacity: 0.15; /* Very subtle */
+    transform: translate(-80%, -30%) scale(1);
+    text-shadow: 0 0 15px var(--cyber-blue), 0 0 25px rgba(79, 212, 198, 0.3);
+  }
+  97.6% {
+    opacity: 0.35; /* Medium visibility */
+    transform: translate(-30%, -40%) scale(0.9);
+    text-shadow: 0 0 25px var(--cyber-blue), 0 0 35px rgba(79, 212, 198, 0.5);
+  }
+  97.8% {
+    opacity: 0.6; /* Most visible */
+    transform: translate(-60%, -60%) scale(1.05);
+    text-shadow: 0 0 35px var(--cyber-blue), 0 0 55px rgba(79, 212, 198, 0.8);
+  }
+}
+
+.modal-description {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(79, 212, 198, 0.3);
+  transform-style: preserve-3d;
+  perspective: 2000px;
+  transform: rotateX(5deg);
+  animation: screenFloat 10s ease-in-out infinite;
+  box-shadow: 
+    0 0 20px rgba(79, 212, 198, 0.1),
+    inset 0 0 30px rgba(79, 212, 198, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes screenFloat {
+  0%, 100% { transform: rotateX(5deg) translateZ(0px); }
+  50% { transform: rotateX(3deg) translateZ(10px); }
+}
+
+
+
+.stone-columns {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.stone-column {
+  width: 167px;  /* Update to your new pillar width */
+  height: 100%;
+  background-image: url('./images/pillar.jpg');  /* Change this to new image */
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  position: relative;
+}
+
+/* If needed, specific positioning for left/right columns */
+.stone-column.left {
+  margin-left: 0;
+}
+
+.stone-column.right {
+  margin-right: 0;
+}
+
+
+/* Optional: Add a darkening overlay to make glyphs stand out better */
+.stone-column::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);  /* Subtle darkening */
+  z-index: 1;
+}
+
+.glyph-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(79, 212, 198, 0.1),
+    transparent
+  );
+}
+
+.column-glyphs {
+  position: absolute;
+  inset: 0;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px var(--cyber-blue));
+}
+
+.column-glyphs {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.glyph {
+  fill: none;
+  stroke: var(--cyber-blue);
+  stroke-width: 1.5;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px var(--cyber-blue));
+}
+
+.tech-circle, .tech-inner {
+  fill: rgba(79, 212, 198, 0.1);
+}
+
+.energy-node {
+  fill: var(--cyber-blue);
+}
+
+.energy-flow {
+  stroke-dasharray: 10 5;
+}
+
+/* More varied and complex animations */
+@keyframes glyphReveal {
+  0%, 100% {
+    opacity: 0;
+    filter: drop-shadow(0 0 2px var(--cyber-blue));
+    transform: scale(0.95);
+  }
+  25%, 75% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 12px var(--cyber-blue));
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px var(--cyber-blue));
+    transform: scale(1.05);
+  }
+}
+
+/* Different animation delays for each glyph */
+.glyph-1 {
+  animation: glyphReveal 8s infinite 0s;
+}
+
+.glyph-2 {
+  animation: glyphReveal 8s infinite 2s;
+}
+
+.glyph-3 {
+  animation: glyphReveal 8s infinite 4s;
+}
+
+.glyph-4 {
+  animation: glyphPulse 4s infinite 1s;
+}
+
+.glyph-5 {
+  animation: powerFlow 6s infinite;
+}
+
+@keyframes glyphReveal {
+  0%, 20%, 100% {
+    opacity: 0;
+    filter: drop-shadow(0 0 2px var(--cyber-blue));
+  }
+  30%, 90% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px var(--cyber-blue));
+  }
+}
+
+@keyframes glyphPulse {
+  0%, 100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 5px var(--cyber-blue));
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 15px var(--cyber-blue));
+    transform: scale(1.1);
+  }
+}
+
+@keyframes powerFlow {
+  0% {
+    stroke-dasharray: 10;
+    stroke-dashoffset: 100;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dasharray: 10;
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+}
+
+/* Add subtle scanning effect */
+.glyph-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(79, 212, 198, 0.1),
+    transparent
+  );
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.sri-yantra-page {
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.temple-entrance {
+  width: 100%;
+  height: 100%;
+  background-image: url('./images/stone texture.webp');
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.temple-entrance.hidden {
+  display: none;
+}
+
+.activate-button {
+  padding: 1rem 2rem;
+  background: rgba(79, 212, 198, 0.1);
+  border: 1px solid var(--cyber-blue);
+  color: var(--cyber-blue);
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.activate-button:hover {
+  background: rgba(79, 212, 198, 0.2);
+  box-shadow: 0 0 20px var(--cyber-blue);
+}
+
+.yantra-container {
+  width: 100%;  /* Will be constrained by parent doorway-content */
+  height: 100%; /* Will be constrained by parent doorway-content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;  /* Remove this background */
+}
+
+.temple-window {
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Make the activate button stand out more against black */
+.activation-button {
+  background: rgba(79, 212, 198, 0.1);
+  border: 2px solid #4FD4C6;
+  color: #4FD4C6;
+  padding: 1.5rem 3rem;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+}
+
+.activation-button:hover {
+  background: rgba(79, 212, 198, 0.2);
+  box-shadow: 0 0 20px rgba(79, 212, 198, 0.3);
+}
+
+.temple-container {
+  position: relative;
+  width: 77vw;
+  margin: 100px auto 0 auto;
+  background: transparent;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 180vh;
+  box-shadow: none;  /* Remove any shadow */
+}
+
+.content-wrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+  background: transparent;  /* Ensure no background */
+  border: none;  /* Remove any border */
+}
+
+.black-backdrop {
+  position: absolute;
+  width: 40vw;      /* Match doorway width */
+  height: 125vh;     /* Match doorway height */
+  background: black;
+  z-index: 1;
+  top: 70%;         /* Center it */
+  left: 50%;
+  transform: translate(-50%, -50%);  /* Center it perfectly */
+}
+
+.temple-frame {
+  position: absolute;
+  height: auto;
+  width: 100%;
+  object-fit: cover;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  z-index: 2;  /* Added */
+}
+
+.doorway-content {
+  position: relative;
+  z-index: 2;
+  width: 20vw;
+  height: 40vh;
+  background: transparent;  /* Changed from black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 66vh;
+  transform: translateX(16px); 
+}
+
+.sri-yantra {
+  stroke: #4FD4C6;
+  width: 80vh;
+  height: 70vh;
+  z-index: 2;  /* Same level as temple frame */
+  transition: opacity 0.3s ease;
+}
+
+.sri-yantra.strobing {
+  animation: opacity-strobe 0.122s infinite;
+}
+
+@keyframes opacity-strobe {
+  0%, 49% {
+    opacity: 1;
+    filter: drop-shadow(0 0 15px #4FD4C6);
+  }
+  50%, 100% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 8px #4FD4C6);
+  }
+}
+
+.pranayama-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+  position: relative;
+}
+
+.subtle-body {
+  width: 80%;
+  max-height: 80vh;
+  filter: drop-shadow(0 0 10px rgba(79, 212, 198, 0.3));
+}
+
+.yantra-button {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.yantra-button button {
+  background: transparent;
+  border: 1px solid #4FD4C6;
+  color: #4FD4C6;
+  padding: 1rem 2rem;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.yantra-button button:hover {
+  background: rgba(79, 212, 198, 0.1);
+  box-shadow: 0 0 15px rgba(79, 212, 198, 0.5);
+}
+.subtle-body-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}
+
+.subtle-body {
+  max-height: 80vh;
+  width: auto;
+}
+
+// Add this to your CSS
+.body-glow {
+  animation: holoShimmer 8s infinite ease-in-out;
+  filter: drop-shadow(0 0 2px rgba(79, 212, 198, 0.8))
+          drop-shadow(0 0 4px rgba(79, 212, 198, 0.4));
+}
+
+@keyframes holoShimmer {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(79, 212, 198, 0.8))
+            drop-shadow(0 0 4px rgba(79, 212, 198, 0.4));
+    opacity: 0.8;
+  }
+  50% {
+    filter: drop-shadow(0 0 4px rgba(79, 212, 198, 1))
+            drop-shadow(0 0 8px rgba(79, 212, 198, 0.6));
+    opacity: 1;
+  }
+}
+
+/* Add subtle scan lines for holographic effect */
+.scan-line {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(79, 212, 198, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  animation: scanlines 10s linear infinite;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+@keyframes scanlines {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Add to your existing CSS */
+
+/* Particle effect container */
+/* Simplified energy field for a calmer appearance */
+.energy-field {
+  position: absolute;
+  inset: -50px;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(79, 212, 198, 0.08) 0%,
+    transparent 70%
+  );
+  animation: subtlePulse 4s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+/* Smooth transition effects */
+.yantra-container {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.yantra-container.appear {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Gentle glow when stopping strobe */
+.sri-yantra:not(.strobing) {
+  animation: calmDown 1.5s ease-out forwards;
+}
+
+@keyframes calmDown {
+  0% {
+    filter: drop-shadow(0 0 25px rgba(79, 212, 198, 0.9));
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(79, 212, 198, 0.6));
+  }
+}
+
+/* Subtle dimensional transition for returning to glyph */
+.yantra-container.disappear {
+  animation: fadeReturn 0.8s ease-in forwards;
+}
+
+@keyframes fadeReturn {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Gentle hover interaction */
+.yantra-container:hover .sri-yantra:not(.strobing) {
+  filter: drop-shadow(0 0 20px rgba(79, 212, 198, 0.7));
+  transform: scale(1.01);
+  transition: all 0.4s ease;
+}
+
+/* Soft click response */
+.yantra-container:active .sri-yantra:not(.strobing) {
+  transform: scale(0.99);
+  transition: transform 0.2s ease;
+}
+/* Enhanced glow for paths */
+.sri-yantra path,
+.sri-yantra circle,
+.sri-yantra polygon {
+  transition: all 0.3s ease;
+}
+
+.sri-yantra:not(.strobing) path:hover,
+.sri-yantra:not(.strobing) circle:hover,
+.sri-yantra:not(.strobing) polygon:hover {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 5px rgba(79, 212, 198, 1));
+}
+
+/* Energetic pulse on click */
+.yantra-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.yantra-container:active::after {
+  animation: clickPulse 0.5s ease-out;
+}
+
+@keyframes clickPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 212, 198, 0.8);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 0 50px rgba(79, 212, 198, 0);
+    opacity: 0;
+  }
+}
+

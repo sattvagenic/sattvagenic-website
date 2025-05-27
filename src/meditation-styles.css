@@ -1,0 +1,698 @@
+@import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
+
+.kosha-text {
+    font-family: 'Iceland', cursive;
+    color: #4FD4C6;
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 21px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    z-index: 3;
+  }
+
+  .kosha-text.visible {
+    opacity: 1;
+  }
+
+  .kosha-text .glow-pulse {
+    animation: textGlow 1s ease-in-out infinite;
+    color: #4FD4C6;
+  }
+
+  @keyframes textGlow {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+      opacity: 0.7;
+    }
+    50% {
+      text-shadow: 0 0 20px #4FD4C6,
+                   0 0 30px #4FD4C6,
+                   0 0 40px #4FD4C6;
+      opacity: 1;
+    }
+  }
+
+  .analysis-panel {
+    position: fixed;
+    top: 0;
+    right: -500px;
+    width: 400px;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);  /* Slightly more opaque */
+    border-left: 1px solid #4FD4C6;
+    transition: right 0.5s ease;
+    z-index: 100000;  /* Make sure this is higher than any other z-index */
+    padding: 20px;
+    color: #4FD4C6;
+    font-family: 'Iceland', cursive;
+}
+
+.analysis-panel.visible {
+    right: 0;
+}
+
+.analysis-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.analysis-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.close-button {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px;
+}
+
+.analysis-section {
+    margin-bottom: 30px;
+}
+
+.analysis-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(79, 212, 198, 0.3);
+    padding-bottom: 5px;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.metric-label {
+    flex: 1;
+}
+
+.metric-value {
+    text-align: right;
+    margin-left: 10px;
+}
+
+.chakra-status {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chakra-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chakra-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4FD4C6;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 4px;
+    background: rgba(79, 212, 198, 0.2);
+    margin: 0 10px;
+}
+
+.progress {
+    height: 100%;
+    background: #4FD4C6;
+    box-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+}
+/* =================== MEDITATION PAGE CORE STYLES =================== */
+.sri-yantra-page {
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .meditation-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;  /* Above black-backdrop */
+  }
+  
+  /* =================== TEMPLE ENTRANCE STYLES =================== */
+  .temple-container {
+    position: relative;
+    width: 77vw;
+    margin: 100px auto 0 auto;
+    background: transparent;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 180vh;
+  }
+  
+  .content-wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 50px;
+    background: transparent;
+    border: none;
+  }
+  
+  .black-backdrop {
+    position: absolute;
+    width: 40vw;
+    height: 125vh;
+    background: black;
+    z-index: 1;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .temple-frame {
+    position: absolute;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  
+  .doorway-content {
+    position: relative;
+    z-index: 2;
+    width: 20vw;
+    height: 40vh;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 66vh;
+    transform: translateX(16px);
+  }
+
+  /* =================== GLYPH BUTTON STYLES =================== */
+.glyph-button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 50%;
+    transform: scale(2);
+  }
+  
+  .glyph-base {
+    fill: rgba(0, 0, 0, 0.9);
+    stroke: #4FD4C6;
+    stroke-width: 2;
+  }
+  
+  .glyph-geometry {
+    fill: none;
+    stroke: #4FD4C6;
+    stroke-width: 2;
+    opacity: 0.8;
+  }
+  
+  .glyph-circuit {
+    stroke: #4FD4C6;
+    stroke-width: 2;
+    opacity: 0.9;
+  }
+  
+  .glyph-center, .glyph-core {
+    fill: #4FD4C6;
+    filter: url(#glow);
+  }
+  
+  .glyph-core {
+    opacity: 0.9;
+  }
+  
+  /* Glyph Animations */
+  .glyph-button:hover .glyph-geometry {
+    animation: rotate 4s linear infinite;
+    transform-origin: center;
+  }
+  
+  .glyph-button:hover .glyph-circuit {
+    animation: pulse-opacity 2s ease-in-out infinite;
+  }
+  
+  .glyph-button:hover .glyph-center {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { r: 5; }
+    50% { r: 7; }
+    100% { r: 5; }
+  }
+  
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes pulse-opacity {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+
+  .skip-button {
+    position: fixed !important;  /* Force position */
+    bottom: 20px !important;
+    right: 20px !important;
+    transform: scale(0.2) !important;  /* Even smaller */
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 9999;  /* Ensure it's on top */
+    margin: 0 !important;  /* Remove any margins */
+    padding: 0 !important;  /* Remove any padding */
+  }
+  
+  .skip-button:hover {
+    opacity: 0.8;
+    transform: scale(0.25) !important;
+  }
+  
+  .pranayama-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;  /* Changed from black */
+    opacity: 1;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .subtle-body {
+    position: relative;  /* Changed from absolute */
+    z-index: 1;  /* Ensure it's visible */
+    filter: drop-shadow(0 0 10px rgba(79, 212, 198, 0.3));
+  }
+
+  .pranayama-container.fading-out {
+    opacity: 0;
+  }
+
+  /* =================== SRI YANTRA STYLES =================== */
+.sri-yantra {
+    stroke: #4FD4C6;
+    width: 80vh;
+    height: 70vh;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  .yantra-container:not(.fullscreen) .sri-yantra {
+    animation: gentleBounce 2s ease-in-out infinite;
+}
+
+.yantra-instruction {
+    font-family: 'Iceland', cursive;
+    color: #4FD4C6;
+    position: absolute;
+    top: -80px;  /* Position above the yantra */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 21px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  }
+  
+  .yantra-instruction.visible {
+    opacity: 1;
+  }
+  
+  .fullscreen-instruction {
+    font-family: 'Iceland', cursive;
+    color: #4FD4C6;
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 26px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    z-index: 10000;
+  }
+  
+  .fullscreen-instruction.visible {
+    opacity: 1;
+  }
+
+  @keyframes achievementFlash {
+    0%, 100% { 
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    }
+    50% { 
+        opacity: 1;
+        text-shadow: 0 0 20px rgba(79, 212, 198, 1),
+                     0 0 40px rgba(79, 212, 198, 0.8),
+                     0 0 60px rgba(79, 212, 198, 0.6);
+    }
+}
+
+.message-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;  /* This lets clicks pass through to yantra */
+    z-index: 5;
+}
+
+  .coherence-message {
+    font-family: 'Iceland', cursive;
+    color: #4FD4C6;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 32px;
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    z-index: 10000;
+    animation: achievementFlash 0.5s ease-in-out 4;  /* Flash 4 times */
+    pointer-events: none; 
+}
+
+.coherence-message.visible {
+    opacity: 1;
+}
+
+.meditation-buttons {
+    pointer-events: auto;  
+    margin-top: 100px;  /* Adjust this to move button down */
+}
+
+.analysis-button {
+    font-family: 'Iceland', cursive;
+    font-size: 20px;
+    padding: 12px 30px;
+    background: transparent;
+    border: 1px solid #4FD4C6;
+    color: #4FD4C6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.analysis-button:hover {
+    background: rgba(79, 212, 198, 0.1);
+    box-shadow: 0 0 15px rgba(79, 212, 198, 0.3);
+}
+
+@keyframes gentleBounce {
+    0%, 100% { transform: scale(0.95); }  
+    50% { transform: scale(0.98); }       
+}
+  
+  .sri-yantra.strobing {
+    animation: opacity-strobe 0.122s infinite;
+  }
+
+  .yantra-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease;
+    opacity: 1;
+  }
+  
+  .yantra-container.fullscreen .sri-yantra {
+    width: 90vh;  /* Larger size for fullscreen mode */
+    height: 90vh;
+    max-width: 90vw;
+    max-height: 90vh;
+    
+  }
+
+  .yantra-container.fullscreen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: black;
+    z-index: -1;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  /* Ensure strobing animation works in fullscreen */
+  .yantra-container.fullscreen .sri-yantra.strobing {
+    animation: opacity-strobe 0.122s infinite;
+  }
+
+  .yantra-container.fullscreen.exiting {
+  animation: fadeOutAndShrink 0.8s ease-out forwards;
+}
+
+@keyframes fadeOutAndShrink {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(50vh);
+  }
+}
+  
+  /* Container styles */
+  .yantra-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .yantra-container.appear {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .yantra-container.disappear {
+    animation: fadeReturn 0.8s ease-in forwards;
+  }
+  
+  /* =================== ANIMATION KEYFRAMES =================== */
+  @keyframes opacity-strobe {
+    0%, 49% {
+      opacity: 1;
+      filter: drop-shadow(0 0 15px #4FD4C6);
+    }
+    50%, 100% {
+      opacity: 0.3;
+      filter: drop-shadow(0 0 8px #4FD4C6);
+    }
+  }
+  
+  @keyframes calmDown {
+    0% {
+      filter: drop-shadow(0 0 25px rgba(79, 212, 198, 0.9));
+    }
+    100% {
+      filter: drop-shadow(0 0 15px rgba(79, 212, 198, 0.6));
+    }
+  }
+  
+  @keyframes fadeReturn {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  }
+  
+  /* =================== INTERACTION EFFECTS =================== */
+  .yantra-container:hover .sri-yantra:not(.strobing) {
+    filter: drop-shadow(0 0 20px rgba(79, 212, 198, 0.7));
+    transform: scale(1.01);
+    transition: all 0.4s ease;
+  }
+  
+  .yantra-container:active .sri-yantra:not(.strobing) {
+    transform: scale(0.99);
+    transition: transform 0.2s ease;
+  }
+  
+  .sri-yantra:not(.strobing) {
+    animation: calmDown 1.5s ease-out forwards;
+  }
+
+  /* =================== SUBTLE BODY & PRANAYAMA STYLES =================== */
+
+  
+  
+  /* Energy field and glow effects */
+  .energy-field {
+    position: absolute;
+    inset: -50px;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      rgba(79, 212, 198, 0.08) 0%,
+      transparent 70%
+    );
+    animation: subtlePulse 4s ease-in-out infinite;
+  }
+  
+  /* Chakra animation states */
+  .body-glow {
+    animation: holoShimmer 8s infinite ease-in-out;
+    filter: drop-shadow(0 0 2px rgba(79, 212, 198, 0.8))
+            drop-shadow(0 0 4px rgba(79, 212, 198, 0.4));
+  }
+
+  /* Chakra Animation Styles */
+.chakra-active {
+    transform-origin: center;
+    animation: chakraPulse 22s ease-in-out infinite;
+  }
+  
+  @keyframes chakraPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    36% {
+      transform: scale(2);
+    }
+    50% {
+      transform: scale(2);
+    }
+    86% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Continue button styles */
+  .yantra-button {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .yantra-button button {
+    background: transparent;
+    border: 1px solid #4FD4C6;
+    color: #4FD4C6;
+    padding: 1rem 2rem;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .yantra-button button:hover {
+    background: rgba(79, 212, 198, 0.1);
+    box-shadow: 0 0 15px rgba(79, 212, 198, 0.5);
+  }
+  
+  /* Animation Keyframes */
+  @keyframes subtlePulse {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.5;
+      transform: scale(1.05);
+    }
+  }
+  
+  @keyframes holoShimmer {
+    0%, 100% {
+      filter: drop-shadow(0 0 2px rgba(79, 212, 198, 0.8))
+              drop-shadow(0 0 4px rgba(79, 212, 198, 0.4));
+      opacity: 0.8;
+    }
+    50% {
+      filter: drop-shadow(0 0 4px rgba(79, 212, 198, 1))
+              drop-shadow(0 0 8px rgba(79, 212, 198, 0.6));
+      opacity: 1;
+    }
+  }
+
+  @keyframes energySurge {
+    0%, 16%, 33%, 50%, 67%, 83%, 100% { 
+        filter: drop-shadow(0 0 2px rgba(79, 212, 198, 0.4));
+        opacity: 0.7;
+        transform: translateX(0);
+    }
+    8%, 24%, 41%, 58%, 75%, 91% { 
+        filter: drop-shadow(0 0 25px rgba(79, 212, 198, 0.9))
+                drop-shadow(0 0 40px rgba(79, 212, 198, 0.7))
+                drop-shadow(0 0 60px rgba(79, 212, 198, 0.5));
+        opacity: 1;
+        transform: translateX(3px);  
+    }
+    12%, 29%, 45%, 62%, 79%, 95% {  
+        filter: drop-shadow(0 0 25px rgba(79, 212, 198, 0.9))
+                drop-shadow(0 0 40px rgba(79, 212, 198, 0.7))
+                drop-shadow(0 0 60px rgba(79, 212, 198, 0.5));
+        opacity: 1;
+        transform: translateX(-3px);  
+    }
+}
+
+.energy-surge {
+    animation: energySurge 0.3s ease-in-out;
+}
