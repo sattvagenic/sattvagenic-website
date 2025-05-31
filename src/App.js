@@ -8,7 +8,6 @@ import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
 import SriYantra from './SriYantra';
 import StoneColumns from './StoneColumns';
-import pillar from './images/pillar.jpg';
 import logo from './images/Sattvagenic Logo.png';
 import omniseer from './images/TheOmniseer.jpg';
 import perfumer from './images/ThePerfumer.jpg';
