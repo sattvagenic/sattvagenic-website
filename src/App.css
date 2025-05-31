@@ -765,7 +765,7 @@ h2 {
 }
 
 .stone-column {
-  width: 167px;  /* Update to your new pillar width */
+  width: 13vw;  /* Update to your new pillar width */
   height: 100%;
   background-image: url('./images/pillar.jpg');  /* Change this to new image */
   background-size: 100% auto;
@@ -967,6 +967,8 @@ h2 {
   max-height: 80vh;
   width: auto;
 }
+
+
 
 
 
