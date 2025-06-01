@@ -454,8 +454,6 @@ function ImageModal({ image, onClose }) {
   });
   const [tempChar, setTempChar] = useState('');
 
-
-
   // Add helper function for Sanskrit characters
   const getRandomSanskritChar = () => {
       const sanskritChars = [
@@ -471,7 +469,6 @@ function ImageModal({ image, onClose }) {
       return sanskritChars[Math.floor(Math.random() * sanskritChars.length)];
   };
 
-  // Add the handleExpand function
   const handleExpand = () => {
       setIsExpanded(true);
       setTextState(prev => ({ ...prev, visible: true }));
@@ -483,7 +480,6 @@ function ImageModal({ image, onClose }) {
     const lines = text.split('\n\n');
     let totalPosition = 0;
     
-    // Just handle the main text
     for (const line of lines) {
         for (let i = 0; i < line.length; i++) {
             await emergeLetter(line[i], totalPosition, false);
@@ -495,81 +491,80 @@ function ImageModal({ image, onClose }) {
         }));
     }
     
-    // Just add a line break
     setTextState(prev => ({
         ...prev,
         currentText: prev.currentText + '\n'
     }));
     
-    // Let emergeLetter handle the Om
     await emergeLetter('', totalPosition, true);
     setTextComplete(true);
     
     setTimeout(() => {
         setVortexExpanded(true);
     }, 2300);
-};
+  };
 
-const emergeLetter = (letter, position, isOm = false) => {
-  console.log('Letter:', letter, 'Position:', position, 'Is Om:', isOm);
-  
-  return new Promise((resolve) => {
-      let cycles = isOm ? 5 : 2;
-      const cycleInterval = setInterval(() => {
-          if (isOm) {
-              setTempChar('ॐ');
-              clearInterval(cycleInterval);
-              resolve();
-          } else {
-              if (cycles > 0) {
-                  setTempChar(getRandomSanskritChar());
-                  cycles--;
-              } else {
-                  clearInterval(cycleInterval);
-                  setTextState(prev => ({
-                      ...prev,
-                      currentText: prev.currentText + letter
-                  }));
-                  resolve();
-              }
-          }
-      }, 30);
-  });
-};
-
+  const emergeLetter = (letter, position, isOm = false) => {
+    return new Promise((resolve) => {
+        let cycles = isOm ? 5 : 2;
+        const cycleInterval = setInterval(() => {
+            if (isOm) {
+                setTempChar('ॐ');
+                clearInterval(cycleInterval);
+                resolve();
+            } else {
+                if (cycles > 0) {
+                    setTempChar(getRandomSanskritChar());
+                    cycles--;
+                } else {
+                    clearInterval(cycleInterval);
+                    setTextState(prev => ({
+                        ...prev,
+                        currentText: prev.currentText + letter
+                    }));
+                    resolve();
+                }
+            }
+        }, 30);
+    });
+  };
 
   return (
       <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
-        <CloseGlyph onClick={onClose} />
-          <div className={`modal-content ${isExpanded ? 'expanded' : ''}`}>
-              <StoneColumns />
-              {isExpanded && <SanskritRain expandCenter={textComplete} />}
-              <div className="modal-image-container">
-                  <img src={image.src} alt={image.title} />
-                  <div className="modal-title">{image.title}</div>
-                  {!isExpanded && 
-                      <GlyphButton 
-                          onClick={handleExpand}
-                      />
-                  }
-              </div>
-              {isExpanded && (
-                  <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
-                      <div className="modal-description">
-                          <div className="glitch-wrapper">
-                              {textState.currentText.split('\n\n').map((paragraph, i) => (
-                                  <span key={i} data-text={paragraph} style={{ display: 'block', marginBottom: '1.5rem' }}>
-                                      {paragraph}
-                                      {i === textState.currentText.split('\n\n').length - 1 && tempChar && (
-                                          <span className="temp-char">{tempChar}</span>
-                                      )}
-                                  </span>
-                              ))}
-                          </div>
-                      </div>
-                  </div>
-              )}
+        <div className="modal-viewport">
+          <div className="sixteen-nine-container">
+            <CloseGlyph onClick={onClose} />
+            <div className={`modal-content ${isExpanded ? 'expanded' : ''}`}>
+                <StoneColumns />
+                {isExpanded && <SanskritRain expandCenter={textComplete} />}
+                <div className="modal-image-container">
+                    <img src={image.src} alt={image.title} />
+                    <div className="modal-title">{image.title}</div>
+                    {!isExpanded && 
+                        <GlyphButton 
+                            onClick={handleExpand}
+                        />
+                    }
+                </div>
+                {isExpanded && (
+                    <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
+                        <div className="modal-description">
+                            <div className="glitch-wrapper">
+                                {textState.currentText.split('\n\n').map((paragraph, i) => (
+                                    <span key={i} data-text={paragraph} style={{ display: 'block', marginBottom: '1.5rem' }}>
+                                        {paragraph}
+                                        {i === textState.currentText.split('\n\n').length - 1 && tempChar && (
+                                            <span className="temp-char">{tempChar}</span>
+                                        )}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
           </div>
+        </div>
       </div>
   );
 }

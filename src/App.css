@@ -201,9 +201,7 @@ h2 {
   gap: 2rem; /* Space between image and description */
 }
 
-.modal-content.expanded .modal-image-container {
-  width: 65%; /* Bigger image container */
-}
+
 
 .modal-content.expanded .modal-image-container img {
   max-height: 85vh; /* Taller maximum height */
@@ -215,7 +213,6 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 40px; 
   transition: all 0.3s ease;
 }
 
@@ -225,7 +222,6 @@ h2 {
 }
 
 .modal-description-container {
-  width: 35%;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -317,7 +313,6 @@ h2 {
   background: rgba(0, 0, 0, 0.85);  /* Add this back for text readability */
   padding: 13px;
   border-radius: 2px;
-  padding-top: 65px; 
   font-size: 19px;
   text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
   width: 100%;
@@ -457,12 +452,13 @@ h2 {
 }
 
 .sanskrit-rain-canvas {
-  position: fixed;
-  right: 143px;  
-  width: 36%;
+  position: absolute;  /* Changed from fixed */
+  width: 100%;         /* Changed from 36% */
   height: 100%;
   pointer-events: none;
   z-index: 0;
+  top: 0;
+  left: 0;
 }
 
 .temp-char {
@@ -765,7 +761,7 @@ h2 {
 }
 
 .stone-column {
-  width: 13vw;  /* Update to your new pillar width */
+  width: 167px;
   height: 100%;
   background-image: url('./images/pillar.jpg');  /* Change this to new image */
   background-size: 100% auto;
@@ -968,6 +964,182 @@ h2 {
   width: auto;
 }
 
+/* 16:9 ASPECT RATIO CONTAINER FOR MODAL */
+
+.modal-viewport {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.sixteen-nine-container {
+  aspect-ratio: 16/9;
+  width: 95vw;  /* Use most of screen width */
+  height: 95vh; /* Use most of screen height */
+  max-width: 95vw;
+  max-height: 53.4vw; /* Maintains 16:9 when width-constrained */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Keep stone columns at original size but positioned for 16:9 */
+.sixteen-nine-container .stone-column {
+  width: 167px; /* Your original perfect size */
+}
+
+.sixteen-nine-container .sanskrit-rain-canvas {
+  right: 143px; /* Start with original, we'll adjust */
+  width: 36%;
+}
+
+.sixteen-nine-container .close-glyph {
+  right: 200px; /* Start with original, we'll adjust */
+}
+
+/* FLEXIBLE POSITIONING FOR 16:9 MODAL - ADD TO YOUR CSS */
+
+/* Override modal content to use flexbox */
+.sixteen-nine-container .modal-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Page 1: Center everything in available space */
+.sixteen-nine-container .modal-content:not(.expanded) {
+  justify-content: center; /* Center the image+button */
+}
+
+.sixteen-nine-container .modal-content:not(.expanded) .modal-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* Remove hardcoded margins */
+}
+
+/* Page 2: 50/50 split layout */
+.sixteen-nine-container .modal-content.expanded {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 200px; /* Space for columns on sides */
+  gap: 40px; /* Space between image and vortex */
+}
+
+.sixteen-nine-container .modal-content.expanded .modal-image-container {
+  flex: 1; /* Take up left half */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.sixteen-nine-container .modal-content.expanded .modal-description-container {
+  flex: 1; /* Take up right half */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Center the modal description content */
+.sixteen-nine-container .modal-description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+.sixteen-nine-container {
+  aspect-ratio: 16/9;
+  width: 95vw;
+  height: 95vh;
+  max-width: 95vw;
+  max-height: 53.4vw;
+  position: relative;
+  overflow: hidden;
+  display: flex !important;           /* Add this */
+  justify-content: center !important; /* Add this */
+  align-items: center !important;     /* Add this */
+}
+
+.sixteen-nine-container .glyph-button {
+  transform: scale(1.2) translateY(-10px) !important;
+}
+
+.sixteen-nine-container .modal-description-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sixteen-nine-container .modal-description {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 20px !important; /* Remove the padding-top we deleted earlier */
+}
+
+.sixteen-nine-container .modal-description {
+  position: fixed !important;
+  right: 143px !important;
+  width: 36% !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  /* Remove from modal flex container */
+}
+
+.sixteen-nine-container .sanskrit-rain-canvas {
+  position: absolute !important;
+  top: 50% !important;                    /* Vertical center */
+  left: 75% !important;                   /* Horizontal center of right half (50% + 25%) */
+  transform: translate(-50%, -50%) !important; /* Center the canvas on that point */
+  width: 800px !important;                /* Fixed size instead of 100% */
+  height: 600px !important;               /* Fixed size instead of 100% */
+  z-index: 0 !important;                  /* Behind text */
+}
+
+.sixteen-nine-container .modal-description {
+  position: absolute !important;
+  top: 50% !important;
+  left: 75% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1 !important;
+  width: 400px !important;  /* Give it a specific wider width */
+  white-space: normal !important;  /* Allow normal text wrapping */
+}
+
+.sixteen-nine-container .modal-content.expanded .modal-image-container {
+  position: absolute !important;
+  top: 50% !important;
+  left: 25% !important;  /* Center of left half */
+  transform: translate(-50%, -50%) !important;
+}
+
+.modal:has(.modal-content.expanded) .stone-columns {
+  display: none !important;
+}
+
+.sixteen-nine-container .modal-description {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.sixteen-nine-container .modal-description::after {
+  display: none !important;
+}
 
 
 

@@ -94,7 +94,7 @@ const SanskritRain = ({ expandCenter }) => {
 
         // Set canvas size
         const resizeCanvas = () => {
-            canvas.width = window.innerWidth * 0.45;  // Adjust if needed
+            canvas.width = canvas.offsetWidth;  // Use the actual container width
             canvas.height = window.innerHeight;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
