@@ -2,7 +2,7 @@ import './App.css';
 import './meditation-styles.css';
 import SanskritRain from './components/SanskritRain';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MantraVisualization from './components/Mantra/MantraVisualization'
 import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
@@ -442,6 +442,46 @@ function CloseGlyph({ onClick }) {
   );
 }
 
+function RotationMessage() {
+  // Only show rotation message on tablets (not mobile)
+  const [showRotation, setShowRotation] = useState(false);
+  
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isMobile = window.innerWidth <= 768;
+      const isTablet = window.innerWidth > 768 && window.innerWidth <= 1366;
+      const isPortrait = window.innerHeight > window.innerWidth;
+      
+      // Only show rotation message for tablets in portrait
+      setShowRotation(isTablet && isPortrait);
+    };
+    
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
+  
+  if (!showRotation) return null;
+  
+  return (
+    <div className="rotation-message">
+      <div className="rotation-icon">
+        <div className="rotation-glyph">⟲</div>
+      </div>
+      <div className="rotation-text">
+        Rotate into panoramic<br />
+        perception mode
+      </div>
+      <div className="rotation-om">ॐ</div>
+    </div>
+  );
+}
+
 // Second component: ImageModal
 function ImageModal({ image, onClose }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -453,6 +493,18 @@ function ImageModal({ image, onClose }) {
       targetText: image.description
   });
   const [tempChar, setTempChar] = useState('');
+  // ADD THIS after your existing useState lines
+const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+  return () => window.removeEventListener('resize', checkMobile);
+}, []);
 
   // Add helper function for Sanskrit characters
   const getRandomSanskritChar = () => {
@@ -476,33 +528,73 @@ function ImageModal({ image, onClose }) {
   };
 
   const animateText = async () => {
-    const text = image.description;
-    const lines = text.split('\n\n');
-    let totalPosition = 0;
-    
+  const text = image.description;
+  const lines = text.split('\n\n');
+  let totalPosition = 0;
+  
+  // Clear any existing text at the start
+  setTextState(prev => ({
+    ...prev,
+    currentText: ''
+  }));
+  
+  // Faster animation timing for mobile
+  const letterDelay = isMobile ? 15 : 20; // Speed up for both mobile and desktop
+  
+  if (isMobile) {
+    // Mobile animation - top to bottom
     for (const line of lines) {
-        for (let i = 0; i < line.length; i++) {
-            await emergeLetter(line[i], totalPosition, false);
-            totalPosition++;
-        }
+      // Add new line at the bottom
+      if (totalPosition > 0) {
         setTextState(prev => ({
-            ...prev,
-            currentText: prev.currentText + '\n\n'
+          ...prev,
+          currentText: prev.currentText + '\n\n'
         }));
+      }
+      
+      for (let i = 0; i < line.length; i++) {
+        await new Promise(resolve => {
+          setTempChar(getRandomSanskritChar());
+          setTimeout(() => {
+            setTextState(prev => ({
+              ...prev,
+              currentText: prev.currentText + line[i]
+            }));
+            resolve();
+          }, letterDelay);
+        });
+      }
+      totalPosition++;
+    }
+  } else {
+    // Original desktop animation
+    for (const line of lines) {
+      for (let i = 0; i < line.length; i++) {
+        await emergeLetter(line[i], totalPosition, false);
+        totalPosition++;
+      }
+      setTextState(prev => ({
+        ...prev,
+        currentText: prev.currentText + '\n\n'
+      }));
     }
     
     setTextState(prev => ({
-        ...prev,
-        currentText: prev.currentText + '\n'
+      ...prev,
+      currentText: prev.currentText + '\n'
     }));
     
     await emergeLetter('', totalPosition, true);
-    setTextComplete(true);
-    
+  }
+  
+  setTextComplete(true);
+  
+  if (!isMobile) {
     setTimeout(() => {
-        setVortexExpanded(true);
+      setVortexExpanded(true);
     }, 2300);
-  };
+  }
+};
 
   const emergeLetter = (letter, position, isOm = false) => {
     return new Promise((resolve) => {
@@ -525,48 +617,82 @@ function ImageModal({ image, onClose }) {
                     resolve();
                 }
             }
-        }, 30);
+        }, 15);
     });
   };
 
-  return (
-      <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
-        <div className="modal-viewport">
-          <div className="sixteen-nine-container">
-            <CloseGlyph onClick={onClose} />
-            <div className={`modal-content ${isExpanded ? 'expanded' : ''}`}>
-                <StoneColumns />
-                {isExpanded && <SanskritRain expandCenter={textComplete} />}
-                <div className="modal-image-container">
-                    <img src={image.src} alt={image.title} />
-                    <div className="modal-title">{image.title}</div>
-                    {!isExpanded && 
-                        <GlyphButton 
-                            onClick={handleExpand}
-                        />
-                    }
-                </div>
-                {isExpanded && (
-                    <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
-                        <div className="modal-description">
-                            <div className="glitch-wrapper">
-                                {textState.currentText.split('\n\n').map((paragraph, i) => (
-                                    <span key={i} data-text={paragraph} style={{ display: 'block', marginBottom: '1.5rem' }}>
-                                        {paragraph}
-                                        {i === textState.currentText.split('\n\n').length - 1 && tempChar && (
-                                            <span className="temp-char">{tempChar}</span>
-                                        )}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
+ return (
+  <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <RotationMessage />
+    {isMobile ? (
+      // MOBILE LAYOUT - Direct modal without 16:9 container
+      <div className={`modal-content ${isExpanded ? 'expanded' : ''}`}>
+        <CloseGlyph onClick={onClose} />
+        <div className="modal-image-container">
+          <img src={image.src} alt={image.title} />
+          <div className="modal-title">{image.title}</div>
+          {!isExpanded && 
+            <GlyphButton 
+              onClick={handleExpand}
+            />
+          }
+        </div>
+        {isExpanded && (
+          <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
+            <div className="modal-description">
+              <div className="glitch-wrapper">
+                {textState.currentText.split('\n\n').map((paragraph, i) => (
+                  <span key={i} data-text={paragraph} style={{ display: 'block', marginBottom: '1.5rem' }}>
+                    {paragraph}
+                    {i === textState.currentText.split('\n\n').length - 1 && tempChar && (
+                      <span className="temp-char">{tempChar}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
             </div>
+          </div>
+        )}
+      </div>
+    ) : (
+      // DESKTOP/TABLET LAYOUT - 16:9 container system
+      <div className="modal-viewport">
+        <div className="sixteen-nine-container">
+          <CloseGlyph onClick={onClose} />
+          <div className={`modal-content ${isExpanded ? 'expanded' : ''}`}>
+            <StoneColumns />
+            {isExpanded && <SanskritRain expandCenter={textComplete} />}
+            <div className="modal-image-container">
+              <img src={image.src} alt={image.title} />
+              <div className="modal-title">{image.title}</div>
+              {!isExpanded && 
+                <GlyphButton 
+                  onClick={handleExpand}
+                />
+              }
+            </div>
+            {isExpanded && (
+              <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
+                <div className="modal-description">
+                  <div className="glitch-wrapper">
+                    {textState.currentText.split('\n\n').map((paragraph, i) => (
+                      <span key={i} data-text={paragraph} style={{ display: 'block', marginBottom: '1.5rem' }}>
+                        {paragraph}
+                        {i === textState.currentText.split('\n\n').length - 1 && tempChar && (
+                          <span className="temp-char">{tempChar}</span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-  );
+    )}
+  </div>
+);
 }
 
 // Main App component

@@ -1141,6 +1141,325 @@ h2 {
   display: none !important;
 }
 
+/* More specific tablet targeting */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+  .sixteen-nine-container {
+    width: 90vw !important;
+    height: 85vh !important;
+  }
+  
+  .sixteen-nine-container .modal-content.expanded {
+    gap: 60px !important;
+  }
+  
+  .sixteen-nine-container .modal-image-container img {
+    max-height: 65vh !important;
+  }
+  
+  .sixteen-nine-container .sanskrit-rain-canvas {
+    width: 700px !important;
+    height: 700px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+  /* Page 1 specific fixes */
+  .sixteen-nine-container .modal-content:not(.expanded) .modal-image-container img {
+    max-height: 60vh !important;  /* Smaller image on Page 1 */
+  }
+  
+  .sixteen-nine-container .glyph-button {
+    transform: scale(1.0) translateY(-15px) !important;  /* Smaller button, move up more */
+  }
+  
+  /* Also make sure the container itself is smaller */
+  .sixteen-nine-container {
+    width: 90vw !important;
+    height: 80vh !important;  /* Even smaller height for Page 1 */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+ .sixteen-nine-container .close-glyph {
+    position: fixed !important;  /* Break out of container */
+    right: 50% !important;
+    transform: translateX(50%) !important;
+    top: 10px !important;        /* Top of actual screen */
+    z-index: 3000 !important;    /* Make sure it's above everything */
+  }
+}
+
+/* ROTATION MESSAGE - ADD TO YOUR CSS */
+
+.rotation-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--cyber-blue);
+  text-align: center;
+  padding: 20px;
+}
+
+.rotation-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotation-glyph {
+  font-size: 6rem;  /* Doubled from 3rem */
+  color: var(--cyber-blue);
+  filter: drop-shadow(0 0 10px var(--cyber-blue));
+  animation: rotateGlow 2s ease-in-out infinite;
+}
+
+.rotation-text {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+}
+
+.rotation-om {
+  font-size: 2rem;
+  color: var(--saffron);
+  text-shadow: 
+    0 0 10px rgba(212, 128, 77, 0.8),
+    0 0 20px rgba(212, 128, 77, 0.4);
+  animation: omGlow 3s ease-in-out infinite;
+}
+
+@keyframes rotateGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px var(--cyber-blue));
+    transform: rotate(0deg);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px var(--cyber-blue));
+    transform: rotate(30deg);  /* More pronounced rotation */
+  }
+}
+
+@keyframes omGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(212, 128, 77, 0.8),
+      0 0 20px rgba(212, 128, 77, 0.4);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(212, 128, 77, 1),
+      0 0 40px rgba(212, 128, 77, 0.6),
+      0 0 60px rgba(212, 128, 77, 0.3);
+  }
+}
+
+/* Hide rotation message in landscape */
+@media (orientation: landscape) {
+  .rotation-message {
+    display: none !important;
+  }
+}
+
+/* MOBILE STYLES - ADD TO YOUR CSS */
+@media (max-width: 768px) {
+  /* Hide the 16:9 container system on mobile */
+  .modal-viewport,
+  .sixteen-nine-container {
+    display: none !important;
+  }
+  
+  /* Use your original mobile modal styles */
+  .modal {
+    padding: 0;
+  }
+  
+  .modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    position: relative !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    display: block !important;
+  }
+  
+  /* Your original mobile description positioning */
+  .modal-content.expanded .modal-description-container {
+    position: absolute;
+    top: 150px;
+    left: 0%;
+    transform: translateX(-5%);
+    width: 90%;
+    padding-top: 10px !important;
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+    display: block;
+    text-align: center;
+    z-index: 1;
+  }
+}
+
+/* MOBILE STYLES - FLEXBOX APPROACH */
+@media (max-width: 768px) {
+  /* Hide the 16:9 container system on mobile */
+  .modal-viewport,
+  .sixteen-nine-container {
+    display: none !important;
+  }
+
+  .modal {
+    padding: 0;
+    display: flex;
+    align-items: flex-start !important; /* Changed from center to flex-start */
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: 100% !important;
+    height: 100vh !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    position: relative !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden;
+  }
+
+  /* Image container - mixed height approach */
+  .modal-image-container {
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0; /* Prevent growing */
+    min-height: 45vh; /* Increased to push description down */
+    max-height: 50vh; /* Take up more screen space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Push content to top instead of center */
+    padding: 0.5rem 1rem 0rem 1rem; /* Removed bottom padding */
+    position: relative;
+  }
+
+  .modal-image-container img {
+    max-width: 90%;
+    max-height: 250px; /* Reduced from 300px */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    /* Removed margin-top to keep image at top */
+  }
+
+  .modal-title {
+    margin-top: 0.5rem; /* Reduced spacing */
+    margin-bottom: 0.3rem; /* Add bottom margin to create gap before description */
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ff6b35;
+    position: relative;
+    flex-shrink: 0; /* Keep title from shrinking */
+  }
+
+  /* Ensure glyph button shows properly */
+  .glyph-button {
+    margin-top: 20px !important;
+    align-self: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Description container - position relative to actual viewport, not parent container */
+  .modal-content.expanded .modal-description-container {
+    /* Use FIXED positioning to position relative to actual viewport */
+    position: fixed !important;
+    top: 50vh !important; /* Start at actual 50% of real screen */
+    left: 5% !important;
+    right: 5% !important;
+    bottom: 0 !important; /* Extend to actual bottom of viewport */
+    
+    /* Flexbox properties for internal layout */
+    display: flex !important;
+    flex-direction: column !important;
+    
+    /* Spacing and alignment */
+    width: 90% !important;
+    padding: 1rem 1.5rem 2rem 1.5rem !important;
+    margin: 0 !important;
+    
+    /* Enable scrolling if needed within bottom 50% */
+    overflow-y: auto !important;
+    
+    /* Styling */
+    text-align: center !important;
+    z-index: 1 !important;
+  }
+
+  .modal-description {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Start text at top of available space */
+  }
+
+  /* Reduce spacing between description lines */
+  .glitch-wrapper {
+    line-height: 1.4 !important; /* Reduced from 1.6 */
+    font-size: 1rem;
+  }
+
+  .glitch-wrapper span {
+    display: block;
+    margin-bottom: 1rem !important; /* Reduced from 1.5rem */
+  }
+
+  /* Handle the temp character positioning */
+  .temp-char {
+    display: inline;
+    color: #00ffff;
+    opacity: 0.7;
+  }
+
+  /* Optional: Add some visual breathing room */
+  .modal-description-container::before {
+    content: '';
+    height: 1rem;
+    flex-shrink: 0;
+  }
+}
+
+/* Optional: Handle very small screens */
+@media (max-width: 480px) {
+  .modal-image-container {
+    padding: 1rem 0.5rem 0.5rem 0.5rem;
+  }
+  
+  .modal-image-container img {
+    max-height: 50vh; /* More room for text on very small screens */
+  }
+  
+  .modal-title {
+    font-size: 1.3rem;
+  }
+  
+  .modal-content.expanded .modal-description-container {
+    padding: 0.5rem 1rem 1.5rem 1rem !important;
+  }
+}
+
+
 
 
 
