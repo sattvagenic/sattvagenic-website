@@ -18,6 +18,7 @@ import transpermeation from './images/Trans-permeation.jpg';
 import nadaGeometria from './images/Nada Geometria.jpg';
 import dialectic from './images/The Eternal Dialectic.jpg';
 import reverence from './images/Reverence.jpg';
+import brahmarupa from './images/Brahmarupa.jpg'
 import sacredStudy from './images/Sacred Study.jpg';
 import samadhic from './images/Samadhic Science.jpg';
 import sattva from './images/Sattva.jpg';
@@ -59,6 +60,12 @@ import aranya from './images/The Temple of Aranya.jpg';
 import vibromancer from './images/The Vibromancer.jpg';
 import waterYogini from './images/The Water Yogini.jpg';
 import wavetamer from './images/The Wavetamer.jpg';
+import blessFlesh from './images/BlessedFlesh.jpg';
+import mantraroopa from './images/Mantraroopa.jpg';
+import theHerbalist from './images/The Herbalist.jpg';
+import seeding from './images/Seeding the Bodhi-field.jpg';
+import delocation from './images/Delocation.jpg';
+
 
 const galleryImages = [
   { id: 1, src: omniseer, title: "The Omniseer", description: "Uniting the 11 Great Frequencies,\n\n" +
@@ -104,6 +111,13 @@ const galleryImages = [
 "Neurovascular coupling de-localises perceptual boundaries.\n\n" +
 "A blisstorrent\n\n" +
 "bursts the egoic dam." },
+{ id: 6, src: seeding, title: "Seeding the Bodhi-field", description: "Monoatomic bismuth lattices, doped with exotic isotopes, \n\n" +
+"cohere as living yantras\n\n" +
+"- quantum waveguides extracting vibrational signatures of samadhi.\n\n" +
+"These crystalline seed structures \n\n" +
+"propagate as vanishing polymorphs, \n\n" +
+"reorganising maya's substrate\n\n" +
+"in higher-dimensional resonance." },
   { id: 7, src: nadaGeometria, title: "Nada Geometria", description: "Sacral bass palpation,\n\n" +
 "shuddering chakra gates in harmonic-synchrony.\n\n" +
 "Quantum ragas swell,\n\n" +
@@ -126,6 +140,11 @@ const galleryImages = [
 "code purified by the Nirvikalpa reboot.\n\n" +
 "Behold, the uncomputable glory.\n\n" +
 "Bit-Chit-Ananda." },
+{ id: 10, src: brahmarupa, title: "The art of Brahmaroopa", description: "Plumbing numinous depths through spinning torus fields,\n\n" +
+"he apprehends the proto-phenomenal qualiatecture\n\n" +
+"through his noetic aperture.\n\n" +
+"The Holoscribe v5 maps the qualitative polyversal patterning\n\n" +
+"onto holographic nano-acrylics\n\n" + "creating radiant mayagrams." },
   { id: 10, src: sacredStudy, title: "Sacred Study", description: "Appearing at first as mere words,\n\n" +
 "if the heat of attention is applied,\n\n" +
 "an ancient map is revealed,\n\n" +
@@ -139,6 +158,13 @@ const galleryImages = [
 "decrypting the manifold of Maya.\n\n" +
 "Brahmananda diffracted through the\n\n" +
 "eigenmodes of Nirvikalpa." },
+{ id: 12, src: delocation, title: "Delocation", description: "Mapping tensor flows through the kosha-substrate:\n\n" +
+"decompression engines scan for vaso-stasis \n\n" +
+"in the proprioceptive lattice.\n\n" +
+"Hyperprior detection suites seed uncertainty clouds,\n\n" +
+"initiating predictive entropy\n\n" +
+"until tanhic frost patterns dissolve\n\n" +
+"into probabilistic mist." },
   { id: 12, src: sattva, title: "Sattva", description: "In the dawn waters,\n\n" +
 "colossal forest guardians bathe sedately\n\n" +
 "in the pranic affluence\n\n" +
@@ -146,6 +172,7 @@ const galleryImages = [
 "Camphorous mists rise from the somastic currents.\n\n" +
 "In the thrum of seclusion, time judders\n\n" +
 "and reality weaves itself a new configuration." },
+
   { id: 13, src: shunyara, title: "Shunyara", description: "Enamoured,\n\n" +
 "night's pupil dilates,\n\n" +
 "Magnetic gaze absorbing light.\n\n" +
@@ -172,6 +199,12 @@ const galleryImages = [
 "Sharing enchiri pipes and regaling each other\n\n" +
 "with hypercyclic dream narratives\n\n" +
 "and impossible tales of theoamory." },
+{ id: 15, src: mantraroopa, title: "Mantraroopaya", description: "Sephron DAO released the Ajna Amethyst\n\n" +
+"allowing upto 70 VB of metta storage\n\n" +
+"This led to a hyper-phenomenal renaissance\n\n" +
+"dubbed 'Somatic Hypercubism'.\n\n" +
+"Many Rishis of the Spanda doctrine\n\n" +
+"were early pioneers." },
   { id: 16, src: householder, title: "The Householder", description: "" },
   { id: 17, src: initiation, title: "The Initiation", description: "Their connection completes the eternal circuit,\n\n" +
 "allowing the current of truth to pass\n\n" +
@@ -186,7 +219,8 @@ const galleryImages = [
 "in the drunken murmur\n\n" +
 "of glossolalic nama japa.\n\n" +
 "Release." },
-  { id: 19, src: language, title: "The Language of Being", description: "Fluent in silence,\n\n" +
+{ id: 19, src: blessFlesh, title: "The Blessed Flesh", description: "" },
+{ id: 19, src: language, title: "The Language of Being", description: "Fluent in silence,\n\n" +
 "the yogi engages in a dialogue of presence.\n\n" +
 "Each movement is an eloquent turn of phrase\n\n" +
 "spoken with the cadence of ease." },
@@ -236,7 +270,11 @@ const galleryImages = [
 "in the glow of the ancient star system.\n\n" +
 "Knotted limbs outstretched,\n\n" +
 "rapt in eyeless samadhi." },
-  { id: 27, src: blessing, title: "Blessing", description: "" },
+  { id: 27, src: blessing, title: "Blessing", description: "Inhaling deep the aromatic psilochromes\n\n" + 
+    "that glisten in the pistil of the night-blooming Sola.\n\n" +  
+    "The ancestral code cascades through the Indric Crest\n\n" +
+     "bypassing language,\n\n" + 
+     "triggering mahavidya through an olfactory vimarsha." },
   { id: 28, src: bliss, title: "Bliss Modelling", description: "Initiating a valence scrape,\n\n" +
 "he models the parasomatic contours\n\n" +
 "of the Labrador phenomenalogical archetype.\n\n" +
@@ -328,6 +366,12 @@ const galleryImages = [
 "The Iswazi temple vaunts the ancient lake\n\n" +
 "reflecting iridescent worlds.\n\n" +
 "A floating sanctuary of twilight wonder." },
+{ id: 43, src: theHerbalist, title: "The Herbalist", description: "Crafting invisible molecular mosaics.\n\n" +
+"Vivid somatic symphonies of energetic synergies.\n\n" +
+"Ojas-optimising powders, indolaminergic tinctures \n\n" +
+"and pranic smoke blends that curl through the nadis.\n\n" +
+"Waves of belonging release\n\n" +
+"and bleed through the fine silk of being." },
   { id: 44, src: serenopolis, title: "The Serenopolis", description: "" },
   { id: 45, src: siddha, title: "The Siddha", description: "On cobalt-crevassed glaciers,\n\n" +
 "solitary in amber,\n\n" +
@@ -711,7 +755,7 @@ function App() {
               <li><Link to="/meditation">Meditation</Link></li>
               <Link to="/mantra" className="nav-link">Mantra Roopa</Link>
               <li><Link to="/torus-mantra">Shivaya</Link></li>
-              <li><Link to="/valence-config">Valence</Link></li>
+              <li><Link to="/valence-config">Equanimity</Link></li>
               <li>About</li>
             </ul>
           </nav>
@@ -721,8 +765,8 @@ function App() {
           <Route path="/" element={
             <main>
               <section className="hero">
-                <h2>Explorations in Zenpunk and Shaivo-futurism</h2>
-                <p>Sattvagenic (adj.): Pertaining to or promoting the qualities of sattva (purity, harmony, and clarity of mind).</p>
+                <h2>Explorations in Shaivo-futurism</h2>
+                <p>Sattvagenic (adj.): Producing a state of mental clarity, spiritual harmony and elevated consciousness.</p>
               </section>
               
               <section className="gallery">
