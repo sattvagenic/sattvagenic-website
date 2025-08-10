@@ -1,41 +1,72 @@
 @import url('https://fonts.googleapis.com/css2?family=Iceland&display=swap');
 
 .kosha-text {
-    font-family: 'Iceland', cursive;
-    color: #4FD4C6;
-    position: absolute;
-    top: 22%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-size: 21px;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
-    z-index: 3;
-  }
+  font-family: 'Iceland', cursive;
+  color: #4FD4C6;
+  position: absolute;
+  top: 0; /* will be overridden by JS offset */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(9px, 2vmin, 12px);
+  line-height: 1.2;
+  max-width: 80%;                      /* wrap inside doorway */
+  text-wrap: balance;                     /* nicer breaks (Safari/modern) */
+  white-space: normal;
+  opacity: 0;
+  transition: opacity 0.8s ease, top 0.3s ease;
+  text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+  z-index: 3;
+  max-width: 90%; /* stop overflow */
+}
 
-  .kosha-text.visible {
+/* Tablet-ish */
+@media (min-width: 600px) {
+  .kosha-text {
+    font-size: clamp(12px, 1.8vmin, 18px);
+    max-width: 75%;
+  }
+}
+
+/* Desktop / laptop — make it comfortably larger */
+@media (min-width: 1024px) {
+  .kosha-text {
+    /* vw tracks doorway width better on big screens */
+    font-size: clamp(18px, 1.2vw, 28px);
+    max-width: 60%;
+    line-height: 1.25;
+  }
+}
+
+/* Very large displays */
+@media (min-width: 1600px) {
+  .kosha-text {
+    font-size: clamp(20px, 1.1vw, 32px);
+  }
+}
+
+.kosha-text.visible {
+  opacity: 1;
+}
+
+.kosha-text .glow-pulse {
+  animation: textGlow 1s ease-in-out infinite;
+  color: #4FD4C6;
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
+    opacity: 0.7;
+  }
+  50% {
+    text-shadow: 0 0 20px #4FD4C6,
+                 0 0 30px #4FD4C6,
+                 0 0 40px #4FD4C6;
     opacity: 1;
   }
+}
 
-  .kosha-text .glow-pulse {
-    animation: textGlow 1s ease-in-out infinite;
-    color: #4FD4C6;
-  }
-
-  @keyframes textGlow {
-    0%, 100% {
-      text-shadow: 0 0 10px rgba(79, 212, 198, 0.5);
-      opacity: 0.7;
-    }
-    50% {
-      text-shadow: 0 0 20px #4FD4C6,
-                   0 0 30px #4FD4C6,
-                   0 0 40px #4FD4C6;
-      opacity: 1;
-    }
-  }
 
   .analysis-panel {
     position: fixed;
@@ -254,6 +285,11 @@
   .glyph-core {
     opacity: 0.9;
   }
+
+  .responsive-glyph {
+    width: 100% !important;
+    height: 100% !important;
+}
   
   /* Glyph Animations */
   .glyph-button:hover .glyph-geometry {
@@ -307,7 +343,7 @@
   .pranayama-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -532,15 +568,16 @@
   
   /* =================== ANIMATION KEYFRAMES =================== */
   @keyframes opacity-strobe {
-    0%, 49% {
-      opacity: 1;
-      filter: drop-shadow(0 0 15px #4FD4C6);
-    }
-    50%, 100% {
-      opacity: 0.3;
-      filter: drop-shadow(0 0 8px #4FD4C6);
-    }
+  0%, 49% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(79, 212, 198, 0.6));
   }
+  50%, 100% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 3px rgba(79, 212, 198, 0.4));
+  }
+}
+
   
   @keyframes calmDown {
     0% {

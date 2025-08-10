@@ -10,7 +10,7 @@ const SriYantra = () => {
     const [isAppearing, setIsAppearing] = useState(false);
     const [isDisappearing, setIsDisappearing] = useState(false);
     const [audio] = useState(new Audio('/audio/yantra-meditation.mp3')); 
-    const fullscreenRef = useRef(null);  // Reference for fullscreen element
+    const fullscreenRef = useRef(null);
     const [showFullscreenText, setShowFullscreenText] = useState(false);
     const [meditationStartTime, setMeditationStartTime] = useState(null);
     const [yantraFaded, setYantraFaded] = useState(false);
@@ -19,6 +19,140 @@ const SriYantra = () => {
     const [showButtons, setShowButtons] = useState(false);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [wakeLock, setWakeLock] = useState(null);
+    
+   // New refs and state for dynamic positioning
+const templeImageRef = useRef(null);
+
+const [doorwayStyle, setDoorwayStyle] = useState({
+  position: 'absolute',
+  opacity: 0, // Hide until positioned
+});
+
+const [blackBackdropStyle, setBlackBackdropStyle] = useState({
+  position: 'absolute',
+  background: 'black',
+  opacity: 0, // Hide until positioned
+});
+
+// Add state for calibration mode
+const [isCalibrating, setIsCalibrating] = useState(false);
+const [calibrationValues, setCalibrationValues] = useState({
+  left: 729,   // Actual pixel position of doorway from left
+  top: 596,    // Actual pixel position of doorway from top
+  width: 631,  // Width from inch calculations
+  height: 907  // Height from inch calculations
+});
+
+// Temple configuration - using actual pixel measurements
+const TEMPLE_CONFIG = {
+  originalWidth: 2048,
+  originalHeight: 2048,
+  doorway: calibrationValues
+};
+
+// ---- Safari-safe constants (declare ONCE in this file) ----
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const BACKDROP_TOP_PAD = 10;       // same as before
+const BACKDROP_BOTTOM_PAD = 17;    // extra black at bottom
+const BACKDROP_SIDE_PAD = 10;      // same as before
+const SAFARI_SHIFT = 6;            // nudge backdrop DOWN in Safari
+
+// Function to calculate doorway position (Safari-safe)
+const calculateDoorwayPosition = () => {
+  if (!templeImageRef.current) return;
+  const img = templeImageRef.current;
+
+  // Defer to next frame so Safari has finished layout/paint
+  requestAnimationFrame(() => {
+    const renderedWidth = img.offsetWidth;
+    const scale = renderedWidth / TEMPLE_CONFIG.originalWidth;
+
+    // Scale doorway measurements
+    const doorwayLeft = TEMPLE_CONFIG.doorway.left * scale;
+    const doorwayTop = TEMPLE_CONFIG.doorway.top * scale;
+    const doorwayWidth = TEMPLE_CONFIG.doorway.width * scale;
+    const doorwayHeight = TEMPLE_CONFIG.doorway.height * scale;
+
+    // Round to avoid fractional shortfalls
+    const w = Math.ceil(doorwayWidth);
+    const h = Math.ceil(doorwayHeight);
+
+    // Black backdrop: with Safari downward shift + extra bottom padding
+    setBlackBackdropStyle({
+      position: 'absolute',
+      left:   `${Math.floor(doorwayLeft - BACKDROP_SIDE_PAD)}px`,
+      top:    `${Math.floor(doorwayTop  - BACKDROP_TOP_PAD + (isSafari ? SAFARI_SHIFT : 0))}px`,
+      width:  `${w + BACKDROP_SIDE_PAD * 2}px`,
+      height: `${h + BACKDROP_TOP_PAD + BACKDROP_BOTTOM_PAD}px`,
+      background: 'black',
+      opacity: 1,
+      zIndex: 0,
+    });
+
+    // Doorway content: exact fit (no shift)
+    // Doorway content: exact fit, with Safari nudge for text centering
+setDoorwayStyle({
+  position: 'absolute',
+  left:   `${Math.round(doorwayLeft)}px`,
+  top:    `${Math.round(doorwayTop + (isSafari ? 26 : 0))}px`, // shift text down 2px on Safari
+  width:  `${w}px`,
+  height: `${h}px`,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  opacity: 1,
+  transition: 'opacity 0.3s ease',
+  zIndex: 3,
+  margin: 0,
+  marginTop: 0,
+  transform: 'none',
+  padding: 0,
+});
+
+  });
+};
+
+// Set up resize observer and image load handler
+useEffect(() => {
+  // run once, then again next tick (some Safari builds need the second pass)
+  calculateDoorwayPosition();
+  setTimeout(calculateDoorwayPosition, 0);
+
+  const handleResize = () => calculateDoorwayPosition();
+
+  if (window.ResizeObserver && templeImageRef.current) {
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(templeImageRef.current);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  } else {
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }
+}, []);
+
+// Ensure positioning updates when image loads (Safari-safe delay)
+useEffect(() => {
+  if (!templeImageRef.current) return;
+  const img = templeImageRef.current;
+
+  if (img.complete) {
+    requestAnimationFrame(calculateDoorwayPosition);
+  } else {
+    const onLoad = () => requestAnimationFrame(calculateDoorwayPosition);
+    img.addEventListener('load', onLoad);
+    return () => img.removeEventListener('load', onLoad);
+  }
+}, []);
+
+
 
     const resetAllStates = () => {
         console.log('Resetting all states');
@@ -30,12 +164,11 @@ const SriYantra = () => {
         setIsAppearing(false);
         setIsDisappearing(false);
         setShowFullscreenText(false);
-        // Maybe also reset stage explicitly?
         setStage('glyph');
     };
 
-     // Add audio effect
-     useEffect(() => {
+    // Add audio effect
+    useEffect(() => {
         if (stage === 'fullscreen-strobing') {
             audio.play().catch(error => console.log('Audio play failed:', error));
         } else {
@@ -66,24 +199,10 @@ const SriYantra = () => {
         return () => {
             document.removeEventListener('fullscreenchange', handleFullscreenChange);
         };
-    }, []);  // Remove stage from dependencies to avoid potential loops
+    }, []);
 
+    // Reset fullscreen on mount
     useEffect(() => {
-        const intervalCheck = setInterval(() => {
-            if (stage === 'glyph' && !document.fullscreenElement) {
-                const doorwayContent = document.querySelector('.doorway-content');
-                if (doorwayContent) {
-                    console.log('Doorway content position:', doorwayContent.getBoundingClientRect());
-                }
-            }
-        }, 5000);
-    
-        return () => clearInterval(intervalCheck);
-    }, [stage]);
-
-    // Add this effect - Reset fullscreen on mount
-    useEffect(() => {
-        // Reset any fullscreen state on mount
         if (document.fullscreenElement) {
             document.exitFullscreen().catch(err => console.log('Error exiting fullscreen:', err));
         }
@@ -93,69 +212,71 @@ const SriYantra = () => {
         if (stage !== 'fullscreen-strobing') {
           setIsStrobing(false);
         }
-      }, [stage]);
-
-    useEffect(() => {
-        let keepAliveInterval;
-
-        const preventSleep = async () => {
-            // Method 1: Wake Lock API
-            if ('wakeLock' in navigator) {
-                try {
-                    const lock = await navigator.wakeLock.request('screen');
-                    setWakeLock(lock);
-                    console.log('Wake Lock activated');
-                } catch (err) {
-                    console.log('Wake Lock error:', err);
-                }
-            }
-
-            // Method 2: Create a video element that keeps playing
-            const video = document.createElement('video');
-            video.setAttribute('loop', '');
-            video.setAttribute('playsinline', '');
-            video.setAttribute('muted', '');
-            video.setAttribute('style', 'position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0;');
-            document.body.appendChild(video);
-            video.play().catch(() => console.log('Video play failed'));
-
-            // Method 3: Periodic interaction simulation
-            keepAliveInterval = setInterval(() => {
-                if (document.visibilityState === 'visible') {
-                    // Trigger minimal DOM update
-                    document.body.style.opacity = document.body.style.opacity === '0.999999' ? '1' : '0.999999';
-                }
-            }, 30000); // Every 30 seconds
-
-            return () => {
-                if (wakeLock) wakeLock.release();
-                if (video) video.remove();
-                if (keepAliveInterval) clearInterval(keepAliveInterval);
-            };
-        };
-
-        if (stage === 'pranayama' || 
-            stage === 'still-yantra' || 
-            stage === 'fullscreen-strobing' || 
-            stage === 'fullscreen-still') {
-            preventSleep();
-        }
-
-        return () => {
-            if (wakeLock) wakeLock.release();
-            if (keepAliveInterval) clearInterval(keepAliveInterval);
-        };
     }, [stage]);
 
-    // Rest of your existing code...
+    useEffect(() => {
+    let keepAliveInterval;
+    let video;
 
-    // Add this new effect
+    const preventSleep = async () => {
+        // Native Wake Lock API
+        if ('wakeLock' in navigator) {
+            try {
+                const lock = await navigator.wakeLock.request('screen');
+                setWakeLock(lock);
+                console.log('Wake Lock activated');
+                lock.addEventListener('release', () => console.log('Wake Lock released'));
+            } catch (err) {
+                console.log('Wake Lock error:', err);
+            }
+        }
+
+        // iOS Safari fallback: hidden looping video
+        video = document.createElement('video');
+        video.setAttribute('loop', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('muted', '');
+        video.setAttribute(
+            'style',
+            'position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0;'
+        );
+        document.body.appendChild(video);
+        video.play().catch(() => console.log('Video play failed'));
+
+        // Periodic small DOM change to keep screen awake
+        keepAliveInterval = setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                document.body.style.opacity =
+                    document.body.style.opacity === '0.999999' ? '1' : '0.999999';
+            }
+        }, 30000);
+    };
+
+    // Only run wake lock during these stages
+    if (
+        stage === 'pranayama' ||
+        stage === 'still-yantra' ||
+        stage === 'fullscreen-strobing' ||
+        stage === 'fullscreen-still'
+    ) {
+        preventSleep();
+    }
+
+    return () => {
+        if (wakeLock) wakeLock.release();
+        if (video && video.parentNode) video.parentNode.removeChild(video);
+        if (keepAliveInterval) clearInterval(keepAliveInterval);
+    };
+}, [stage]);
+
+
+    
+
 
     useEffect(() => {
         console.log('Stage changed to:', stage);
     }, [stage]);
 
-    
     useEffect(() => {
         if (stage === 'yantra') {
             setIsStrobing(true);
@@ -164,7 +285,6 @@ const SriYantra = () => {
 
     useEffect(() => {
         if (stage === 'still-yantra') {
-            // Slight delay to ensure CSS transition works
             setTimeout(() => {
                 setIsAppearing(true);
             }, 50);
@@ -173,79 +293,73 @@ const SriYantra = () => {
         }
     }, [stage]);
 
-   
-
-        
-        const handleYantraClick = () => {
-            console.log('Current stage:', stage);
-        
-            if (stage === 'still-yantra') {
-                if (fullscreenRef.current) {
-                    fullscreenRef.current.requestFullscreen().then(() => {
-                        setStage('fullscreen-strobing');
-                        setIsStrobing(true);
-                        setMeditationStartTime(Date.now()); // Record start time
-                        setShowFullscreenText(true);
-        
-                        setTimeout(() => {
-                            setShowFullscreenText(false);
-                        }, 6000);
-        
-                        // Start the 10-minute timer
-                        setTimeout(() => {
-                            const duration = (Date.now() - meditationStartTime) / 1000;
-                            if (duration >= 600) {
-                                setCoherenceMessage("Perceptual Hyper-coherence Achieved");
-                            }
-                            setIsStrobing(false);
-                            setStage('fullscreen-still');
-                        }, 600000); // 10 minutes
-                    });
-                }
-            } else if (stage === 'fullscreen-strobing') {
-                // Early exit case
-                const duration = meditationStartTime ? (Date.now() - meditationStartTime) / 1000 : 0;
-                if (duration < 600) {
-                    setCoherenceMessage("Perceptual Hyper-coherence Incomplete");
-                }
-                setIsStrobing(false);
-                setStage('fullscreen-still');
-            } else if (stage === 'fullscreen-still') {
-                setYantraFaded(true);
-                setTimeout(() => {
-                    setShowCoherenceMessage(true);
-                    setTimeout(() => {
-                        setShowButtons(true);
-                    }, 2000);
-                }, 800);
-            }
-        };
-        
-
-        const handleAnalysis = () => {
+    const handleYantraClick = () => {
+        console.log('Current stage:', stage);
+    
+        if (stage === 'still-yantra') {
             if (fullscreenRef.current) {
-                fullscreenRef.current.classList.add('exiting');
+                fullscreenRef.current.requestFullscreen().then(() => {
+                    setStage('fullscreen-strobing');
+                    setIsStrobing(true);
+                    setMeditationStartTime(Date.now());
+                    setShowFullscreenText(true);
+    
+                    setTimeout(() => {
+                        setShowFullscreenText(false);
+                    }, 6000);
+    
+                    setTimeout(() => {
+                        const duration = (Date.now() - meditationStartTime) / 1000;
+                        if (duration >= 600) {
+                            setCoherenceMessage("Perceptual Hyper-coherence Achieved");
+                        }
+                        setIsStrobing(false);
+                        setStage('fullscreen-still');
+                    }, 600000);
+                });
             }
-            
+        } else if (stage === 'fullscreen-strobing') {
+            const duration = meditationStartTime ? (Date.now() - meditationStartTime) / 1000 : 0;
+            if (duration < 600) {
+                setCoherenceMessage("Perceptual Hyper-coherence Incomplete");
+            }
+            setIsStrobing(false);
+            setStage('fullscreen-still');
+        } else if (stage === 'fullscreen-still') {
+            setYantraFaded(true);
             setTimeout(() => {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen().then(() => {
-                        setIsDisappearing(true);
+                setShowCoherenceMessage(true);
+                setTimeout(() => {
+                    setShowButtons(true);
+                }, 2000);
+            }, 800);
+        }
+    };
+
+    const handleAnalysis = () => {
+        if (fullscreenRef.current) {
+            fullscreenRef.current.classList.add('exiting');
+        }
+        
+        setTimeout(() => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen().then(() => {
+                    setIsDisappearing(true);
+                    setTimeout(() => {
+                        setStage('glyph');
+                        setIsDisappearing(false);
+                        if (fullscreenRef.current) {
+                            fullscreenRef.current.classList.remove('exiting');
+                        }
+                        resetAllStates();
                         setTimeout(() => {
-                            setStage('glyph');
-                            setIsDisappearing(false);
-                            if (fullscreenRef.current) {
-                                fullscreenRef.current.classList.remove('exiting');
-                            }
-                            resetAllStates();
-                            setTimeout(() => {
-                                setShowAnalysis(true);
-                            }, 500);
-                        }, 800);
-                    });
-                }
-            }, 700);
-        };
+                            setShowAnalysis(true);
+                        }, 500);
+                    }, 800);
+                });
+            }
+        }, 700);
+    };
 
     const handleCloseAnalysis = () => {
         setShowAnalysis(false);
@@ -253,7 +367,6 @@ const SriYantra = () => {
     };
 
     useEffect(() => {
-        // Prevent unexpected stage transitions
         if (stage === 'fullscreen-still' && !document.fullscreenElement) {
             console.log('Caught incorrect fullscreen stage, resetting to glyph');
             setStage('glyph');
@@ -261,73 +374,128 @@ const SriYantra = () => {
         }
     }, [stage]);
 
-
-        
-return (
-    <>
-        <div className="temple-container">
-            <div className="content-wrapper">
-                <div className="black-backdrop" />
-                <img 
-                    src={templeFrame} 
-                    alt="Ancient temple doorway" 
-                    className="temple-frame"
-                />
-                <div className="doorway-content">
-                    {stage === 'glyph' && (
-                        <GlyphButton 
-                            onClick={() => setStage('pranayama')}
-                            className="entrance-glyph"
-                        />
-                    )}
+    return (
+        <>
+            <div className="temple-container">
+                <div className="content-wrapper" style={{ 
+                    position: 'relative',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    aspectRatio: '1/1'  // Make wrapper square
+                }}>
+                    <img 
+                        ref={templeImageRef}
+                        src={templeFrame} 
+                        alt="Ancient temple doorway"
+                        // NO className - we don't want .temple-frame styles
+                        style={{
+                            position: 'relative',
+                            width: '100%',
+                            height: '100%',
+                            display: 'block',
+                            objectFit: 'contain',  // This keeps aspect ratio
+                            margin: 0,
+                            padding: 0,
+                            transform: 'none',
+                            zIndex: 1
+                        }}
+                        onLoad={calculateDoorwayPosition}
+                    />
                     
-                    {stage === 'pranayama' && (
-                        <Pranayama onComplete={() => setStage('still-yantra')} />
-                    )}
-
-                    {(stage === 'still-yantra' || stage === 'fullscreen-strobing' || stage === 'fullscreen-still') && (
-                        <div 
-                        ref={fullscreenRef}
-                        className={`yantra-container ${(stage === 'fullscreen-strobing' || stage === 'fullscreen-still') ? 'fullscreen' : ''} 
-                        ${isDisappearing ? 'disappear' : ''} ${isAppearing ? 'appear' : ''}`}
-                        onClick={handleYantraClick}
-                        style={{ cursor: 'pointer' }}
-                    >
-                            {stage === 'still-yantra' && (
-                                <div className="yantra-instruction visible">
-                                    Activate Photonic Yantra Entrainment
-                                </div>
-                            )}
-                            {stage === 'fullscreen-strobing' && showFullscreenText && (
-                                <div className="fullscreen-instruction visible">
-                                    Commencing Re-patterning Protocol...
-                                </div>
-                            )}
-                            {showCoherenceMessage && (
-    <>
-        <div className="coherence-message visible">
-        {coherenceMessage} {/* Dynamically renders the correct message */}
+                    {/* Both backdrop and doorway positioned absolutely within content-wrapper */}
+                    <div style={blackBackdropStyle} />
+                    <div className="doorway-content" style={doorwayStyle}>
+                       {stage === 'glyph' && (
+    <div style={{
+        width: '30%',
+        height: '30%',
+        maxWidth: '120px',
+        maxHeight: '120px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }}>
+        <GlyphButton 
+    onClick={() => setStage('pranayama')}
+    className="entrance-glyph responsive-glyph"
+/>
     </div>
-
-
-        
-    </>
 )}
-                            <div className="energy-field"></div>
-                            <svg 
-                                id="Layer_1" 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                version="1.1" 
-                                viewBox="0 0 432 432"
-                                className={`sri-yantra ${isStrobing ? 'strobing' : ''}`}
+                        
+                        {stage === 'pranayama' && (
+                            <Pranayama onComplete={() => setStage('still-yantra')} />
+                        )}
+
+                        {(stage === 'still-yantra' || stage === 'fullscreen-strobing' || stage === 'fullscreen-still') && (
+                            <div 
+                                ref={fullscreenRef}
+                                className={`yantra-container ${(stage === 'fullscreen-strobing' || stage === 'fullscreen-still') ? 'fullscreen' : ''} 
+                                ${isDisappearing ? 'disappear' : ''} ${isAppearing ? 'appear' : ''}`}
+                                onClick={handleYantraClick}
                                 style={{ 
-                                    stroke: '#4FD4C6',
-                                    transition: 'filter 0.3s ease, opacity 0.8s ease',
-                                    opacity: yantraFaded ? 0.1 : 1
+                                    cursor: 'pointer',
+                                    position: 'relative',
+                                    zIndex: 100,
+                                    width: '100%',
+                                    height: '100%'
                                 }}
-                                title={isStrobing ? "Click to stop" : "Click to start strobing"}
                             >
-<g>
+                                {stage === 'still-yantra' && (
+                                    <div className="kosha-text visible">
+                                        Activate Photonic Yantra Entrainment
+                                    </div>
+                                )}
+                                {stage === 'fullscreen-strobing' && showFullscreenText && (
+                                    <div className="fullscreen-instruction visible">
+                                        Commencing Re-patterning Protocol...
+                                    </div>
+                                )}
+                                {showCoherenceMessage && (
+                                    <>
+                                        <div className="coherence-message visible">
+                                            {coherenceMessage}
+                                        </div>
+                                    </>
+                                )}
+                                <div className="energy-field"></div>
+                                <svg 
+                                    id="Layer_1" 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    version="1.1" 
+                                    viewBox="0 0 432 432"
+                                    className={`sri-yantra ${isStrobing ? 'strobing' : ''}`}
+                                    style={{ 
+                                        stroke: '#FF0000',  // Temporary RED color to make it visible
+                                        fill: 'none',
+                                        strokeWidth: '2px',
+                                        transition: 'filter 0.3s ease, opacity 0.8s ease',
+                                        opacity: yantraFaded ? 0.1 : 1,
+                                        width: '80%',  // Make it 80% of container
+                                        height: '80%',
+                                        position: 'absolute',
+                                        top: '10%',
+                                        left: '12%'
+                                    }}
+                                    title={isStrobing ? "Click to stop" : "Click to start strobing"}
+                                >
+                                    {/* Your full SVG yantra code goes here */}
+                                    <svg 
+                                    id="Layer_1" 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    version="1.1" 
+                                    viewBox="0 0 432 432"
+                                    className={`sri-yantra ${isStrobing ? 'strobing' : ''}`}
+                                    style={{ 
+                                        stroke: '#4FD4C6',
+                                        transition: 'filter 0.3s ease, opacity 0.8s ease',
+                                        opacity: yantraFaded ? 0.1 : 1
+                                    }}
+                                    title={isStrobing ? "Click to stop" : "Click to start strobing"}
+                                >
+                                    {/* Your full SVG yantra code goes here */}
+                                    <g>
     <circle cx="216" cy="216" r="122.77" fill="none" stroke="#4FD4C6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
     <circle cx="216" cy="216" r="126.78" fill="none" stroke="#4FD4C6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
     <circle cx="216" cy="216" r="130.43" fill="none" stroke="#4FD4C6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
@@ -417,36 +585,36 @@ return (
   </g>
   <circle cx="216" cy="216" r="1.29" fill="#4FD4C6"/>
   </svg>
-  {showCoherenceMessage && (
-    <div className="message-overlay">
-        <div className="coherence-message visible">
-            {coherenceMessage}  {/* Changed this line */}
-        </div>
-        {showButtons && (
-            <div className="meditation-buttons visible">
-                <button 
-                    className="analysis-button"
-                    onClick={handleAnalysis}
-                >
-                    View Analysis
-                </button>
+                                </svg>
+                                {showCoherenceMessage && (
+                                    <div className="message-overlay">
+                                        <div className="coherence-message visible">
+                                            {coherenceMessage}
+                                        </div>
+                                        {showButtons && (
+                                            <div className="meditation-buttons visible">
+                                                <button 
+                                                    className="analysis-button"
+                                                    onClick={handleAnalysis}
+                                                >
+                                                    View Analysis
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
-        )}
-    </div>
-)}
-</div>
-                        
-                    )}
-                </div>  {/* Closes doorway-content */}
-            </div>  {/* Closes content-wrapper */}
-        </div>  {/* Closes temple-container */}
-        <MeditationAnalysis 
-    isVisible={showAnalysis} 
-    onClose={handleCloseAnalysis}
-    duration={meditationStartTime ? (Date.now() - meditationStartTime) / 60000 : 0}
-/>
-    </>  
-);  
+            <MeditationAnalysis 
+                isVisible={showAnalysis} 
+                onClose={handleCloseAnalysis}
+                duration={meditationStartTime ? (Date.now() - meditationStartTime) / 60000 : 0}
+            />
+        </>  
+    );  
 }  
 
 export default SriYantra;

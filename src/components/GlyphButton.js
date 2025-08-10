@@ -1,13 +1,13 @@
 // src/components/GlyphButton.js
-const GlyphButton = ({ onClick }) => {
-  return (
-    <svg 
-      className="glyph-button" 
-      viewBox="0 0 100 100" 
-      width="100" 
-      height="100" 
-      onClick={onClick}
-    >
+const GlyphButton = ({ onClick, className }) => {
+    return (
+        <svg 
+            className={`glyph-button ${className || ''}`}
+            viewBox="0 0 100 100" 
+            width="100" 
+            height="100" 
+            onClick={onClick}
+        >
       <defs>
         <filter id="glow">
           <feGaussianBlur stdDeviation="2" result="coloredBlur"/>

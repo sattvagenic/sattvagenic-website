@@ -1,29 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const InitText = ({ onComplete, scanComplete }) => {
   const [textPhase, setTextPhase] = useState(0);
-  // phases: 
-  // 0 = hidden (initial)
-  // 1 = "Initialising..."
-  // 2 = "Initialisation complete..."
-  // 3 = hidden (trigger onComplete)
+  const textRef = useRef(null);
+  const doorwayRef = document.querySelector('.doorway-content'); // anchor area
 
-  // Show "Initialising..." immediately
   useEffect(() => {
     setTextPhase(1);
   }, []);
 
+  // Auto-position text above the SVG but inside doorway
+  useEffect(() => {
+    const updatePosition = () => {
+      if (doorwayRef && textRef.current) {
+        const doorwayRect = doorwayRef.getBoundingClientRect();
+        const offsetTop = doorwayRect.top + doorwayRect.height * 0.1; // 10% from top of doorway
+        textRef.current.style.top = `${offsetTop}px`;
+      }
+    };
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    return () => window.removeEventListener('resize', updatePosition);
+  }, []);
+
   useEffect(() => {
     if (scanComplete) {
-      // Scan is done, show "Initialisation complete" after a short pause
-      const timer1 = setTimeout(() => {
-        setTextPhase(2);
-      }, 500);
-
-      // After another 2s, hide text and call onComplete
+      const timer1 = setTimeout(() => setTextPhase(2), 500);
       const timer2 = setTimeout(() => {
         setTextPhase(3);
-        onComplete(); // This will lead to finalizing initialization in Pranayama
+        onComplete();
       }, 3500);
 
       return () => {
@@ -35,13 +40,11 @@ const InitText = ({ onComplete, scanComplete }) => {
 
   return (
     <>
-      <div className={`kosha-text ${textPhase === 1 ? 'visible' : ''}`}>
-        Initialising digital kosha:<br/>
-        <span className="glow-pulse">Pranamaya</span>
-      </div>
-      <div className={`kosha-text ${textPhase === 2 ? 'visible' : ''}`}>
-        Begin chakral activation ॐ
-      </div>
+      <div className={`kosha-text ${textPhase > 0 && textPhase < 3 ? 'visible' : ''}`}>
+  {textPhase === 1 && <>Initialising digital kosha:<br/><span className="glow-pulse">Pranamaya</span></>}
+  {textPhase === 2 && <>Begin chakral activation ॐ</>}
+</div>
+
     </>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SubtleBody from './SubtleBody';
-import SkipButton from './SkipButton';  
 import InitText from './InitText';
+import { useNavigate } from 'react-router-dom';
 
 const Pranayama = ({ onComplete }) => {
   const [currentChakra, setCurrentChakra] = useState('muladhar');
@@ -13,7 +13,9 @@ const Pranayama = ({ onComplete }) => {
   const [meditationStarted, setMeditationStarted] = useState(false); 
   const [initAudio] = useState(new Audio('/audio/init-sequence.mp3'));
   const [meditationAudio] = useState(new Audio('/audio/chakra-meditation.mp3'));
+  const navigate = useNavigate();
 
+  // Simple useEffect - play audio immediately when initializing
   useEffect(() => {
     if (isInitializing) {
       initAudio.play()
@@ -23,12 +25,13 @@ const Pranayama = ({ onComplete }) => {
       initAudio.pause();
       initAudio.currentTime = 0;
     };
-  }, [isInitializing]);
+  }, [isInitializing, initAudio]);
 
   const handleInitTextComplete = () => {
     setTimeout(() => {
       setIsInitializing(false);
       initAudio.pause();
+      initAudio.currentTime = 0;  // Reset the audio
       meditationAudio.play()
         .then(() => {
           setMeditationStarted(true);
@@ -47,7 +50,7 @@ const Pranayama = ({ onComplete }) => {
     'sahastra'
   ];
 
-  // Chakra transitions (unchanged)
+  // Chakra transitions
   useEffect(() => {
     const interval = setInterval(() => {
       const currentIndex = chakraOrder.indexOf(currentChakra);
@@ -64,6 +67,8 @@ const Pranayama = ({ onComplete }) => {
           setTimeout(() => {
             setIsFading(true);
             setTimeout(() => {
+              meditationAudio.pause();
+              meditationAudio.currentTime = 0;
               onComplete();
             }, 800);
           }, 15000);
@@ -74,7 +79,17 @@ const Pranayama = ({ onComplete }) => {
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [currentChakra, isAscending, onComplete, chakraOrder]);
+  }, [currentChakra, isAscending, onComplete, chakraOrder, meditationAudio]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      initAudio.pause();
+      initAudio.currentTime = 0;
+      meditationAudio.pause();
+      meditationAudio.currentTime = 0;
+    };
+  }, [initAudio, meditationAudio]);
 
   return (
     <div className={`pranayama-container ${isFading ? 'fading-out' : ''}`}>
@@ -85,39 +100,38 @@ const Pranayama = ({ onComplete }) => {
             scanComplete={scanComplete} 
           />
         )}
-        <SubtleBody 
-          currentChakra={currentChakra}
-          isBreathingIn={isBreathingIn}
-          isInitializing={isInitializing}
-          meditationStarted={meditationStarted}  // Add this prop
-          onScanComplete={() => {
-            console.log('Scan animation complete, revealing body now...');
-            setScanComplete(true);
-          }}
-        />
-      </div>
-      <div style={{ 
-        position: 'fixed', 
-        bottom: '-170px',
-        right: '92px',
-        zIndex: 9999,
-        transform: 'scale(0.2)',
-        opacity: '0.4',
-        transition: 'opacity 0.3s ease',
-      }}
-        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.2'}
-      >
-        <SkipButton 
-  onClick={() => {
+        <SubtleBody
+  currentChakra={currentChakra}
+  isBreathingIn={isBreathingIn}
+  isInitializing={isInitializing}
+  meditationStarted={meditationStarted}
+  onScanComplete={() => setScanComplete(true)}
+  onSkip={() => {
     setIsFading(true);
+    initAudio.pause();
+    initAudio.currentTime = 0;
+    meditationAudio.pause();
+    meditationAudio.currentTime = 0;
     setTimeout(() => {
-      meditationAudio.pause();
-      onComplete();
+      onComplete(); // exactly the same as old skip button
     }, 800);
   }}
-  className="skip-button"
 />
+
+      </div>
+      
+      {/* Skip button positioned at bottom of container */}
+      <div style={{ 
+        position: 'absolute',
+        bottom: '10%',  // Percentage instead of fixed pixels
+        left: '50%',
+        transform: 'translateX(-50%) scale(0.2)',  // Center AND scale
+        zIndex: 9999,
+      }}
+        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.4'; }}
+      >
+      
       </div>
     </div>
   );

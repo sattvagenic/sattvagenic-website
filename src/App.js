@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import MantraVisualization from './components/Mantra/MantraVisualization'
 import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
+import MettaMorphosis from './components/MettaMorphosis';
 import SriYantra from './SriYantra';
 import StoneColumns from './StoneColumns';
 import logo from './images/Sattvagenic Logo.png';
@@ -785,6 +786,7 @@ function App() {
             </main>
           } />
           <Route path="/meditation" element={<SriYantra />} />
+          <Route path="/metta-morphosis" element={<MettaMorphosis />} />
           <Route path="/mantra" element={<MantraVisualization />} />
           <Route path="/torus-mantra" element={<MantraScene />} />
           <Route path="/valence-config" element={<ConsciousnessSlider />} />

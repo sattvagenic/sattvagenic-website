@@ -17,12 +17,56 @@ const CyberSanghaConsciousnessExplorer = () => {
     };
   }, []);
 
+  // Define default image pairs
+  const defaultImagePairs = [
+    {
+      positive: "/images/devi 4.png",
+      negative: "/images/kali4.png",
+      name: "Devi / Kali",
+      audio: "/audio/harmonic-to-scream.mp3"
+    },
+    {
+      positive: "/images/laughing-baby.jpg",
+      negative: "/images/demon-face.jpg",
+      name: "Innocence / Malevolence",
+      audio: "/audio/innocence-malevolence.mp3"
+    },
+    {
+      positive: "/images/sunrise.jpg",
+      negative: "/images/storm.jpg",
+      name: "Dawn / Storm",
+      audio: "/audio/dawn-storm.mp3"
+    },
+    {
+      positive: "/images/flower.jpg",
+      negative: "/images/decay.jpg",
+      name: "Growth / Decay",
+      audio: "/audio/growth-decay.mp3"
+    },
+    {
+      positive: "/images/celebration.jpg",
+      negative: "/images/sorrow.jpg",
+      name: "Celebration / Sorrow",
+      audio: "/audio/celebration-sorrow.mp3"
+    },
+    {
+      positive: "/images/calm-water.jpg",
+      negative: "/images/turbulent-sea.jpg",
+      name: "Calm / Turbulent",
+      audio: "/audio/calm-turbulent.mp3"
+    }
+  ];
+
+  const [currentDefaultPairIndex, setCurrentDefaultPairIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
   const canvasRef = useRef(null);
   const [imagesReady, setImagesReady] = useState(false);
-  // Removed showPixelHighlight state
   const [meditationMode, setMeditationMode] = useState(false);
   const [scanlineEffect, setScanlineEffect] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const gainNodeRef = useRef(null);
   
   // Use separate state for each image's loaded status
   const [positiveImageLoaded, setPositiveImageLoaded] = useState(false);
@@ -91,9 +135,10 @@ const CyberSanghaConsciousnessExplorer = () => {
     reader.readAsDataURL(file);
   };
   
-  // Reset to default images
-  const resetImages = () => {
-    setStatusMessage("LOADING DEFAULT IMAGES...");
+  // Load specific default pair
+  const loadDefaultPair = (index) => {
+    const pair = defaultImagePairs[index];
+    setStatusMessage(`LOADING DEFAULT PAIR: ${pair.name.toUpperCase()}...`);
     setPositiveImageLoaded(false);
     setNegativeImageLoaded(false);
     
@@ -104,9 +149,26 @@ const CyberSanghaConsciousnessExplorer = () => {
       setPositiveImageLoaded(true);
     };
     positiveImg.onerror = () => {
-      setStatusMessage("ERROR LOADING DEFAULT POSITIVE IMAGE");
+      // If default image fails, create a placeholder
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#4FD4C6';
+      ctx.fillRect(0, 0, 600, 400);
+      ctx.fillStyle = '#000';
+      ctx.font = '30px Iceland';
+      ctx.textAlign = 'center';
+      ctx.fillText('POSITIVE STATE', 300, 200);
+      
+      const placeholderImg = new Image();
+      placeholderImg.onload = () => {
+        setPositiveImageData(placeholderImg);
+        setPositiveImageLoaded(true);
+      };
+      placeholderImg.src = canvas.toDataURL();
     };
-    positiveImg.src = "/images/laughing-baby.jpg";
+    positiveImg.src = pair.positive;
     
     // Load negative default image
     const negativeImg = new Image();
@@ -115,15 +177,97 @@ const CyberSanghaConsciousnessExplorer = () => {
       setNegativeImageLoaded(true);
     };
     negativeImg.onerror = () => {
-      setStatusMessage("ERROR LOADING DEFAULT NEGATIVE IMAGE");
+      // If default image fails, create a placeholder
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#D4804D';
+      ctx.fillRect(0, 0, 600, 400);
+      ctx.fillStyle = '#000';
+      ctx.font = '30px Iceland';
+      ctx.textAlign = 'center';
+      ctx.fillText('NEGATIVE STATE', 300, 200);
+      
+      const placeholderImg = new Image();
+      placeholderImg.onload = () => {
+        setNegativeImageData(placeholderImg);
+        setNegativeImageLoaded(true);
+      };
+      placeholderImg.src = canvas.toDataURL();
     };
-    negativeImg.src = "/images/demon-face.jpg";
+    negativeImg.src = pair.negative;
   };
   
-  // Initialize with default images
+  // Navigate to previous default pair
+  const previousDefaultPair = () => {
+    const newIndex = (currentDefaultPairIndex - 1 + defaultImagePairs.length) % defaultImagePairs.length;
+    setCurrentDefaultPairIndex(newIndex);
+    loadDefaultPair(newIndex);
+  };
+  
+  // Navigate to next default pair
+  const nextDefaultPair = () => {
+    const newIndex = (currentDefaultPairIndex + 1) % defaultImagePairs.length;
+    setCurrentDefaultPairIndex(newIndex);
+    loadDefaultPair(newIndex);
+  };
+  
+  // Initialize audio when enabled
   useEffect(() => {
-    resetImages();
-  }, []);
+    if (audioEnabled && !audioRef.current) {
+      const audio = new Audio();
+      audio.loop = true;
+      audio.crossOrigin = "anonymous";
+      audioRef.current = audio;
+      
+      // Create Web Audio API context for crossfading
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContextRef.current = new AudioContext();
+      
+      const source = audioContextRef.current.createMediaElementSource(audio);
+      gainNodeRef.current = audioContextRef.current.createGain();
+      
+      source.connect(gainNodeRef.current);
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+      
+      // Load audio for current pair if available
+      const currentPair = defaultImagePairs[currentDefaultPairIndex];
+      if (currentPair.audio) {
+        audio.src = currentPair.audio;
+        audio.play().catch(e => console.log("Audio play failed:", e));
+      }
+    } else if (!audioEnabled && audioRef.current) {
+      // Clean up audio when disabled
+      audioRef.current.pause();
+      audioRef.current = null;
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    }
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, [audioEnabled, currentDefaultPairIndex]);
+
+  // Update audio volume based on slider value
+  useEffect(() => {
+    if (audioRef.current && gainNodeRef.current) {
+      // Crossfade between positive (0) and negative (100) based on slider
+      // You might want to adjust this curve for different effects
+      const normalizedValue = sliderValue / 100;
+      
+      // Apply a smoother crossfade curve
+      gainNodeRef.current.gain.setValueAtTime(
+        Math.sin(normalizedValue * Math.PI * 0.5), // Sine curve for smoother transition
+        audioContextRef.current.currentTime
+      );
+    }
+  }, [sliderValue]);
   
   // Render canvas when images are ready or slider changes
   useEffect(() => {
@@ -150,20 +294,13 @@ const CyberSanghaConsciousnessExplorer = () => {
       ctx.globalAlpha = progress;
       ctx.drawImage(negativeImageData, 0, 0, canvas.width, canvas.height);
       
-      // Apply scanline effect if enabled
-      if (scanlineEffect) {
-        applyScanlineEffect(ctx, canvas.width, canvas.height);
-      }
-      
-      // Removed pixel highlight effect
-      
       // Add digital border
       drawDigitalBorder(ctx, canvas.width, canvas.height, progress);
     } catch (error) {
       console.error("Error rendering images to canvas:", error);
       setStatusMessage(`RENDERING ERROR: ${error.message}`);
     }
-  }, [sliderValue, imagesReady, positiveImageData, negativeImageData, scanlineEffect]);
+  }, [sliderValue, imagesReady, positiveImageData, negativeImageData]);
 
   // Add this useEffect for meditation mode
   useEffect(() => {
@@ -255,12 +392,9 @@ const CyberSanghaConsciousnessExplorer = () => {
     ctx.globalAlpha = 1;
   };
   
-  // Removed applyHighlightEffect function
-  
   // Toggle features
-  // Removed togglePixelHighlight function
   const toggleMeditationMode = () => setMeditationMode(!meditationMode);
-  const toggleScanlineEffect = () => setScanlineEffect(!scanlineEffect);
+  const toggleAudioEnabled = () => setAudioEnabled(!audioEnabled);
 
   // Custom colors - using saffron and cyan
   const colors = {
@@ -342,7 +476,9 @@ const CyberSanghaConsciousnessExplorer = () => {
     buttonContainer: {
       display: 'flex',
       justifyContent: 'center',
-      margin: '1rem 0'
+      alignItems: 'center',
+      margin: '1rem 0',
+      gap: '0.5rem'
     },
     button: {
       padding: '0.5rem 1rem',
@@ -352,6 +488,25 @@ const CyberSanghaConsciousnessExplorer = () => {
       fontSize: '1rem',
       border: `1px solid ${colors.cyan}`,
       cursor: 'pointer',
+      fontFamily: '"Iceland", sans-serif',
+      letterSpacing: '0.05em'
+    },
+    arrowButton: {
+      padding: '0.5rem 0.75rem',
+      backgroundColor: colors.darkSecondary,
+      color: colors.saffron,
+      borderRadius: '0.25rem',
+      fontSize: '1.2rem',
+      border: `1px solid ${colors.saffron}`,
+      cursor: 'pointer',
+      fontFamily: '"Iceland", sans-serif',
+      minWidth: '40px'
+    },
+    defaultPairIndicator: {
+      color: colors.cyan,
+      fontSize: '0.9rem',
+      marginTop: '0.5rem',
+      textAlign: 'center',
       fontFamily: '"Iceland", sans-serif',
       letterSpacing: '0.05em'
     },
@@ -402,7 +557,7 @@ const CyberSanghaConsciousnessExplorer = () => {
     sliderContainer: {
       width: '100%',
       padding: '0.75rem 1rem',
-      marginBottom: '1rem', // Reduced from 1.5rem to bring controls closer
+      marginBottom: '1rem',
       backgroundColor: colors.darkSecondary,
       borderRadius: '0.5rem',
       border: `1px solid ${colors.cyan}aa`
@@ -438,7 +593,7 @@ const CyberSanghaConsciousnessExplorer = () => {
       flexWrap: 'wrap',
       gap: '0.8rem',
       justifyContent: 'center',
-      marginBottom: '1.5rem', // Added margin to separate from instructions below
+      marginBottom: '1.5rem',
     },
     controlButton: (active) => ({
       padding: '0.5rem 1rem',
@@ -530,9 +685,18 @@ const CyberSanghaConsciousnessExplorer = () => {
         </div>
         
         <div style={styles.buttonContainer}>
-          <button onClick={resetImages} style={styles.button}>
-            RESET DEFAULT IMAGES
+          <button onClick={previousDefaultPair} style={styles.arrowButton} title="Previous default pair">
+            ◀
           </button>
+          <button onClick={() => loadDefaultPair(currentDefaultPairIndex)} style={styles.button}>
+            LOAD DEFAULT PAIR
+          </button>
+          <button onClick={nextDefaultPair} style={styles.arrowButton} title="Next default pair">
+            ▶
+          </button>
+        </div>
+        <div style={styles.defaultPairIndicator}>
+          [{currentDefaultPairIndex + 1}/{defaultImagePairs.length}] {defaultImagePairs[currentDefaultPairIndex].name}
         </div>
       </div>
       
@@ -571,7 +735,7 @@ const CyberSanghaConsciousnessExplorer = () => {
         </div>
       </div>
       
-      {/* Control buttons - Moved up above meditation instructions */}
+      {/* Control buttons */}
       <div style={styles.controlButtons}>
         <button
           onClick={toggleMeditationMode}
@@ -581,10 +745,10 @@ const CyberSanghaConsciousnessExplorer = () => {
         </button>
         
         <button
-          onClick={toggleScanlineEffect}
-          style={styles.controlButton(scanlineEffect)}
+          onClick={toggleAudioEnabled}
+          style={styles.controlButton(audioEnabled)}
         >
-          {scanlineEffect ? '◉ DISABLE' : '○ ENABLE'} CYBER OVERLAY
+          {audioEnabled ? '◉ DISABLE' : '○ ENABLE'} AUDIO DIMENSION
         </button>
       </div>
       
