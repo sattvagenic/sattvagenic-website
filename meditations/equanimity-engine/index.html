@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equanimity Engine | Sattvagenic</title>
+    
+    <!-- Face API for face detection -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #4FD4C6;
+            --saffron: #D4804D;
+            --dark-bg: #0a0a0a;
+            --panel-bg: #111827;
+            --text-light: #ecfeff;
+            --accent-purple: #9333ea;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(79, 212, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 128, 77, 0.1) 0%, transparent 50%);
+        }
+
+        .nav-header {
+            background: rgba(17, 24, 39, 0.95);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--cyan);
+            backdrop-filter: blur(10px);
+        }
+
+        .sattvagenic-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 8px;
+            background: linear-gradient(90deg, var(--cyan), var(--saffron));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sanskrit-title {
+            font-size: 48px;
+            color: var(--saffron);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 128, 77, 0.5);
+        }
+
+        .english-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            color: var(--cyan);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(79, 212, 198, 0.5);
+        }
+
+        .tagline {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-portal {
+            background: var(--panel-bg);
+            border: 2px solid var(--cyan);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-portal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 212, 198, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .upload-portal:hover::before {
+            left: 100%;
+        }
+
+        .upload-portal:hover {
+            border-color: var(--saffron);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 128, 77, 0.3);
+        }
+
+        .upload-portal.loaded {
+            border-color: var(--saffron);
+            background: rgba(212, 128, 77, 0.1);
+        }
+
+        .portal-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .portal-icon {
+            font-size: 64px;
+            margin: 20px 0;
+            opacity: 0.5;
+        }
+
+        .portal-text {
+            color: var(--text-light);
+            opacity: 0.6;
+            font-size: 16px;
+        }
+
+        .preview-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 20px auto;
+            border: 2px solid var(--saffron);
+            display: none;
+        }
+
+        .preview-image.active {
+            display: block;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .morph-viewport {
+            background: black;
+            border: 2px solid var(--cyan);
+            border-radius: 12px;
+            height: 500px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            box-shadow: 
+                0 0 50px rgba(79, 212, 198, 0.3),
+                inset 0 0 50px rgba(79, 212, 198, 0.1);
+        }
+
+        .morph-viewport.active {
+            display: block;
+        }
+
+        .morph-viewport::before,
+        .morph-viewport::after {
+            content: '';
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .morph-viewport::before {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: scan-line 3s linear infinite;
+        }
+
+        @keyframes scan-line {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(500px); }
+        }
+
+        #morphCanvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .loading-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--cyan);
+            font-size: 20px;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 2px;
+        }
+
+        .loading-mandala {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(79, 212, 198, 0.2);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .loading-mandala::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid rgba(212, 128, 77, 0.2);
+            border-bottom-color: var(--saffron);
+            border-radius: 50%;
+            animation: spin 0.7s linear reverse infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .control-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .control-panel.active {
+            display: block;
+        }
+
+        .slider-container {
+            margin-bottom: 30px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .slider-labels span:first-child {
+            color: var(--cyan);
+        }
+
+        .slider-labels span:last-child {
+            color: var(--saffron);
+        }
+
+        .morph-slider {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--cyan) 0%, var(--saffron) 100%);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .morph-slider:hover {
+            opacity: 1;
+        }
+
+        .morph-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border: 3px solid var(--accent-purple);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 32px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--cyan), var(--saffron));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .cyber-button {
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-button:hover {
+            color: var(--dark-bg);
+            border-color: var(--saffron);
+            transform: translateY(-2px);
+        }
+
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--saffron);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .cyber-button:hover::before {
+            left: 0;
+        }
+
+        .cyber-button.active {
+            border-color: var(--saffron);
+            color: var(--saffron);
+        }
+
+        .meditation-chamber {
+            background: var(--panel-bg);
+            border: 1px solid var(--saffron);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meditation-chamber::before {
+            content: '॥ ॐ ॥';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--saffron);
+            opacity: 0.2;
+            font-size: 24px;
+        }
+
+        .meditation-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            color: var(--saffron);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 128, 77, 0.5);
+        }
+
+        .meditation-text {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .meditation-prompt {
+            background: rgba(79, 212, 198, 0.1);
+            border-left: 4px solid var(--cyan);
+            padding: 20px;
+            margin-top: 20px;
+            color: var(--cyan);
+            font-style: italic;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .status-orb {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--panel-bg);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 30px rgba(79, 212, 198, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @media (max-width: 768px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .sanskrit-title {
+                font-size: 36px;
+            }
+            
+            .english-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-header">
+        <div class="sattvagenic-logo">सत्त्वजनिक</div>
+    </div>
+
+    <div class="container">
+        <div class="main-title">
+            <div class="sanskrit-title">समत्व इंजन</div>
+            <div class="english-title">Equanimity Engine</div>
+        </div>
+        
+        <p class="tagline">
+            Transform perception through the dissolution of boundaries
+        </p>
+
+        <div class="upload-grid">
+            <div class="upload-portal" onclick="document.getElementById('face1Input').click()">
+                <div class="portal-label">Entity Alpha</div>
+                <div class="portal-icon">👁️</div>
+                <div class="portal-text">Upload first consciousness</div>
+                <img class="preview-image" id="preview1">
+                <input type="file" id="face1Input" accept="image/*" onchange="handleImageUpload(event, 1)">
+            </div>
+
+            <div class="upload-portal" onclick="document.getElementById('face2Input').click()">
+                <div class="portal-label">Entity Beta</div>
+                <div class="portal-icon">🧿</div>
+                <div class="portal-text">Upload second consciousness</div>
+                <img class="preview-image" id="preview2">
+                <input type="file" id="face2Input" accept="image/*" onchange="handleImageUpload(event, 2)">
+            </div>
+        </div>
+
+        <div class="morph-viewport" id="morphViewport">
+            <canvas id="morphCanvas"></canvas>
+            <div class="loading-screen" id="loadingScreen" style="display: none;">
+                <div class="loading-mandala"></div>
+                <div>PROCESSING CONSCIOUSNESS STREAMS</div>
+            </div>
+        </div>
+
+        <div class="control-panel" id="controlPanel">
+            <div class="slider-container">
+                <div class="slider-labels">
+                    <span>Alpha State</span>
+                    <span>Beta State</span>
+                </div>
+                <input type="range" class="morph-slider" id="morphSlider" min="0" max="100" value="0">
+                <div class="slider-value">
+                    <span id="sliderValue">0</span>% MERGED
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="cyber-button" id="meditateBtn" onclick="toggleMeditation()">
+                    MEDITATION MODE
+                </button>
+                <button class="cyber-button" onclick="processWithAI()">
+                    AI ENHANCEMENT
+                </button>
+                <button class="cyber-button" onclick="resetPortal()">
+                    RESET PORTAL
+                </button>
+            </div>
+        </div>
+
+        <div class="meditation-chamber">
+            <div class="meditation-title">Consciousness Navigation Protocol</div>
+            <div class="meditation-text">
+                As the faces merge, observe the arising and passing of attraction and aversion. 
+                Notice how your mind creates stories from mere pixels. These reactions reveal 
+                the constructed nature of preference and identity.
+            </div>
+            <div class="meditation-prompt">
+                "Who is the unchanging witness observing these transformations? At what point 
+                does 'self' become 'other'? Can you find the exact moment where love transforms 
+                into indifference, or indifference into aversion?"
+            </div>
+        </div>
+    </div>
+
+    <div class="status-orb">🕉️</div>
+
+    <script>
+        let image1Data = null;
+        let image2Data = null;
+        let meditationActive = false;
+        let meditationInterval = null;
+
+        // Initialize Face-API
+        async function initializeFaceAPI() {
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
+                console.log('Face detection initialized');
+            } catch (error) {
+                console.log('Basic morphing mode active');
+            }
+        }
+
+        window.addEventListener('load', initializeFaceAPI);
+
+        async function handleImageUpload(event, imageNum) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const img = new Image();
+                img.onload = async () => {
+                    if (imageNum === 1) {
+                        image1Data = img;
+                        document.getElementById('preview1').src = e.target.result;
+                        document.getElementById('preview1').classList.add('active');
+                        document.querySelectorAll('.upload-portal')[0].classList.add('loaded');
+                    } else {
+                        image2Data = img;
+                        document.getElementById('preview2').src = e.target.result;
+                        document.getElementById('preview2').classList.add('active');
+                        document.querySelectorAll('.upload-portal')[1].classList.add('loaded');
+                    }
+
+                    if (image1Data && image2Data) {
+                        await initializeMorphing();
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function initializeMorphing() {
+            const viewport = document.getElementById('morphViewport');
+            const controlPanel = document.getElementById('controlPanel');
+            const loadingScreen = document.getElementById('loadingScreen');
+            
+            viewport.classList.add('active');
+            loadingScreen.style.display = 'flex';
+
+            // Simulate processing
+            setTimeout(() => {
+                setupCanvas();
+                loadingScreen.style.display = 'none';
+                controlPanel.classList.add('active');
+                updateMorph(0);
+            }, 2000);
+        }
+
+        function setupCanvas() {
+            const canvas = document.getElementById('morphCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 800;
+            canvas.height = 600;
+
+            const slider = document.getElementById('morphSlider');
+            slider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                updateMorph(value);
+                document.getElementById('sliderValue').textContent = value;
+            });
+        }
+
+        function updateMorph(morphValue) {
+            const canvas = document.getElementById('morphCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            const alpha = morphValue / 100;
+            
+            // Clear and set black background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Calculate centered positions
+            const scale1 = Math.min(canvas.width / image1Data.width, canvas.height / image1Data.height) * 0.8;
+            const scale2 = Math.min(canvas.width / image2Data.width, canvas.height / image2Data.height) * 0.8;
+            
+            const x1 = (canvas.width - image1Data.width * scale1) / 2;
+            const y1 = (canvas.height - image1Data.height * scale1) / 2;
+            const x2 = (canvas.width - image2Data.width * scale2) / 2;
+            const y2 = (canvas.height - image2Data.height * scale2) / 2;
+            
+            // Draw morphed images
+            ctx.globalAlpha = 1 - alpha;
+            ctx.drawImage(image1Data, x1, y1, image1Data.width * scale1, image1Data.height * scale1);
+            
+            ctx.globalAlpha = alpha;
+            ctx.drawImage(image2Data, x2, y2, image2Data.width * scale2, image2Data.height * scale2);
+            
+            // Add cyber overlay effect
+            ctx.globalAlpha = 0.1;
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#4FD4C6');
+            gradient.addColorStop(1, '#D4804D');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalAlpha = 1;
+        }
+
+        function toggleMeditation() {
+            const btn = document.getElementById('meditateBtn');
+            meditationActive = !meditationActive;
+            
+            if (meditationActive) {
+                btn.classList.add('active');
+                startMeditation();
+            } else {
+                btn.classList.remove('active');
+                stopMeditation();
+            }
+        }
+
+        function startMeditation() {
+            const slider = document.getElementById('morphSlider');
+            let value = 0;
+            let direction = 1;
+            
+            meditationInterval = setInterval(() => {
+                value += direction * 0.5;
+                
+                if (value >= 100) {
+                    value = 100;
+                    direction = -1;
+                } else if (value <= 0) {
+                    value = 0;
+                    direction = 1;
+                }
+                
+                slider.value = value;
+                updateMorph(value);
+                document.getElementById('sliderValue').textContent = Math.round(value);
+            }, 50);
+        }
+
+        function stopMeditation() {
+            if (meditationInterval) {
+                clearInterval(meditationInterval);
+                meditationInterval = null;
+            }
+        }
+
+        async function processWithAI() {
+            if (!image1Data || !image2Data) {
+                alert('Please upload both images first');
+                return;
+            }
+
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.style.display = 'flex';
+
+            try {
+                // Call your Netlify function here
+                const response = await fetch('/.netlify/functions/morph-faces', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        // Convert images to base64
+                        image1: getImageBase64(image1Data),
+                        image2: getImageBase64(image2Data)
+                    })
+                });
+
+                const result = await response.json();
+                console.log('AI processing complete:', result);
+                
+                // Handle the AI-enhanced morph here
+                
+            } catch (error) {
+                console.error('AI processing failed:', error);
+                alert('AI enhancement coming soon! For now, enjoy the basic morphing.');
+            } finally {
+                loadingScreen.style.display = 'none';
+            }
+        }
+
+        function getImageBase64(img) {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        function resetPortal() {
+            if (meditationActive) {
+                toggleMeditation();
+            }
+            
+            image1Data = null;
+            image2Data = null;
+            
+            document.getElementById('preview1').classList.remove('active');
+            document.getElementById('preview2').classList.remove('active');
+            document.querySelectorAll('.upload-portal').forEach(portal => {
+                portal.classList.remove('loaded');
+            });
+            document.getElementById('morphViewport').classList.remove('active');
+            document.getElementById('controlPanel').classList.remove('active');
+            document.getElementById('morphSlider').value = 0;
+            document.getElementById('sliderValue').textContent = '0';
+        }
+    </script>
+</body>
+</html>
