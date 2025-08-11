@@ -211,8 +211,9 @@ const MettaMorphosis = () => {
 
       <div className="mm-content">
         <div className="main-title">
-          <div className="sanskrit-title">मेत्ता रूपांतरण</div>
-          <div className="english-title">Metta-Morphosis</div>
+          <div className="sanskrit-title">मैत्री रूप</div>
+          <div className="english-title">Metta-Morph</div>
+         
         </div>
         
         <p className="tagline">
