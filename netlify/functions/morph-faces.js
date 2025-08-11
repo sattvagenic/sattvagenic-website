@@ -25,20 +25,20 @@ exports.handler = async (event, context) => {
     // This is an example using a general image interpolation model
     
     const response = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        version: "7af9a66f36f97fee2fece7dcc927551a951f0022cbdd23747b9212f23fc17021", // Example model ID
-        input: {
-          image1: image1,
-          image2: image2,
-          num_interpolation_steps: 10
-        }
-      })
-    });
+  method: 'POST',
+  headers: {
+    'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    version: "cb864c3f64d31acd5e3487e042123b7522fc3f19a66af2c42b7b5204e6f38dd4",
+    input: {
+      image1_path: image1,  // Changed from 'image1' to 'image1_path'
+      image2_path: image2,  // Changed from 'image2' to 'image2_path'
+      fs: 20  // Changed from 'num_interpolation_steps' to 'fs' (frames)
+    }
+  })
+});
 
     const prediction = await response.json();
 
