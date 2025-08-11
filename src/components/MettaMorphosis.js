@@ -163,7 +163,8 @@ const MettaMorphosis = () => {
   }
 
   setIsLoading(true);
-
+  
+  // Try AI first (will work once you add payment)
   try {
     const response = await fetch('/.netlify/functions/morph-faces', {
       method: 'POST',
@@ -177,21 +178,69 @@ const MettaMorphosis = () => {
     });
 
     const result = await response.json();
-    console.log('AI Response:', result);  // ADD THIS LINE
+    console.log('AI Response:', result);
     
-    // Check if we got a video URL
-    if (result.output) {
-      console.log('Video URL:', result.output);  // ADD THIS LINE
-      alert(`AI Morph Complete! Video created: ${result.output}`);
-      // Later we'll display this video instead of just alerting
+    if (result.success && result.output) {
+      console.log('AI Video URL:', result.output);
+      alert(`AI Morph Complete! Video: ${result.output}`);
+    } else {
+      // Fallback to enhanced client-side
+      console.log('Using enhanced client-side morphing');
+      startEnhancedMorphing();
     }
     
   } catch (error) {
-    console.error('AI processing failed:', error);
-    alert('AI enhancement failed - check console');
+    console.error('AI not available, using enhanced mode:', error);
+    startEnhancedMorphing();
   } finally {
     setIsLoading(false);
   }
+};
+
+// ADD THIS NEW FUNCTION right after processWithAI:
+const startEnhancedMorphing = () => {
+  // Create a smooth S-curve animation
+  let frame = 0;
+  const totalFrames = 200;
+  
+  const animateEnhanced = () => {
+    if (frame <= totalFrames) {
+      // Use an S-curve for more natural morphing
+      const linearProgress = frame / totalFrames;
+      const sCurveProgress = linearProgress < 0.5 
+        ? 2 * linearProgress * linearProgress 
+        : 1 - Math.pow(-2 * linearProgress + 2, 2) / 2;
+      
+      const morphValue = Math.round(sCurveProgress * 100);
+      setMorphValue(morphValue);
+      updateMorph(morphValue);
+      
+      // Add a subtle zoom effect
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        
+        // Add a glow effect at 50% morph
+        if (morphValue > 45 && morphValue < 55) {
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = '#4FD4C6';
+        } else {
+          ctx.shadowBlur = 0;
+        }
+      }
+      
+      frame++;
+      requestAnimationFrame(animateEnhanced);
+    } else {
+      // Reset and reverse
+      setTimeout(() => {
+        frame = 0;
+        animateEnhanced();
+      }, 1000);
+    }
+  };
+  
+  animateEnhanced();
 };
 
   const resetPortal = () => {
