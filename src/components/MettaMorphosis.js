@@ -156,37 +156,43 @@ const MettaMorphosis = () => {
     }
   };
 
-  const processWithAI = async () => {
-    if (!image1Data || !image2Data) {
-      alert('Please upload both images first');
-      return;
+ const processWithAI = async () => {
+  if (!image1Data || !image2Data) {
+    alert('Please upload both images first');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('/.netlify/functions/morph-faces', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        image1: image1Data.src,
+        image2: image2Data.src
+      })
+    });
+
+    const result = await response.json();
+    console.log('AI Response:', result);  // ADD THIS LINE
+    
+    // Check if we got a video URL
+    if (result.output) {
+      console.log('Video URL:', result.output);  // ADD THIS LINE
+      alert(`AI Morph Complete! Video created: ${result.output}`);
+      // Later we'll display this video instead of just alerting
     }
-
-    setIsLoading(true);
-
-    try {
-      // Call your Netlify function
-      const response = await fetch('/.netlify/functions/morph-faces', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          image1: image1Data.src,
-          image2: image2Data.src
-        })
-      });
-
-      const result = await response.json();
-      console.log('AI processing complete:', result);
-      
-    } catch (error) {
-      console.error('AI processing failed:', error);
-      alert('AI enhancement coming soon! For now, enjoy the basic morphing.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    
+  } catch (error) {
+    console.error('AI processing failed:', error);
+    alert('AI enhancement failed - check console');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const resetPortal = () => {
     if (meditationActive) {
