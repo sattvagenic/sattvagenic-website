@@ -1,7 +1,6 @@
 // netlify/functions/morph-faces.js
 
 exports.handler = async (event, context) => {
-  // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -10,38 +9,35 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Parse the request body
     const { image1, image2 } = JSON.parse(event.body);
-
-    // Get API token from environment variable
     const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
     
     if (!REPLICATE_API_TOKEN) {
       throw new Error('Replicate API token not configured');
     }
 
-    // Option 1: Use Replicate's face morphing model
-    // Note: You'll need to find the right model on Replicate
-    // This is an example using a general image interpolation model
+    // Note: DynamiCrafter expects URLs, not base64
+    // For testing, let's use a simpler model that accepts base64
+    // Or we need to upload images first
     
     const response = await fetch('https://api.replicate.com/v1/predictions', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Token ${REPLICATE_API_TOKEN}`,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    version: "cb864c3f64d31acd5e3487e042123b7522fc3f19a66af2c42b7b5204e6f38dd4",
-    input: {
-      image1_path: image1,  // Changed from 'image1' to 'image1_path'
-      image2_path: image2,  // Changed from 'image2' to 'image2_path'
-      fs: 20  // Changed from 'num_interpolation_steps' to 'fs' (frames)
-    }
-  })
-});
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${REPLICATE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: "cb864c3f64d31acd5e3487e042123b7522fc3f19a66af2c42b7b5204e6f38dd4",
+        input: {
+          image1_path: image1,  // This might need to be a URL
+          image2_path: image2,  // This might need to be a URL
+          fs: 20
+        }
+      })
+    });
 
     const prediction = await response.json();
-
+    
     // Poll for results
     let result = prediction;
     while (result.status === 'starting' || result.status === 'processing') {
@@ -59,21 +55,18 @@ exports.handler = async (event, context) => {
       result = await statusResponse.json();
     }
 
-    if (result.status === 'succeeded') {
-      return {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          success: true,
-          output: result.output,
-          message: 'Morphing complete'
-        })
-      };
-    } else {
-      throw new Error('Morphing failed');
-    }
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        success: true,
+        output: result.output,
+        status: result.status,
+        message: 'AI morphing complete'
+      })
+    };
 
   } catch (error) {
     console.error('Error:', error);
@@ -82,12 +75,12 @@ exports.handler = async (event, context) => {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Processing failed',
-        message: error.message
+        message: error.message,
+        details: error.response ? await error.response.text() : 'No details'
       })
     };
   }
 };
-
 // Alternative implementation using simpler image blending
 // This doesn't require Replicate and works as a fallback
 
