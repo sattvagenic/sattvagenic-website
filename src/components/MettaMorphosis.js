@@ -164,7 +164,6 @@ const MettaMorphosis = () => {
 
   setIsLoading(true);
   
-  // Try AI first (will work once you add payment)
   try {
     const response = await fetch('/.netlify/functions/morph-faces', {
       method: 'POST',
@@ -180,18 +179,13 @@ const MettaMorphosis = () => {
     const result = await response.json();
     console.log('AI Response:', result);
     
-    if (result.success && result.output) {
-      console.log('AI Video URL:', result.output);
-      alert(`AI Morph Complete! Video: ${result.output}`);
-    } else {
-      // Fallback to enhanced client-side
-      console.log('Using enhanced client-side morphing');
-      startEnhancedMorphing();
+    if (result.output) {
+      alert(`AI Morph ready! (Requires Replicate billing)`);
     }
     
   } catch (error) {
-    console.error('AI not available, using enhanced mode:', error);
-    startEnhancedMorphing();
+    console.error('AI processing needs Replicate billing');
+    alert('AI enhancement requires Replicate billing. Using standard morphing for now.');
   } finally {
     setIsLoading(false);
   }
@@ -199,48 +193,25 @@ const MettaMorphosis = () => {
 
 // ADD THIS NEW FUNCTION right after processWithAI:
 const startEnhancedMorphing = () => {
-  // Create a smooth S-curve animation
-  let frame = 0;
-  const totalFrames = 200;
+  // Don't animate the slider - just enhance the visual effect
+  console.log('Enhanced morphing mode activated');
   
-  const animateEnhanced = () => {
-    if (frame <= totalFrames) {
-      // Use an S-curve for more natural morphing
-      const linearProgress = frame / totalFrames;
-      const sCurveProgress = linearProgress < 0.5 
-        ? 2 * linearProgress * linearProgress 
-        : 1 - Math.pow(-2 * linearProgress + 2, 2) / 2;
-      
-      const morphValue = Math.round(sCurveProgress * 100);
-      setMorphValue(morphValue);
-      updateMorph(morphValue);
-      
-      // Add a subtle zoom effect
-      if (canvasRef.current) {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        
-        // Add a glow effect at 50% morph
-        if (morphValue > 45 && morphValue < 55) {
-          ctx.shadowBlur = 20;
-          ctx.shadowColor = '#4FD4C6';
-        } else {
-          ctx.shadowBlur = 0;
-        }
-      }
-      
-      frame++;
-      requestAnimationFrame(animateEnhanced);
-    } else {
-      // Reset and reverse
-      setTimeout(() => {
-        frame = 0;
-        animateEnhanced();
-      }, 1000);
-    }
-  };
+  // Add a one-time effect to show enhancement
+  if (canvasRef.current) {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    // Flash effect to show enhancement
+    ctx.fillStyle = 'rgba(79, 212, 198, 0.3)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    setTimeout(() => {
+      updateMorph(morphValue); // Redraw without the flash
+    }, 200);
+  }
   
-  animateEnhanced();
+  // Just notify user
+  alert('Enhanced morphing activated! Move the slider to see smoother transitions.');
 };
 
   const resetPortal = () => {
