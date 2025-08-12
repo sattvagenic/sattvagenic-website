@@ -63,7 +63,7 @@ const CyberSanghaConsciousnessExplorer = () => {
   const [imagesReady, setImagesReady] = useState(false);
   const [meditationMode, setMeditationMode] = useState(false);
   const [scanlineEffect, setScanlineEffect] = useState(true);
-  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [audioMuted, setAudioMuted] = useState(true); // Changed from audioEnabled to audioMuted, defaulting to true
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
   const gainNodeRef = useRef(null);
@@ -213,15 +213,16 @@ const CyberSanghaConsciousnessExplorer = () => {
     loadDefaultPair(newIndex);
   };
   
-  // Initialize audio when enabled
+  // Initialize audio - create it but don't play yet
   useEffect(() => {
-    if (audioEnabled && !audioRef.current) {
+    if (!audioRef.current) {
       const audio = new Audio();
       audio.loop = true;
       audio.crossOrigin = "anonymous";
+      audio.muted = audioMuted; // Use current mute state
       audioRef.current = audio;
       
-      // Create Web Audio API context for crossfading
+      // Create Web Audio API context for volume control
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
       
@@ -231,43 +232,77 @@ const CyberSanghaConsciousnessExplorer = () => {
       source.connect(gainNodeRef.current);
       gainNodeRef.current.connect(audioContextRef.current.destination);
       
-      // Load audio for current pair if available
+      // Load audio but don't play yet
       const currentPair = defaultImagePairs[currentDefaultPairIndex];
       if (currentPair.audio) {
         audio.src = currentPair.audio;
-        audio.play().catch(e => console.log("Audio play failed:", e));
-      }
-    } else if (!audioEnabled && audioRef.current) {
-      // Clean up audio when disabled
-      audioRef.current.pause();
-      audioRef.current = null;
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-        audioContextRef.current = null;
       }
     }
     
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
       }
     };
-  }, [audioEnabled, currentDefaultPairIndex]);
+  }, []); // Only run once on mount
 
-  // Update audio volume based on slider value
+  // Update audio source when changing pairs
+  useEffect(() => {
+    if (audioRef.current) {
+      const currentPair = defaultImagePairs[currentDefaultPairIndex];
+      if (currentPair.audio) {
+        const wasPlaying = !audioRef.current.paused;
+        audioRef.current.src = currentPair.audio;
+        // Only play if it was already playing (meditation mode is on)
+        if (wasPlaying) {
+          audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+        }
+      }
+    }
+  }, [currentDefaultPairIndex]);
+
+  // Handle mute/unmute
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = audioMuted;
+    }
+  }, [audioMuted]);
+
+  // Update audio volume based on slider value - NO FADE IN, direct control
   useEffect(() => {
     if (audioRef.current && gainNodeRef.current) {
-      // Crossfade between positive (0) and negative (100) based on slider
-      // You might want to adjust this curve for different effects
       const normalizedValue = sliderValue / 100;
       
-      // Apply a smoother crossfade curve
+      // Direct volume control based on slider position
+      // At 0% (positive): full volume
+      // At 50%: mid volume  
+      // At 100% (negative): full volume
+      // This creates a dip in the middle, or you can adjust as needed
+      
+      // Option 1: Simple linear volume (always full)
       gainNodeRef.current.gain.setValueAtTime(
-        Math.sin(normalizedValue * Math.PI * 0.5), // Sine curve for smoother transition
+        1.0, // Always full volume, no fade
         audioContextRef.current.currentTime
       );
+      
+      // Option 2: If you want volume to follow morph (uncomment below, comment above)
+      // const volume = 1.0 - Math.abs(normalizedValue - 0.5) * 0.5; // Dips to 0.75 at midpoint
+      // gainNodeRef.current.gain.setValueAtTime(
+      //   volume,
+      //   audioContextRef.current.currentTime
+      // );
     }
   }, [sliderValue]);
+  
+  // Initialize with first default pair
+  useEffect(() => {
+    loadDefaultPair(0);
+  }, []);
   
   // Render canvas when images are ready or slider changes
   useEffect(() => {
@@ -304,7 +339,18 @@ const CyberSanghaConsciousnessExplorer = () => {
 
   // Add this useEffect for meditation mode
   useEffect(() => {
-    if (!meditationMode) return;
+    if (!meditationMode) {
+      // Stop audio when exiting meditation
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      return;
+    }
+    
+    // Start audio when entering meditation
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+    }
     
     // Set slider to 0 immediately when entering meditation mode
     setSliderValue(0);
@@ -319,7 +365,7 @@ const CyberSanghaConsciousnessExplorer = () => {
       
       // Create oscillation that starts at 0, goes to 100, then back to 0
       // Using cosine wave that starts at 1, goes to -1, then back to 1
-      const time = elapsedTime / 30000; // 30 second full cycle
+      const time = elapsedTime / 31500; // 30 second full cycle
       const newValue = Math.round(50 - 50 * Math.cos(time * Math.PI));
       
       setSliderValue(newValue);
@@ -394,7 +440,7 @@ const CyberSanghaConsciousnessExplorer = () => {
   
   // Toggle features
   const toggleMeditationMode = () => setMeditationMode(!meditationMode);
-  const toggleAudioEnabled = () => setAudioEnabled(!audioEnabled);
+  const toggleAudioMuted = () => setAudioMuted(!audioMuted); // Changed function name
 
   // Custom colors - using saffron and cyan
   const colors = {
@@ -745,10 +791,10 @@ const CyberSanghaConsciousnessExplorer = () => {
         </button>
         
         <button
-          onClick={toggleAudioEnabled}
-          style={styles.controlButton(audioEnabled)}
+          onClick={toggleAudioMuted}
+          style={styles.controlButton(!audioMuted)}
         >
-          {audioEnabled ? '◉ DISABLE' : '○ ENABLE'} AUDIO DIMENSION
+          {audioMuted ? '🔇 UNMUTE' : '🔊 MUTE'} AUDIO
         </button>
       </div>
       
