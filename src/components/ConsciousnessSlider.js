@@ -804,7 +804,7 @@ const CyberSanghaConsciousnessExplorer = () => {
         <p style={styles.instructionsText}>
           Move through the spectrum of valence states with mindful attention. 
           Observe precisely when perception shifts between positive and negative.
-          Notice how each image is the same screen with a different configuration of pixels.
+          Notice the subtle reactions in the body and mind.
         </p>
         <div style={styles.instructionsBox}>
           <p style={{marginBottom: '0.8rem', fontSize: '1.1rem'}}>
@@ -814,7 +814,7 @@ const CyberSanghaConsciousnessExplorer = () => {
             <span style={{color: colors.saffron}}>▹</span> Are these truly different states, or reconfigurations of the same consciousness?
           </p>
           <p style={{marginBottom: '0.8rem', fontSize: '1.1rem'}}>
-            <span style={{color: colors.saffron}}>▹</span> Notice how the self that perceives both states remains unchanged throughout.
+            <span style={{color: colors.saffron}}>▹</span> Notice how the awareness that perceives both states remains unchanged throughout.
           </p>
           <p>
             <span style={{color: colors.saffron}}>▹</span> Your everyday experience is the same consciousness moving the same elements around to create different valence states.
@@ -823,7 +823,7 @@ const CyberSanghaConsciousnessExplorer = () => {
       </div>
       
       <div style={styles.footer}>
-        ॐ SATTVAGENIC CONSCIOUSNESS TECHNOLOGIES ॐ
+        ॐ SATTVAGENIC LABS ॐ
       </div>
     </div>
   );
