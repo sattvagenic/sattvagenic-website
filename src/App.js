@@ -7,6 +7,7 @@ import MantraVisualization from './components/Mantra/MantraVisualization'
 import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
 import MettaMorphosis from './components/MettaMorphosis';
+import ConsciousnessLab from './components/ConsciousnessLab';
 import SriYantra from './SriYantra';
 import StoneColumns from './StoneColumns';
 import logo from './images/Sattvagenic Logo.png';
@@ -790,6 +791,7 @@ function App() {
           <Route path="/mantra" element={<MantraVisualization />} />
           <Route path="/torus-mantra" element={<MantraScene />} />
           <Route path="/valence-config" element={<ConsciousnessSlider />} />
+          <Route path="/metta-morph" element={<ConsciousnessLab />} />
         </Routes>
         
         {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
