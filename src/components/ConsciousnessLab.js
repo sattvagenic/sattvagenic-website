@@ -50,6 +50,59 @@ const ConsciousnessLab = () => {
   }
   // Remove the third pair or update with images that actually exist
 ];
+
+// Default face pairs for Metta mode
+const defaultMettaPairs = [
+  {
+    face1: "/images/ramana1.jpg",
+    face2: "/images/hitler1.jpeg",
+    name: "Example"
+  },
+  {
+    face1: "/images/yourchild.jpeg",
+    face2: "/images/yourboss.jpeg",
+    name: "Example 2"
+  },
+  
+];
+
+const [currentMettaPairIndex, setCurrentMettaPairIndex] = useState(0);
+
+// Load function for Metta pairs
+const loadDefaultMettaPair = (index) => {
+  const pair = defaultMettaPairs[index];
+  setStatusMessage(`LOADING EXAMPLE: ${pair.name.toUpperCase()}`);
+  setImage1Loaded(false);
+  setImage2Loaded(false);
+  
+  const img1 = new Image();
+  img1.onload = () => {
+    setImage1Data({ src: pair.face1, img: img1 });
+    setImage1Loaded(true);
+    if (mode === 'metta') detectFaces(img1, 1);
+  };
+  img1.src = pair.face1;
+  
+  const img2 = new Image();
+  img2.onload = () => {
+    setImage2Data({ src: pair.face2, img: img2 });
+    setImage2Loaded(true);
+    if (mode === 'metta') detectFaces(img2, 2);
+  };
+  img2.src = pair.face2;
+};
+
+const previousMettaPair = () => {
+  const newIndex = (currentMettaPairIndex - 1 + defaultMettaPairs.length) % defaultMettaPairs.length;
+  setCurrentMettaPairIndex(newIndex);
+  // Don't auto-load, just update index
+};
+
+const nextMettaPair = () => {
+  const newIndex = (currentMettaPairIndex + 1) % defaultMettaPairs.length;
+  setCurrentMettaPairIndex(newIndex);
+  // Don't auto-load, just update index
+};
   
   const [currentValencePairIndex, setCurrentValencePairIndex] = useState(0);
 
@@ -540,11 +593,12 @@ useEffect(() => {
   };
 
   // Initialize default images on mode change
-  useEffect(() => {
-    if (mode === 'valence') {
-      loadDefaultValencePair(0);
-    }
-  }, [mode]);
+useEffect(() => {
+  if (mode === 'valence') {
+    loadDefaultValencePair(0);  // Auto-load for Valence mode
+  }
+  // Don't auto-load for Metta mode - leave blank
+}, [mode]);
 
   // Update morph when value changes
   useEffect(() => {
@@ -635,6 +689,19 @@ useEffect(() => {
             />
           </div>
         </div>
+
+        {mode === 'metta' && (
+  <div className="valence-controls">
+    <button onClick={previousMettaPair} className="arrow-btn">◀</button>
+    <button onClick={() => loadDefaultMettaPair(currentMettaPairIndex)} className="load-btn">
+      LOAD EXAMPLE FACES
+    </button>
+    <button onClick={nextMettaPair} className="arrow-btn">▶</button>
+    <div className="pair-indicator">
+      [{currentMettaPairIndex + 1}/{defaultMettaPairs.length}] {defaultMettaPairs[currentMettaPairIndex].name}
+    </div>
+  </div>
+)}
 
         {mode === 'valence' && (
           <div className="valence-controls">
