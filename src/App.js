@@ -754,10 +754,10 @@ function App() {
             <ul>
               <li><Link to="/">Gallery</Link></li>  {/* Add Link here too */}
               <li>Writings</li>
-              <li><Link to="/meditation">Meditation</Link></li>
+              <li><Link to="/meditation">Chakra/Yantra Meditation</Link></li>
               <Link to="/mantra" className="nav-link">Mantra Roopa</Link>
-              <li><Link to="/torus-mantra">Shivaya</Link></li>
-              <li><Link to="/valence-config">Equanimity</Link></li>
+              <li><Link to="/torus-mantra">Mantric art</Link></li>
+              <li><Link to="/metta-morph">Metta-Morph</Link></li>
               <li>About</li>
             </ul>
           </nav>

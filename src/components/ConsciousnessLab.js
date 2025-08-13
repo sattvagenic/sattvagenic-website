@@ -36,25 +36,20 @@ const ConsciousnessLab = () => {
   
   // Default image pairs for Valence mode
   const defaultValencePairs = [
-    {
-      positive: "/images/devi 4.png",
-      negative: "/images/kali4.png",
-      name: "Devi / Kali",
-      audio: "/audio/harmonic-to-scream.mp3"
-    },
-    {
-      positive: "/images/laughing-baby.jpg",
-      negative: "/images/demon-face.jpg",
-      name: "Innocence / Malevolence",
-      audio: "/audio/innocence-malevolence.mp3"
-    },
-    {
-      positive: "/images/oasis.jpg",
-      negative: "/images/warzone.jpg",
-      name: "Peace / Chaos",
-      audio: "/audio/peace-chaos.mp3"
-    }
-  ];
+  {
+    positive: "/images/devi 4.png",
+    negative: "/images/kali4.png",
+    name: "Devi / Kali",
+    audio: "/audio/harmonic-to-scream.mp3"
+  },
+  {
+    positive: "/images/laughing-baby.jpg",
+    negative: "/images/demon-face.jpg",
+    name: "Innocence / Malevolence",
+    audio: "/audio/innocence-malevolence.mp3"
+  }
+  // Remove the third pair or update with images that actually exist
+];
   
   const [currentValencePairIndex, setCurrentValencePairIndex] = useState(0);
 
@@ -66,18 +61,25 @@ const ConsciousnessLab = () => {
   }, [mode]);
 
   const loadFaceAPI = async () => {
-    try {
-      // Check if face-api is available
-      if (typeof faceapi !== 'undefined') {
-        await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
-        await faceapi.nets.faceLandmark68TinyNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
-        setStatusMessage('FACE DETECTION READY');
-      }
-    } catch (error) {
-      console.log('Face detection not available, using basic morphing');
-      setStatusMessage('BASIC MORPHING MODE');
+  try {
+    if (typeof faceapi !== 'undefined') {
+      // Load from local models folder instead of CDN
+      await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+      await faceapi.nets.faceLandmark68TinyNet.loadFromUri('/models');
+      setStatusMessage('FACE DETECTION READY');
     }
-  };
+  } catch (error) {
+    console.log('Face detection not available, using basic morphing');
+    setStatusMessage('BASIC MORPHING MODE');
+  }
+};
+
+useEffect(() => {
+  if (image1Loaded && image2Loaded) {
+    setStatusMessage('READY FOR CONSCIOUSNESS NAVIGATION');
+    setIsProcessing(false); // Make sure to stop processing
+  }
+}, [image1Loaded, image2Loaded]);
 
   // Initialize audio for Valence mode
   useEffect(() => {
@@ -141,42 +143,41 @@ const ConsciousnessLab = () => {
 
   // Handle image upload
   const handleImageUpload = async (event, imageNum) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const file = event.target.files[0];
+  if (!file) return;
 
-    setIsProcessing(true);
-    setStatusMessage(`PROCESSING ${imageNum === 1 ? 'ALPHA' : 'BETA'} ENTITY...`);
+  setIsProcessing(true);
+  setStatusMessage(`PROCESSING ${imageNum === 1 ? 'ALPHA' : 'BETA'} ENTITY...`);
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const img = new Image();
-      img.onload = async () => {
-        if (imageNum === 1) {
-          setImage1Data({ src: e.target.result, img });
-          setImage1Loaded(true);
-          
-          if (mode === 'metta') {
-            await detectFaces(img, 1);
-          }
-        } else {
-          setImage2Data({ src: e.target.result, img });
-          setImage2Loaded(true);
-          
-          if (mode === 'metta') {
-            await detectFaces(img, 2);
-          }
-        }
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const img = new Image();
+    img.onload = async () => {
+      if (imageNum === 1) {
+        setImage1Data({ src: e.target.result, img });
+        setImage1Loaded(true);
         
-        setIsProcessing(false);
-        
-        if (image1Loaded && image2Loaded) {
-          setStatusMessage('READY FOR CONSCIOUSNESS NAVIGATION');
+        // Don't await face detection - just try it in background
+        if (mode === 'metta' && typeof faceapi !== 'undefined') {
+          detectFaces(img, 1); // Remove await
         }
-      };
-      img.src = e.target.result;
+      } else {
+        setImage2Data({ src: e.target.result, img });
+        setImage2Loaded(true);
+        
+        // Don't await face detection - just try it in background
+        if (mode === 'metta' && typeof faceapi !== 'undefined') {
+          detectFaces(img, 2); // Remove await
+        }
+      }
+      
+      setIsProcessing(false);
+      setStatusMessage('READY FOR CONSCIOUSNESS NAVIGATION');
     };
-    reader.readAsDataURL(file);
+    img.src = e.target.result;
   };
+  reader.readAsDataURL(file);
+};
 
   // Detect faces and landmarks for Metta mode
   const detectFaces = async (img, imageNum) => {
@@ -193,21 +194,30 @@ const ConsciousnessLab = () => {
         new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true);
       
       if (detection) {
-        if (imageNum === 1) {
-          setLandmarks1(detection.landmarks);
-          setFaces1Detected(true);
-        } else {
-          setLandmarks2(detection.landmarks);
-          setFaces2Detected(true);
-        }
-        setStatusMessage('FACE LANDMARKS DETECTED');
-      } else {
-        setStatusMessage('NO FACE DETECTED - USING BASIC MORPH');
-      }
-    } catch (error) {
-      console.error('Face detection error:', error);
-    }
-  };
+  if (imageNum === 1) {
+    setLandmarks1(detection.landmarks);
+    setFaces1Detected(true);
+    setStatusMessage('FACE 1 LANDMARKS DETECTED ✓');
+  } else {
+    setLandmarks2(detection.landmarks);
+    setFaces2Detected(true);
+    setStatusMessage('FACE 2 LANDMARKS DETECTED ✓');
+  }
+  
+  // If both faces detected, show ready message
+  if ((imageNum === 1 && faces2Detected) || (imageNum === 2 && faces1Detected)) {
+    setStatusMessage('BOTH FACES ALIGNED - READY FOR METTA');
+  }
+} else {
+  setStatusMessage('NO FACE DETECTED - USING BASIC MORPH');
+}
+} catch (error) {
+  console.error('Face detection error:', error);
+  setStatusMessage('FACE DETECTION ERROR - USING BASIC MORPH');
+} finally {
+  setIsProcessing(false);  // Always stop processing
+}
+};
 
   // Load default Valence pair
   const loadDefaultValencePair = (index) => {
@@ -250,6 +260,8 @@ const ConsciousnessLab = () => {
     setCurrentValencePairIndex(newIndex);
     loadDefaultValencePair(newIndex);
   };
+
+ 
 
   // Update morph visualization
   const updateMorph = (value) => {
@@ -300,20 +312,92 @@ const ConsciousnessLab = () => {
   };
 
   const morphWithLandmarks = (ctx, canvas, alpha) => {
-    // This is where we'd implement landmark-based morphing
-    // For now, use enhanced simple morph
+  if (!landmarks1 || !landmarks2) {
     simpleMorph(ctx, canvas, alpha);
-    
-    // Add a glow effect at 50% to show landmark detection is active
-    if (Math.abs(alpha - 0.5) < 0.1) {
-      ctx.shadowBlur = 30;
-      ctx.shadowColor = '#4FD4C6';
-      ctx.strokeStyle = '#4FD4C6';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(100, 50, canvas.width - 200, canvas.height - 100);
-      ctx.shadowBlur = 0;
-    }
+    return;
+  }
+
+  // Get eye positions from landmarks
+  const leftEye1 = landmarks1.getLeftEye();
+  const rightEye1 = landmarks1.getRightEye();
+  const leftEye2 = landmarks2.getLeftEye();
+  const rightEye2 = landmarks2.getRightEye();
+  
+  // Calculate eye centers
+  const getCenter = (points) => {
+    const sum = points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
+    return { x: sum.x / points.length, y: sum.y / points.length };
   };
+  
+  const eye1Center1 = getCenter(leftEye1);
+  const eye2Center1 = getCenter(rightEye1);
+  const eye1Center2 = getCenter(leftEye2);
+  const eye2Center2 = getCenter(rightEye2);
+  
+  // Calculate angles for rotation alignment
+  const angle1 = Math.atan2(eye2Center1.y - eye1Center1.y, eye2Center1.x - eye1Center1.x);
+  const angle2 = Math.atan2(eye2Center2.y - eye1Center2.y, eye2Center2.x - eye1Center2.x);
+  
+  // Calculate scales to match eye distances
+  const eyeDist1 = Math.sqrt(Math.pow(eye2Center1.x - eye1Center1.x, 2) + Math.pow(eye2Center1.y - eye1Center1.y, 2));
+  const eyeDist2 = Math.sqrt(Math.pow(eye2Center2.x - eye1Center2.x, 2) + Math.pow(eye2Center2.y - eye1Center2.y, 2));
+  
+  const targetEyeDistance = 150; // Standard eye distance in pixels
+  const scale1 = targetEyeDistance / eyeDist1;
+  const scale2 = targetEyeDistance / eyeDist2;
+  
+  // Clear canvas
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw first face (aligned and scaled)
+  ctx.save();
+  ctx.globalAlpha = 1 - alpha;
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate(-angle1);
+  ctx.scale(scale1, scale1);
+  
+  // Center based on face midpoint
+  const faceMid1X = (eye1Center1.x + eye2Center1.x) / 2;
+  const faceMid1Y = (eye1Center1.y + eye2Center1.y) / 2;
+  ctx.drawImage(
+    image1Data.img,
+    -faceMid1X,
+    -faceMid1Y
+  );
+  ctx.restore();
+  
+  // Draw second face (aligned and scaled)
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate(-angle2);
+  ctx.scale(scale2, scale2);
+  
+  // Center based on face midpoint
+  const faceMid2X = (eye1Center2.x + eye2Center2.x) / 2;
+  const faceMid2Y = (eye1Center2.y + eye2Center2.y) / 2;
+  ctx.drawImage(
+    image2Data.img,
+    -faceMid2X,
+    -faceMid2Y
+  );
+  ctx.restore();
+  
+  ctx.globalAlpha = 1;
+  
+  // Add visual indicator that landmark mode is active
+  ctx.strokeStyle = '#4FD4C6';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([5, 5]);
+  ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+  ctx.setLineDash([]);
+  
+  // Show "LANDMARK ALIGNED" text
+  ctx.font = '12px Orbitron';
+  ctx.fillStyle = '#4FD4C6';
+  ctx.fillText('LANDMARK ALIGNED', 10, 25);
+};
 
   const addVisualEffects = (ctx, canvas, alpha) => {
     // Add cyber overlay gradient
@@ -379,36 +463,40 @@ const ConsciousnessLab = () => {
   };
 
   const startMeditation = () => {
-    // Start audio if in valence mode
-    if (mode === 'valence' && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+  // Start audio if in valence mode
+  if (mode === 'valence' && audioRef.current) {
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+  }
+  
+  // Process faces if in metta mode and not yet processed
+  if (mode === 'metta' && image1Data && image2Data && (!faces1Detected || !faces2Detected)) {
+    setStatusMessage('ALIGNING CONSCIOUSNESS FIELDS...');
+  }
+  
+  let value = 0;
+  let direction = 1;
+  
+  // Different speeds for different modes
+  // For 45 sec half-cycle: 100 steps / (45 sec * 20 updates/sec) = 0.133
+  // For 30 sec half-cycle: 100 steps / (30 sec * 20 updates/sec) = 0.167
+  const speed = mode === 'metta' ? 0.111 : 0.167;
+  
+  meditationIntervalRef.current = setInterval(() => {
+    value += direction * speed;
+    
+    if (value >= 100) {
+      value = 100;
+      direction = -1;
+    } else if (value <= 0) {
+      value = 0;
+      direction = 1;
     }
     
-    // Process faces if in metta mode and not yet processed
-    if (mode === 'metta' && image1Data && image2Data && (!faces1Detected || !faces2Detected)) {
-      setStatusMessage('ALIGNING CONSCIOUSNESS FIELDS...');
-      // Face detection would happen here if needed
-    }
-    
-    let value = 0;
-    let direction = 1;
-    
-    meditationIntervalRef.current = setInterval(() => {
-      value += direction * 0.5;
-      
-      if (value >= 100) {
-        value = 100;
-        direction = -1;
-      } else if (value <= 0) {
-        value = 0;
-        direction = 1;
-      }
-      
-      setMorphValue(Math.round(value));
-      updateMorph(value);
-    }, 50);
-  };
+    setMorphValue(Math.round(value));
+    updateMorph(value);
+  }, 50); // 50ms = 20 updates per second
+};
 
   const stopMeditation = () => {
     if (meditationIntervalRef.current) {
@@ -475,7 +563,7 @@ const ConsciousnessLab = () => {
             {mode === 'metta' ? 'मैत्री रूप' : 'वैलेंस विन्यास'}
           </div>
           <div className="english-title">
-            {mode === 'metta' ? 'METTA-MORPH' : 'VALENCE CONFIGURATION'}
+            {mode === 'metta' ? 'METTA-MORPH' : 'VALENCE PROTOCOL'}
           </div>
         </div>
         
@@ -490,7 +578,7 @@ const ConsciousnessLab = () => {
             className={`mode-btn ${mode === 'valence' ? 'active' : ''}`}
             onClick={() => switchMode('valence')}
           >
-            VALENCE MODE
+            EQUANIMITY
           </button>
         </div>
 
@@ -500,17 +588,18 @@ const ConsciousnessLab = () => {
             onClick={() => fileInput1Ref.current?.click()}
           >
             <div className="portal-label">
-              {mode === 'metta' ? 'ENTITY ALPHA' : 'POSITIVE STATE'}
+              {mode === 'metta' ? 'HEART OPEN' : 'POSITIVE STATE'}
             </div>
             <div className="portal-icon">
               {mode === 'metta' ? '👁️' : '☮️'}
             </div>
             <div className="portal-text">
-              {mode === 'metta' ? 'Upload first consciousness' : 'Upload positive state'}
+              {mode === 'metta' ? '' : 'Upload positive state'}
             </div>
             {image1Data && (
               <img className="preview-image active" src={image1Data.src} alt="First" />
             )}
+             <div className="upload-hint">Upload own image</div> 
             <input 
               ref={fileInput1Ref}
               type="file" 
@@ -525,17 +614,18 @@ const ConsciousnessLab = () => {
             onClick={() => fileInput2Ref.current?.click()}
           >
             <div className="portal-label">
-              {mode === 'metta' ? 'ENTITY BETA' : 'NEGATIVE STATE'}
+              {mode === 'metta' ? 'HEART GUARDED' : 'NEGATIVE STATE'}
             </div>
             <div className="portal-icon">
               {mode === 'metta' ? '🧿' : '⚡'}
             </div>
             <div className="portal-text">
-              {mode === 'metta' ? 'Upload second consciousness' : 'Upload negative state'}
+              {mode === 'metta' ? '' : 'Upload negative state'}
             </div>
             {image2Data && (
               <img className="preview-image active" src={image2Data.src} alt="Second" />
             )}
+            <div className="upload-hint">Upload own image</div>
             <input 
               ref={fileInput2Ref}
               type="file" 
@@ -558,6 +648,7 @@ const ConsciousnessLab = () => {
             </div>
           </div>
         )}
+        
 
         <div className={`morph-viewport ${image1Loaded && image2Loaded ? 'active' : ''}`}>
           {(!image1Loaded || !image2Loaded) ? (
@@ -627,13 +718,13 @@ const ConsciousnessLab = () => {
           </div>
           <div className="meditation-text">
             {mode === 'metta' ? 
-              'As the faces merge, observe the dissolution of self and other. Notice how your feelings transform as features blend. Where does aversion end and affection begin?' :
+              'Notice how your feelings transform as features blend. Where does affection end and aversion begin?' :
               'Move through the spectrum of valence states with mindful attention. Observe precisely when perception shifts between positive and negative.'}
           </div>
           <div className="meditation-prompt">
             {mode === 'metta' ?
-              '"Can you find loving-kindness for the merged being? This is neither self nor other, but the space between."' :
-              '"Notice how the self that perceives both states remains unchanged throughout. You are the witness, not the witnessed."'}
+              '"Can you maintain a feeling of loving-kindness as the faces changes? If not, what happens internally?"' :
+              '"Notice how the awareness that perceives both states remains unchanged throughout."'}
           </div>
         </div>
       </div>
