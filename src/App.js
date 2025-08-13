@@ -8,6 +8,7 @@ import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
 import MettaMorphosis from './components/MettaMorphosis';
 import ConsciousnessLab from './components/ConsciousnessLab';
+import EnergyScene from './components/EnergyScene';
 import SriYantra from './SriYantra';
 import StoneColumns from './StoneColumns';
 import logo from './images/Sattvagenic Logo.png';
@@ -787,11 +788,11 @@ function App() {
             </main>
           } />
           <Route path="/meditation" element={<SriYantra />} />
-          <Route path="/metta-morphosis" element={<MettaMorphosis />} />
           <Route path="/mantra" element={<MantraVisualization />} />
           <Route path="/torus-mantra" element={<MantraScene />} />
-          <Route path="/valence-config" element={<ConsciousnessSlider />} />
           <Route path="/metta-morph" element={<ConsciousnessLab />} />
+          <Route path="/energy-body" element={<EnergyScene />} />
+
         </Routes>
         
         {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}

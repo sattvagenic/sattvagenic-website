@@ -11,6 +11,7 @@ const ConsciousnessLab = () => {
   const [image2Data, setImage2Data] = useState(null);
   const [image1Loaded, setImage1Loaded] = useState(false);
   const [image2Loaded, setImage2Loaded] = useState(false);
+  const [isLoadingPair, setIsLoadingPair] = useState(false);
   
   // Face detection states (for Metta mode)
   const [faces1Detected, setFaces1Detected] = useState(false);
@@ -54,13 +55,13 @@ const ConsciousnessLab = () => {
 // Default face pairs for Metta mode
 const defaultMettaPairs = [
   {
-    face1: "/images/ramana1.jpg",
-    face2: "/images/hitler1.jpeg",
+    face1: "/images/yourchild.jpg",
+    face2: "/images/yourboss.jpg",
     name: "Example"
   },
   {
-    face1: "/images/yourchild.jpeg",
-    face2: "/images/yourboss.jpeg",
+    face1: "/images/ramana1.jpg",
+    face2: "/images/hitler1.jpeg",
     name: "Example 2"
   },
   
@@ -70,10 +71,22 @@ const [currentMettaPairIndex, setCurrentMettaPairIndex] = useState(0);
 
 // Load function for Metta pairs
 const loadDefaultMettaPair = (index) => {
+  if (!defaultMettaPairs || !defaultMettaPairs[index]) {
+    console.error('No metta pair found at index:', index);
+    return;
+  }
+  
+  setIsLoadingPair(true); // Start loading
+  
   const pair = defaultMettaPairs[index];
-  setStatusMessage(`LOADING EXAMPLE: ${pair.name.toUpperCase()}`);
+  setStatusMessage(`LOADING EXAMPLE: ${pair.name ? pair.name.toUpperCase() : 'FACES'}`);
   setImage1Loaded(false);
   setImage2Loaded(false);
+  
+  // Set a timer to stop loading after 3 seconds
+  setTimeout(() => {
+    setIsLoadingPair(false);
+  }, 3000);
   
   const img1 = new Image();
   img1.onload = () => {
@@ -92,16 +105,23 @@ const loadDefaultMettaPair = (index) => {
   img2.src = pair.face2;
 };
 
+// Update the arrow functions to auto-load when images are already present
 const previousMettaPair = () => {
   const newIndex = (currentMettaPairIndex - 1 + defaultMettaPairs.length) % defaultMettaPairs.length;
   setCurrentMettaPairIndex(newIndex);
-  // Don't auto-load, just update index
+  // Auto-load if we already have images loaded
+  if (image1Loaded || image2Loaded) {
+    loadDefaultMettaPair(newIndex);
+  }
 };
 
 const nextMettaPair = () => {
   const newIndex = (currentMettaPairIndex + 1) % defaultMettaPairs.length;
   setCurrentMettaPairIndex(newIndex);
-  // Don't auto-load, just update index
+  // Auto-load if we already have images loaded
+  if (image1Loaded || image2Loaded) {
+    loadDefaultMettaPair(newIndex);
+  }
 };
   
   const [currentValencePairIndex, setCurrentValencePairIndex] = useState(0);
@@ -533,7 +553,7 @@ useEffect(() => {
   // Different speeds for different modes
   // For 45 sec half-cycle: 100 steps / (45 sec * 20 updates/sec) = 0.133
   // For 30 sec half-cycle: 100 steps / (30 sec * 20 updates/sec) = 0.167
-  const speed = mode === 'metta' ? 0.111 : 0.167;
+  const speed = mode === 'metta' ? 0.111 : 0.159;
   
   meditationIntervalRef.current = setInterval(() => {
     value += direction * speed;
@@ -668,7 +688,7 @@ useEffect(() => {
             onClick={() => fileInput2Ref.current?.click()}
           >
             <div className="portal-label">
-              {mode === 'metta' ? 'HEART GUARDED' : 'NEGATIVE STATE'}
+              {mode === 'metta' ? 'HEART CHALLENGED' : 'NEGATIVE STATE'}
             </div>
             <div className="portal-icon">
               {mode === 'metta' ? '🧿' : '⚡'}
@@ -693,9 +713,13 @@ useEffect(() => {
         {mode === 'metta' && (
   <div className="valence-controls">
     <button onClick={previousMettaPair} className="arrow-btn">◀</button>
-    <button onClick={() => loadDefaultMettaPair(currentMettaPairIndex)} className="load-btn">
-      LOAD EXAMPLE FACES
-    </button>
+    <button 
+  onClick={() => loadDefaultMettaPair(currentMettaPairIndex)} 
+  className="load-btn"
+  disabled={isLoadingPair}
+>
+  {isLoadingPair ? 'LOADING...' : 'LOAD EXAMPLE FACES'}
+</button>
     <button onClick={nextMettaPair} className="arrow-btn">▶</button>
     <div className="pair-indicator">
       [{currentMettaPairIndex + 1}/{defaultMettaPairs.length}] {defaultMettaPairs[currentMettaPairIndex].name}
@@ -790,7 +814,7 @@ useEffect(() => {
           </div>
           <div className="meditation-prompt">
             {mode === 'metta' ?
-              '"Can you maintain a feeling of loving-kindness as the faces changes? If not, what happens internally?"' :
+              '"Can you maintain a feeling of loving-kindness as the face changes? If not, what happens internally?"' :
               '"Notice how the awareness that perceives both states remains unchanged throughout."'}
           </div>
         </div>
