@@ -612,6 +612,8 @@ useEffect(() => {
     setStatusMessage('PORTAL RESET');
   };
 
+ 
+
   // Initialize default images on mode change
 useEffect(() => {
   if (mode === 'valence') {
@@ -628,7 +630,7 @@ useEffect(() => {
   return (
     <div className="consciousness-lab-container">
       <div className="nav-header">
-        <div className="sattvagenic-logo">सत्त्वजनिक</div>
+        <div className="sattvagenic-logo"></div>
       </div>
 
       <div className="lab-content">

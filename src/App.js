@@ -3,6 +3,8 @@ import './meditation-styles.css';
 import SanskritRain from './components/SanskritRain';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import MobileLingamMenu from './components/MobileLingamMenu';
 import MantraVisualization from './components/Mantra/MantraVisualization'
 import MantraScene from './components/MantraScene';
 import ConsciousnessSlider from './components/ConsciousnessSlider';
@@ -553,6 +555,16 @@ useEffect(() => {
   return () => window.removeEventListener('resize', checkMobile);
 }, []);
 
+// Add this useEffect in your ImageModal component
+useEffect(() => {
+  if (isMobile) {
+    // Auto-expand on mobile - go straight to description
+    setIsExpanded(true);
+    setTextState(prev => ({ ...prev, visible: true }));
+    animateText();
+  }
+}, [isMobile]); // Run when component mounts if on mobile
+
   // Add helper function for Sanskrit characters
   const getRandomSanskritChar = () => {
       const sanskritChars = [
@@ -678,11 +690,7 @@ useEffect(() => {
         <div className="modal-image-container">
           <img src={image.src} alt={image.title} />
           <div className="modal-title">{image.title}</div>
-          {!isExpanded && 
-            <GlyphButton 
-              onClick={handleExpand}
-            />
-          }
+         
         </div>
         {isExpanded && (
           <div className={`modal-description-container ${vortexExpanded ? 'vortex-expanded' : ''}`}>
@@ -748,59 +756,80 @@ function App() {
   
   return (
     <Router>
-      <div className="App">
-        <header>
-          <img src={logo} alt="Sattvagenic" className="site-logo" />
-          <nav>
-            <ul>
-              <li><Link to="/">Gallery</Link></li>  {/* Add Link here too */}
-              <li>Writings</li>
-              <li><Link to="/meditation">Chakra/Yantra Meditation</Link></li>
-              <Link to="/mantra" className="nav-link">Mantra Roopa</Link>
-              <li><Link to="/torus-mantra">Mantric art</Link></li>
-              <li><Link to="/metta-morph">Metta-Morph</Link></li>
-              <li>About</li>
-            </ul>
-          </nav>
-        </header>
-  
-        <Routes>
-          <Route path="/" element={
-            <main>
-              <section className="hero">
-                <h2>Explorations in Shaivo-futurism</h2>
-                <p>Sattvagenic (adj.): Producing a state of mental clarity, spiritual harmony and elevated consciousness.</p>
-              </section>
-              
-              <section className="gallery">
-                <h2>Gallery</h2>
-                <div className="gallery-grid">
-                  {galleryImages.map((image) => (
-                    <div key={image.id} className="gallery-item" onClick={() => setSelectedImage(image)}>
-                      <img src={image.src} alt={image.title} />
-                      <div className="image-overlay">
-                        <h3>{image.title}</h3>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </main>
-          } />
-          <Route path="/meditation" element={<SriYantra />} />
-          <Route path="/mantra" element={<MantraVisualization />} />
-          <Route path="/torus-mantra" element={<MantraScene />} />
-          <Route path="/metta-morph" element={<ConsciousnessLab />} />
-          <Route path="/energy-body" element={<EnergyScene />} />
-
-        </Routes>
-        
-        {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
-      </div>
+      <AppContent selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
     </Router>
   );
 }
 
+// Create this new component that goes INSIDE the Router
+function AppContent({ selectedImage, setSelectedImage }) {
+  const location = useLocation(); // Now this works because it's inside Router
+  const isMettaMorphPage = location.pathname === '/metta-morph';
+  
+  return (
+    <div className={`App ${isMettaMorphPage ? 'metta-morph-background' : ''}`}>
+      <header>
+        <img src={logo} alt="Sattvagenic" class="logo--white" className="site-logo" />
+        <nav>
+  <ul>
+    <li><Link to="/">Gallery</Link></li>
+    
+    <li className="dropdown">
+      <span>Meditations</span>
+      <ul className="dropdown-menu">
+        <li><Link to="/meditation">Chakra/Yantra Meditation</Link></li>
+        <li><Link to="/metta-morph">Metta-Morph</Link></li>
+      </ul>
+    </li>
+    
+    <li className="dropdown">
+      <span>Mantric Art</span>
+      <ul className="dropdown-menu">
+        <li><Link to="/mantra">Mantra Roopa</Link></li>
+        <li><Link to="/torus-mantra">Mantric art</Link></li>
+      </ul>
+    </li>
+    
+    <li>Writings</li>
+    <li>About</li>
+  </ul>
+</nav>
+        <MobileLingamMenu />
+      </header>
 
+      <Routes>
+        <Route path="/" element={
+          <main>
+            <section className="hero">
+              <h2>Explorations in Shaivo-futurism</h2>
+              <p>Sattvagenic (adj.): Producing a state of mental clarity, spiritual harmony and elevated consciousness.</p>
+            </section>
+            
+            <section className="gallery">
+              <h2>Gallery</h2>
+              <div className="gallery-grid">
+                {galleryImages.map((image) => (
+                  <div key={image.id} className="gallery-item" onClick={() => setSelectedImage(image)}>
+                    <img src={image.src} alt={image.title} />
+                    <div className="image-overlay">
+                      <h3>{image.title}</h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </main>
+        } />
+        <Route path="/meditation" element={<SriYantra />} />
+        <Route path="/mantra" element={<MantraVisualization />} />
+        <Route path="/torus-mantra" element={<MantraScene />} />
+        <Route path="/metta-morph" element={<ConsciousnessLab />} />
+        <Route path="/energy-body" element={<EnergyScene />} />
+      </Routes>
+      
+      {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
+    </div>
+  );
+}
 
 export default App;

@@ -1313,7 +1313,7 @@ h2 {
   }
 }
 
-/* MOBILE STYLES - FLEXBOX APPROACH */
+/* MOBILE STYLES - NATURAL FLOW APPROACH */
 @media (max-width: 768px) {
   /* Hide the 16:9 container system on mobile */
   .modal-viewport,
@@ -1324,130 +1324,108 @@ h2 {
   .modal {
     padding: 0;
     display: flex;
-    align-items: flex-start !important; /* Changed from center to flex-start */
+    align-items: flex-start !important;
     justify-content: center;
   }
 
   .modal-content {
+    padding-top: 50px !important;
     width: 100% !important;
-    height: 100vh !important;
+    min-height: 100vh !important; /* Changed from fixed height */
     max-width: 100% !important;
-    max-height: 100% !important;
     position: relative !important;
     background: rgba(0, 0, 0, 0.9) !important;
     display: flex !important;
     flex-direction: column !important;
-    overflow: hidden;
+    overflow-y: auto !important; /* Allow scrolling */
   }
 
-  /* Image container - mixed height approach */
+  .close-glyph {
+    position: fixed !important;
+    top: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1002 !important;
+  }
+
+  /* Image container - fixed size */
   .modal-image-container {
-    flex-shrink: 0; /* Prevent shrinking */
-    flex-grow: 0; /* Prevent growing */
-    min-height: 45vh; /* Increased to push description down */
-    max-height: 50vh; /* Take up more screen space */
+    flex-shrink: 0;
+    flex-grow: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Push content to top instead of center */
-    padding: 0.5rem 1rem 0rem 1rem; /* Removed bottom padding */
+    justify-content: flex-start;
+    padding: 0.5rem 1rem 1rem 1rem;
     position: relative;
+     margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .modal-image-container img {
     max-width: 90%;
-    max-height: 250px; /* Reduced from 300px */
+    max-height: 250px;
     width: auto;
     height: auto;
     object-fit: contain;
     border-radius: 8px;
-    /* Removed margin-top to keep image at top */
   }
 
   .modal-title {
-    margin-top: 0.5rem; /* Reduced spacing */
-    margin-bottom: 0.3rem; /* Add bottom margin to create gap before description */
+    margin-top: 0.5rem;
+    margin-bottom: 0rem !important; /* Remove bottom margin */
     text-align: center;
     font-size: 1.5rem;
     color: #ff6b35;
     position: relative;
-    flex-shrink: 0; /* Keep title from shrinking */
+    flex-shrink: 0;
   }
+}
 
-  /* Ensure glyph button shows properly */
-  .glyph-button {
-    margin-top: 20px !important;
-    align-self: center !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* Description container - position relative to actual viewport, not parent container */
+ @media (max-width: 768px) {
   .modal-content.expanded .modal-description-container {
-    /* Use FIXED positioning to position relative to actual viewport */
-    position: fixed !important;
-    top: 50vh !important; /* Start at actual 50% of real screen */
-    left: 5% !important;
-    right: 5% !important;
-    bottom: 0 !important; /* Extend to actual bottom of viewport */
-    
-    /* Flexbox properties for internal layout */
-    display: flex !important;
-    flex-direction: column !important;
-    
-    /* Spacing and alignment */
-    width: 90% !important;
-    padding: 1rem 1.5rem 2rem 1.5rem !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 1.5rem 2rem 1.5rem !important;
     margin: 0 !important;
-    
-    /* Enable scrolling if needed within bottom 50% */
-    overflow-y: auto !important;
-    
-    /* Styling */
+    /* Calculate where text should start: 50px (content padding) + image height + title height */
+    padding-top: calc(50px + 250px + 60px) !important;
     text-align: center !important;
-    z-index: 1 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
   }
+
 
   .modal-description {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Start text at top of available space */
+    display: block !important; /* Change from flex to block */
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Reduce spacing between description lines */
   .glitch-wrapper {
-    line-height: 1.4 !important; /* Reduced from 1.6 */
+    display: block !important; /* Change from flex to block */
+    line-height: 1.4 !important;
     font-size: 1rem;
   }
 
   .glitch-wrapper span {
     display: block;
-    margin-bottom: 1rem !important; /* Reduced from 1.5rem */
-  }
-
-  /* Handle the temp character positioning */
-  .temp-char {
-    display: inline;
-    color: #00ffff;
-    opacity: 0.7;
-  }
-
-  /* Optional: Add some visual breathing room */
-  .modal-description-container::before {
-    content: '';
-    height: 1rem;
-    flex-shrink: 0;
+    margin-bottom: 1rem !important;
   }
 }
 
-/* Optional: Handle very small screens */
+/* Very small screens */
 @media (max-width: 480px) {
   .modal-image-container {
     padding: 1rem 0.5rem 0.5rem 0.5rem;
   }
   
   .modal-image-container img {
-    max-height: 50vh; /* More room for text on very small screens */
+    max-height: 200px;
   }
   
   .modal-title {
@@ -1461,6 +1439,416 @@ h2 {
 
 
 
+/* Special dark background for metta-morph page */
+.App.metta-morph-background {
+  background-image: url('./components/techno34.png'); /* Path relative to App.css */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #0a0a0a; /* Dark fallback */
+}
+
+/* Make the html and body fill the entire viewport */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Special full-viewport background for metta-morph page */
+.App.metta-morph-background {
+  /* Remove any max-width constraints */
+  max-width: none !important;
+  width: 100vw;
+  min-height: 100vh;
+  
+  /* Full viewport background */
+  background-image: url('./components/techno34.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #0a0a0a;
+  
+  /* Ensure it extends to edges */
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+/* If your content has a container with max-width, 
+   you might need to override it for this page */
+.App.metta-morph-background main,
+.App.metta-morph-background .container,
+.App.metta-morph-background .content {
+  max-width: none;
+  width: 100%;
+}
+
+/* If you want to keep your app centered but have full background */
+.App.metta-morph-background .consciousness-lab-container {
+  max-width: 1200px; /* or whatever width you want */
+  margin: 0 auto;
+}
 
 
+
+
+/* White navigation text for metta-morph page - reduced brightness */
+.App.metta-morph-background nav ul li,
+.App.metta-morph-background nav ul li a,
+.App.metta-morph-background nav .nav-link {
+  color: rgba(255, 255, 255, 0.7) !important; /* 70% opacity white */
+  /* OR use a light grey instead: */
+  /* color: #cccccc !important; */
+  /* OR another grey option: */
+  /* color: #b0b0b0 !important; */
+}
+
+/* Keep the hover effect brighter for contrast */
+.App.metta-morph-background nav ul li a:hover,
+.App.metta-morph-background nav .nav-link:hover {
+  color: #00FFC8 !important;
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+  /* OR if you want white on hover: */
+  /* color: rgba(255, 255, 255, 1) !important; */
+}
+
+/* If you want the logo text white too */
+.App.metta-morph-background .site-logo {
+  filter: brightness(0) invert(1); /* This will make a dark logo white */
+  /* OR if it's text: */
+  /* color: white !important; */
+}
+
+
+/* keep logo small and proportional */
+.logo--white{
+  max-width: 600px;  /* adjust size as needed */
+  height: auto;
+  margin: 20px 0;
+}
+
+/* MOBILE FIXES - MUST BE AT END OF FILE */
+@media screen and (max-width: 768px) {
+  /* Force reset the decorative border */
+  body .App {
+    border: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  
+  body .App::before {
+    display: none !important;
+  }
+
+  /* Fix header */
+  body .App header {
+    padding: 10px 5px !important;
+    width: 100% !important;
+  }
+
+  /* Fix logo sizing */
+  body .App .site-logo {
+    width: 250px !important;
+    max-width: 80vw !important;
+    height: auto !important;
+    margin: 10px auto !important;
+  }
+
+  /* Fix navigation */
+  body .App nav {
+    width: 100% !important;
+    overflow-x: auto !important; /* Allow horizontal scroll if needed */
+  }
+
+  body .App nav ul {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 10px 0 !important;
+    gap: 5px !important;
+  }
+
+  body .App nav ul li,
+  body .App nav ul li a {
+    font-size: 13px !important;
+    margin: 3px !important;
+    padding: 2px 5px !important;
+  }
+
+  /* Fix main content */
+  body .App main {
+    width: 100% !important;
+    padding: 10px !important;
+  }
+
+  body .App section {
+    padding: 10px !important;
+    margin: 10px 0 !important;
+  }
+
+  /* Fix gallery */
+  body .App .gallery-grid {
+    grid-template-columns: 1fr !important;
+    padding: 0 !important;
+  }
+
+  body .App .gallery-item {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  header nav {
+    display: none;
+  }
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(0, 0, 0, 0.95);
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li {
+  list-style: none;
+  margin: 0;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(255, 102, 0, 0.2);
+  color: #FF6600;
+}
+
+/* Main navigation links (keep black) */
+nav > ul > li > a:visited {
+  color: black;
+}
+
+/* Dropdown menu links (keep white for visibility) */
+.dropdown-menu a:visited {
+  color: #fff;
+}
+
+/* Or if you want to target them more specifically */
+nav .dropdown-menu a:link,
+nav .dropdown-menu a:visited {
+  color: #fff;
+}
+
+nav .dropdown-menu a:hover {
+  color: #FF6600;
+}
+
+@media (max-width: 768px) {
+  .modal-image-container {
+    cursor: pointer;
+    /* Add subtle visual hint that it's clickable */
+    transition: opacity 0.2s ease;
+  }
+  
+  .modal-image-container:active {
+    opacity: 0.9;
+  }
+}
+
+/* MOBILE MODAL FIX - Add this to the END of your CSS file */
+/* This will override the conflicting styles */
+
+@media (max-width: 768px) {
+  /* Reset modal container */
+  .modal-content {
+    padding-top: 60px !important; /* Space for close button only */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Image container - compact spacing */
+  .modal-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .modal-image-container img {
+    max-width: 90%;
+    max-height: 250px;
+    margin-bottom: 10px !important; /* Small gap after image */
+  }
+
+  /* Title - remove excess spacing */
+  .modal-title {
+    margin-top: 0 !important;
+    margin-bottom: 15px !important; /* Small, consistent gap after title */
+    padding: 10px !important;
+    font-size: 1.5rem;
+  }
+
+  /* Description container - natural flow */
+  .modal-content.expanded .modal-description-container {
+    position: relative !important; /* Change from absolute */
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    padding: 0 1.5rem 2rem 1.5rem !important;
+    margin: 0 !important;
+    padding-top: 0 !important; /* Remove ALL top padding */
+    transform: none !important;
+    display: block !important;
+  }
+
+  /* Description text */
+  .modal-description {
+    background: transparent !important; /* Remove background that might add spacing */
+    border: none !important;
+    padding: 0 !important; /* Remove internal padding */
+    margin: 0 !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  /* Text wrapper */
+  .glitch-wrapper {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .glitch-wrapper span {
+    display: block;
+    margin-bottom: 1rem !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure close button stays visible */
+  .close-glyph {
+    position: fixed !important;
+    top: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1002 !important;
+  }
+}
+
+/* Very small screens - even more compact */
+@media (max-width: 480px) {
+  .modal-content {
+    padding-top: 50px !important;
+  }
+  
+  .modal-image-container img {
+    max-height: 200px;
+  }
+  
+  .modal-title {
+    font-size: 1.3rem;
+    margin-bottom: 5px !important; /* Even smaller gap */
+  }
+}
+
+/* TEMPLE MEDITATION PAGE MOBILE FIX - TARGETED */
+/* Only affects the meditation/temple page, not gallery or other pages */
+
+/* Mobile portrait only - temple sizing */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Only target the temple page specifically */
+  .temple-container .content-wrapper {
+    width: 90vw !important;
+    margin: 0 auto !important;
+  }
+
+  /* Fix just the glyph button in the doorway - smaller size */
+  .doorway-content .entrance-glyph,
+  .doorway-content .responsive-glyph {
+    width: 20px !important;  /* Smaller as requested */
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+  }
+  
+  /* Override the wrapper div's inline styles */
+  .doorway-content > div[style*="width: 30%"] {
+    width: 40px !important;
+    height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+  
+  /* Add landscape preference message above temple */
+.temple-container::before {
+  content: "Best viewed in landscape orientation";
+  position: fixed;  /* Changed from absolute */
+  top: 170px;  /* Below your header/logo */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #4FD4C6;
+  font-size: 14px;
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 5px rgba(79, 212, 198, 0.5);
+  z-index: 100;
+  padding: 5px 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  border: 1px solid rgba(79, 212, 198, 0.3);
+}
+}
+
+/* Hide the message in landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  .temple-container::before {
+    display: none !important;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .doorway-content .entrance-glyph,
+  .doorway-content .responsive-glyph {
+    width: 20px !important;  /* Even smaller for tiny screens */
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+  }
+  
+  .doorway-content > div[style*="width: 30%"] {
+    width: 35px !important;
+    height: 35px !important;
+    max-width: 35px !important;
+    max-height: 35px !important;
+  }
+}
 
