@@ -44,12 +44,12 @@ const MobileLingamMenu = () => {
             
             <div className="menu-section">
               <h3>Mantric Art</h3>
-              <Link to="/mantra" onClick={closeMenu}>Mantra Roopa</Link>
-              <Link to="/torus-mantra" onClick={closeMenu}>Mantric art</Link>
+              <Link to="/mantra" onClick={closeMenu}>Mritunjay</Link>
+              <Link to="/torus-mantra" onClick={closeMenu}>Om Namah Shivaya</Link>
             </div>
             
             <div className="menu-section">
-              <h3>Writings</h3>
+              <h3>Writing</h3>
               <a href="#writings" onClick={closeMenu}>Essays & Texts</a>
             </div>
             

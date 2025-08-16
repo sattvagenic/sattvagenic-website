@@ -785,12 +785,12 @@ function AppContent({ selectedImage, setSelectedImage }) {
     <li className="dropdown">
       <span>Mantric Art</span>
       <ul className="dropdown-menu">
-        <li><Link to="/mantra">Mantra Roopa</Link></li>
-        <li><Link to="/torus-mantra">Mantric art</Link></li>
+        <li><Link to="/mantra">Mritunjay</Link></li>
+        <li><Link to="/torus-mantra">Om Namah Shivaya</Link></li>
       </ul>
     </li>
     
-    <li>Writings</li>
+    <li>Writing</li>
     <li>About</li>
   </ul>
 </nav>

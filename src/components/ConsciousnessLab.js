@@ -40,7 +40,7 @@ const ConsciousnessLab = () => {
   {
     positive: "/images/devi 4.png",
     negative: "/images/kali4.png",
-    name: "Devi / Kali",
+    name: "Parvati / Kali",
     audio: "/audio/harmonic-to-scream.mp3"
   },
   {
@@ -664,13 +664,13 @@ useEffect(() => {
             onClick={() => fileInput1Ref.current?.click()}
           >
             <div className="portal-label">
-              {mode === 'metta' ? 'HEART OPEN' : 'POSITIVE STATE'}
+              {mode === 'metta' ? 'HEART OPEN' : 'POSITIVE VALENCE'}
             </div>
             <div className="portal-icon">
               {mode === 'metta' ? '👁️' : '☮️'}
             </div>
             <div className="portal-text">
-              {mode === 'metta' ? '' : 'Upload positive state'}
+              {mode === 'metta' ? '' : 'Upload positive image'}
             </div>
             {image1Data && (
               <img className="preview-image active" src={image1Data.src} alt="First" />
@@ -690,13 +690,13 @@ useEffect(() => {
             onClick={() => fileInput2Ref.current?.click()}
           >
             <div className="portal-label">
-              {mode === 'metta' ? 'HEART CHALLENGED' : 'NEGATIVE STATE'}
+              {mode === 'metta' ? 'HEART CHALLENGED' : 'NEGATIVE VALENCE'}
             </div>
             <div className="portal-icon">
               {mode === 'metta' ? '🧿' : '⚡'}
             </div>
             <div className="portal-text">
-              {mode === 'metta' ? '' : 'Upload negative state'}
+              {mode === 'metta' ? '' : 'Upload negative image'}
             </div>
             {image2Data && (
               <img className="preview-image active" src={image2Data.src} alt="Second" />
@@ -822,7 +822,6 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="status-orb">🕉️</div>
     </div>
   );
 };
