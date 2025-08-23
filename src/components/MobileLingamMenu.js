@@ -53,10 +53,10 @@ const MobileLingamMenu = () => {
               <a href="#writings" onClick={closeMenu}>Essays & Texts</a>
             </div>
             
-            <div className="menu-section">
-              <h3>About</h3>
-              <a href="#about" onClick={closeMenu}>About Sattvagenic</a>
-            </div>
+           <div className="menu-section">
+  <h3>About</h3>
+  <Link to="/about" onClick={closeMenu}>About Sattvagenic</Link>
+</div>
           </div>
         </>
       )}

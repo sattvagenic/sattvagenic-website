@@ -12,6 +12,7 @@ import MettaMorphosis from './components/MettaMorphosis';
 import ConsciousnessLab from './components/ConsciousnessLab';
 import EnergyScene from './components/EnergyScene';
 import SriYantra from './SriYantra';
+import About from './components/About';
 import StoneColumns from './StoneColumns';
 import logo from './images/Sattvagenic Logo.png';
 import omniseer from './images/TheOmniseer.jpg';
@@ -791,7 +792,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
     </li>
     
     <li>Writing</li>
-    <li>About</li>
+    <li><Link to="/about">About</Link></li>
   </ul>
 </nav>
         <MobileLingamMenu />
@@ -801,8 +802,8 @@ function AppContent({ selectedImage, setSelectedImage }) {
         <Route path="/" element={
           <main>
             <section className="hero">
-              <h2>Explorations in Shaivo-futurism</h2>
-              <p>Sattvagenic (adj.): Producing a state of mental clarity, spiritual harmony and elevated consciousness.</p>
+              <h2>Shaivo-Futurism & Dharmic Technology</h2>
+              <p>Sattvagenic (adj.): Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
             </section>
             
             <section className="gallery">
@@ -825,6 +826,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
         <Route path="/torus-mantra" element={<MantraScene />} />
         <Route path="/metta-morph" element={<ConsciousnessLab />} />
         <Route path="/energy-body" element={<EnergyScene />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       
       {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}

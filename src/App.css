@@ -1852,3 +1852,24 @@ nav .dropdown-menu a:hover {
   }
 }
 
+/* Homepage hero section typography */
+.hero h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--saffron);
+  font-size: 2rem;
+  text-shadow: 0 0 10px rgba(212, 128, 77, 0.3);
+}
+
+.hero p {
+  font-family: 'Karma', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--deep-forest);
+}
+
+/* Gallery section title */
+.gallery h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--saffron);
+  font-size: 1.6rem;
+}
