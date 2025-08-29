@@ -3,8 +3,10 @@ import GlyphButton from './components/GlyphButton';
 import templeFrame from './images/templeDoor.png';
 import Pranayama from './components/Pranayama';
 import MeditationAnalysis from './components/MeditationAnalysis';
+import './components/MeditationInstructions.css';
 
 const SriYantra = () => {
+    const [showInstructions, setShowInstructions] = useState(false);
     const [stage, setStage] = useState('glyph');
     const [isStrobing, setIsStrobing] = useState(true);
     const [isAppearing, setIsAppearing] = useState(false);
@@ -19,6 +21,114 @@ const SriYantra = () => {
     const [showButtons, setShowButtons] = useState(false);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [wakeLock, setWakeLock] = useState(null);
+
+    // Add this component inside SriYantra.js, before the main SriYantra component
+const InstructionGlyph = ({ onOpen }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile on mount
+  useState(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return (
+    <div 
+      className="instruction-glyph-container"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onOpen}
+    >
+      <svg 
+        width="50" 
+        height="50" 
+        viewBox="0 0 100 100"
+        className="eye-glyph"
+      >
+        {/* Eye paths remain the same */}
+        <path 
+          d="M10 50 Q50 20, 90 50 Q50 80, 10 50"
+          fill="none"
+          stroke="#4FD4C6"
+          strokeWidth="2"
+          className="eye-outline"
+        />
+        <circle 
+          cx="50" 
+          cy="50" 
+          r="15"
+          fill="none"
+          stroke="#4FD4C6"
+          strokeWidth="2"
+          className="eye-iris"
+        />
+        <circle 
+          cx="50" 
+          cy="50" 
+          r="6"
+          fill="#4FD4C6"
+          className="eye-pupil"
+        />
+        {isHovered && !isMobile && (
+          <text 
+            x="50" 
+            y="55" 
+            textAnchor="middle" 
+            fontSize="20"
+            fill="#FF9B4F"
+            className="question-mark"
+          >
+            ?
+          </text>
+        )}
+      </svg>
+      {isMobile && (
+        <span className="guide-text">Guide</span>
+      )}
+    </div>
+  );
+};
+
+// Add this modal component for the instructions
+const MeditationInstructionsModal = ({ isVisible, onClose }) => {
+  if (!isVisible) return null;
+
+  return (
+    <div className="instructions-modal-overlay" onClick={onClose}>
+      <div className="instructions-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="instructions-close-btn" onClick={onClose}>×</button>
+        
+      <h2>Chakra Pranayama Meditation</h2>
+<p><strong>1. Start the meditation</strong> - Press the glowing glyph in the temple doorway to begin.</p>
+<p><strong>2. Wait for the subtle body to load</strong> - The chakra system will appear and music will begin automatically.</p>
+<p><strong>3. Focus on the root chakra</strong> - Watch as the Muladhar (root) chakra begins to expand. Bring your attention to the same spot in your body (perineum).</p>
+<p><strong>4. Sync your breathing</strong> - Inhale as the chakra expands, imagining it becoming energized. Pause at the top. Exhale as it contracts, imagining warmth and relaxation. Pause at the bottom.</p>
+<p><strong>5. Complete two rounds</strong> - Repeat the breathing cycle once more with the same chakra.</p>
+<p><strong>6. Move to the next chakra</strong> - After two rounds, the next chakra will activate. Move your attention to the corresponding body location.</p>
+<p><strong>7. Continue ascending</strong> - Follow each chakra up to the crown (Sahasrara), then descend back to the root. Total duration: 15 minutes.</p>
+<p><strong>8. Alternative method</strong> - Close your eyes and breathe in sync with the music, moving attention as the pitch changes.</p>
+<p><strong>9. Skip option</strong> - Press the skip button below the subtle body to proceed directly to the yantra meditation.</p>
+
+<h2>Yantra Tratak Strobe Meditation</h2>
+<p className="warning-text">
+  <em>⚠️ Warning: Contains strobing lights. Not suitable for those with photosensitive epilepsy.</em>
+</p>
+<p><strong>1. Activate the yantra</strong> - Click the small pulsing yantra to enter fullscreen strobe mode.</p>
+<p><strong>2. Position yourself</strong> - Sit 1-2 feet from the screen, ideally in a dark room.</p>
+<p><strong>3. Fix your gaze</strong> - Focus softly on the central dot (bindu) without blinking much.</p>
+<p><strong>4. Handle eye strain</strong> - If eyes water or strain, close them and observe the negative afterimage.</p>
+<p><strong>5. Observe phenomena</strong> - Color shifts, patterns, or spatial expansion are normal responses.</p>
+<p><strong>6. Complete the session</strong> - Strobe continues for 10 minutes. Keep gazing after it stops - this is when deepest absorption often occurs.</p>
+<p><strong>7. Exit and review</strong> - Click the still yantra to exit and view your meditation analysis.</p>
+      </div>
+    </div>
+  );
+};
     
    // New refs and state for dynamic positioning
 const templeImageRef = useRef(null);
@@ -377,6 +487,7 @@ useEffect(() => {
     return (
         <>
             <div className="temple-container">
+                  <InstructionGlyph onOpen={() => setShowInstructions(true)} />
                 <div className="content-wrapper" style={{ 
                     position: 'relative',
                     width: '100%',
@@ -608,6 +719,10 @@ useEffect(() => {
                     </div>
                 </div>
             </div>
+            <MeditationInstructionsModal 
+      isVisible={showInstructions} 
+      onClose={() => setShowInstructions(false)} 
+    />
             <MeditationAnalysis 
                 isVisible={showAnalysis} 
                 onClose={handleCloseAnalysis}

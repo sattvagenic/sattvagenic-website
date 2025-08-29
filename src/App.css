@@ -1811,8 +1811,8 @@ nav .dropdown-menu a:hover {
   /* Add landscape preference message above temple */
 .temple-container::before {
   content: "Best viewed in landscape orientation";
-  position: fixed;  /* Changed from absolute */
-  top: 170px;  /* Below your header/logo */
+  position: absolute;  /* Changed from absolute */
+  top: 280px;  /* Below your header/logo */
   left: 50%;
   transform: translateX(-50%);
   color: #4FD4C6;
@@ -1825,6 +1825,15 @@ nav .dropdown-menu a:hover {
   border-radius: 20px;
   border: 1px solid rgba(79, 212, 198, 0.3);
 }
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Existing landscape message styles stay the same */
+  
+  /* Add padding to temple to accommodate both elements */
+  .temple-container {
+    padding-top: 0px;
+  }
 }
 
 /* Hide the message in landscape */
