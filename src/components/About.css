@@ -77,6 +77,96 @@
   font-weight: 500;
 }
 
+/* Links within about content */
+.about-section a {
+  color: var(--cyber-blue);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(79, 212, 198, 0.4);
+  transition: border-color 0.3s ease;
+}
+
+.about-section a:hover {
+  border-bottom-color: var(--cyber-blue);
+}
+
+/* Embedded video wrapper - 16:9 responsive */
+.about-video {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  margin-top: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.about-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Custom video poster overlay (shown before user clicks play) */
+.video-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: #000;
+  cursor: pointer;
+  display: block;
+  overflow: hidden;
+  transition: filter 0.2s ease;
+}
+
+.video-poster:hover {
+  filter: brightness(1.05);
+}
+
+.video-poster:focus-visible {
+  outline: 2px solid var(--cyber-blue);
+  outline-offset: -2px;
+}
+
+.video-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.video-poster:hover .video-play-button {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Caption below embedded video */
+.video-caption {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-family: 'Karma', serif;
+  font-size: 0.9rem !important;
+  font-style: italic;
+  text-align: center !important;
+  margin-top: 12px !important;
+  line-height: 1.5 !important;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .about-container {

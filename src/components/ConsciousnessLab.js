@@ -59,12 +59,6 @@ const defaultMettaPairs = [
     face2: "/images/yourboss.jpg",
     name: "Example"
   },
-  {
-    face1: "/images/ramana1.jpg",
-    face2: "/images/hitler1.jpeg",
-    name: "Example 2"
-  },
-  
 ];
 
 const [currentMettaPairIndex, setCurrentMettaPairIndex] = useState(0);
