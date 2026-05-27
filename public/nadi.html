@@ -233,6 +233,21 @@
   .download-links a{ font-family:'Iceland',sans-serif; font-size:17px; letter-spacing:.04em; padding:12px 22px; border-radius:var(--radius); background:var(--orange); color:#fff5ec; text-decoration:none; display:inline-flex; gap:8px; transition:background .2s, transform .15s; }
   .download-links a:hover{ background:var(--orange-deep); transform:translateY(-2px); }
   .privacy{ font-size:12px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+  /* Windows-installer note: dimmer, smaller, in a subtle bordered box to
+     separate it from the main thank-you message without alarming the user. */
+  .windows-note{
+    margin-top:18px;
+    padding:14px 16px;
+    border:1px solid var(--copper-soft);
+    border-radius:var(--radius);
+    background:rgba(126,182,163,.08);
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    text-align:left;
+  }
+  .windows-note strong{ color:var(--copper-deep); font-weight:600; }
+  .windows-note em{ font-style:normal; color:var(--ink); font-weight:500; }
 
   .formats{ text-align:center; }
   .format-row{ display:flex; justify-content:center; align-items:center; gap:46px; flex-wrap:wrap; margin-top:16px; }
@@ -668,6 +683,13 @@
           <a href="/downloads/Nadi_v1.0_Windows_Installer.exe" download>↓ Windows Installer</a>
         </div>
         <p class="privacy">The Nadi user guide (PDF) is included in your download.</p>
+
+        <!-- Windows note: explains the Safe Browsing / SmartScreen warning
+             that Chrome/Windows may show on an unsigned indie installer.
+             Visible but not alarming — boxed, dimmer than the main copy. -->
+        <div class="windows-note">
+          <strong>Windows note:</strong> The Windows installer is currently unsigned, so Chrome or Windows may show a warning because this is new/unknown indie software. If you downloaded it from <em>sattvagenic.com</em> or the official Gumroad page, choose <em>"Keep"</em> / <em>"Run anyway"</em> to install. A signed Windows installer is planned once the release has a bit more traction.
+        </div>
       </div>
     </div>
   </section>
