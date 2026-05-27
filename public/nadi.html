@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============================================================
+     SEO / SOCIAL  — fixes the "React App" problem for this page.
+     Real metadata present in the served HTML so crawlers and
+     link-unfurlers see a proper title, description and image.
+     Update og:image and og:url to your live domain.
+     ============================================================ -->
+<title>Nadi — Hypnotic Resonator FX Plugin | Sattvagenic</title>
+<meta name="description" content="Nadi is a chakra-inspired resonator FX plugin for deep techno, ambient, dub and experimental sound design. Seven tuned resonators turn any audio into evolving, meditative and rhythmic textures. VST3 and AU, Mac and Windows. 14-day free trial." />
+<link rel="canonical" href="https://www.sattvagenic.com/nadi" />
+
+<meta property="og:type" content="product" />
+<meta property="og:title" content="Nadi — Hypnotic Resonator FX Plugin" />
+<meta property="og:description" content="A chakra-inspired resonator plugin. Channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures. 14-day free trial." />
+<meta property="og:url" content="https://www.sattvagenic.com/nadi" />
+<meta property="og:image" content="https://www.sattvagenic.com/assets/nadi-og.png" />
+<meta property="og:site_name" content="Sattvagenic" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Nadi — Hypnotic Resonator FX Plugin" />
+<meta name="twitter:description" content="Channel the flow of subtle energy into sound. A chakra-inspired resonator FX plugin for deep techno, ambient and dub." />
+<meta name="twitter:image" content="https://www.sattvagenic.com/assets/nadi-og.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Nadi",
+  "description": "A chakra-inspired resonator FX plugin for deep techno, ambient, dub and experimental sound design. VST3 and AU for Mac and Windows.",
+  "brand": { "@type": "Brand", "name": "Sattvagenic" },
+  "category": "Audio Software / VST Plugin",
+  "offers": {
+    "@type": "Offer",
+    "price": "25.00",
+    "priceCurrency": "GBP",
+    "availability": "https://schema.org/InStock",
+    "url": "https://www.sattvagenic.com/nadi"
+  }
+}
+</script>
+
+<!-- Fonts: Iceland (display) — the face already used inside the plugin itself,
+     so site and product feel like one. Spectral is a refined serif for body;
+     Orbitron lends a touch of schematic feel to small technical labels. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Iceland&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=Orbitron:wght@500;600&display=swap" rel="stylesheet" />
+
+<!-- Note: we deliberately do NOT load Gumroad's gumroad.js overlay script,
+     because including it tends to restyle "Buy Now" buttons with Gumroad's
+     own black-branded look. Instead, Buy buttons open Gumroad in a new tab
+     (see the script at the bottom of the page), preserving our design. -->
+
+<style>
+  :root{
+    /* Palette: orange CTAs + much more copper/patina-green than v1,
+       so the page balances rather than reading as all-orange. */
+    --stone:        #e9e3d6;
+    --stone-deep:   #ddd5c4;
+    --ink:          #2b2722;
+    --ink-soft:     #5a5347;
+    --orange:       #c8531f;
+    --orange-deep:  #a8410f;
+    --copper:       #4fa58a;
+    --copper-deep:  #245c4e;
+    --copper-soft:  #7eb6a3;
+    --line:         #b7ad97;
+    --card:         #f1ecdf;
+    --gold:         #9a7a44;
+
+    --maxw: 1180px;
+    --radius: 4px;
+    --shadow: 0 18px 50px -28px rgba(43,39,34,.55);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Spectral', Georgia, serif;
+    color:var(--ink);
+    background-color:var(--stone);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(79,165,138,.08), transparent 30%),
+      radial-gradient(circle at 85% 8%, rgba(200,83,31,.05), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(36,92,78,.06), transparent 40%);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Sacred-circuit motifs */
+  .motif{ position:absolute; pointer-events:none; z-index:0; }
+  .motif svg{ display:block; }
+  .motif .ln{ stroke:var(--copper-deep); fill:none; stroke-width:.9; opacity:.55; vector-effect:non-scaling-stroke; }
+  .motif .ln-soft{ stroke:var(--copper); fill:none; stroke-width:.7; opacity:.4; vector-effect:non-scaling-stroke; }
+  .motif .accent{ stroke:var(--orange); fill:none; stroke-width:.9; opacity:.7; vector-effect:non-scaling-stroke; }
+  .motif .node{ fill:var(--copper-deep); opacity:.7; }
+  .motif .node-accent{ fill:var(--orange); opacity:.85; }
+  .motif .label{ font-family:'Orbitron', monospace; font-size:7.5px; fill:var(--copper-deep); opacity:.55; letter-spacing:.1em; }
+  @media (max-width: 1080px){ .motif{ display:none; } }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+
+  header.site{ padding:26px 0 10px; text-align:center; position:relative; z-index:2; }
+  .logo-img{ height:42px; width:auto; display:inline-block; vertical-align:middle; }
+  .brand-text{
+    font-family:'Iceland', sans-serif;
+    letter-spacing:.18em;
+    font-size:34px;
+    color:var(--ink);
+    text-transform:lowercase;
+    text-decoration:none;
+  }
+  nav.main{ margin-top:18px; display:flex; justify-content:center; gap:34px; flex-wrap:wrap; }
+  nav.main a{
+    font-family:'Iceland', sans-serif;
+    font-size:18px;
+    letter-spacing:.05em;
+    color:var(--copper-deep);
+    text-decoration:none;
+    padding-bottom:3px;
+    border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  nav.main a:hover{ color:var(--orange); }
+  nav.main a[aria-current="page"]{ color:var(--orange); border-bottom-color:var(--orange); }
+  .rule{ height:1px; background:linear-gradient(to right, transparent, var(--copper-soft), transparent); margin:18px 0 0; opacity:.6; }
+
+  .hero{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; padding:54px 0 64px; }
+  .hero h1{
+    font-family:'Iceland', sans-serif;
+    font-size:96px;
+    color:var(--orange);
+    line-height:.95;
+    letter-spacing:.04em;
+    margin-bottom:16px;
+  }
+  .hero .tagline{ font-size:21px; color:var(--ink); font-weight:500; margin-bottom:24px; max-width:30ch; line-height:1.35; }
+  .hero .lede{ font-size:16.5px; color:var(--ink-soft); max-width:46ch; margin-bottom:30px; }
+  .ornament{ display:flex; align-items:center; gap:14px; margin:22px 0 26px; color:var(--copper-deep); }
+  .ornament .ln{ height:1px; width:64px; background:var(--copper); opacity:.6; }
+  .ornament svg{ width:14px; height:14px; }
+
+  .cta-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Iceland', sans-serif;
+    font-size:19px;
+    letter-spacing:.04em;
+    padding:14px 26px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    line-height:1.2;
+    border:1.5px solid transparent;
+    transition:transform .15s, background .2s, color .2s, box-shadow .2s;
+  }
+  .btn small{ font-size:13px; opacity:.85; font-family:'Spectral', serif; font-style:italic; letter-spacing:0; margin-top:2px; }
+  .btn-buy{ background:var(--orange); color:#fff5ec; box-shadow:0 10px 24px -12px rgba(200,83,31,.7); }
+  .btn-buy:hover{ background:var(--orange-deep); transform:translateY(-2px); }
+  .btn-trial{ background:transparent; color:var(--copper-deep); border-color:var(--copper-deep); }
+  .btn-trial:hover{ background:var(--copper-deep); color:#fff; transform:translateY(-2px); }
+  .price-note{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); }
+
+  .shot{ position:relative; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:14px; box-shadow:var(--shadow); }
+  .shot img{ width:100%; height:auto; display:block; border-radius:4px; }
+  .shot figcaption{ text-align:center; font-family:'Iceland',sans-serif; font-size:15px; letter-spacing:.16em; color:var(--copper-deep); padding-top:10px; }
+
+  section{ padding:60px 0; position:relative; }
+  .section-title{
+    font-family:'Iceland', sans-serif;
+    font-size:42px;
+    color:var(--orange);
+    text-align:center;
+    margin-bottom:6px;
+    letter-spacing:.04em;
+  }
+  .section-sub{ text-align:center; color:var(--ink-soft); margin-bottom:40px; font-size:15px; font-style:italic; }
+
+  .demos{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .demo{ background:var(--card); border:1px solid var(--copper-soft); border-radius:6px; padding:20px; transition:transform .15s, box-shadow .2s, border-color .2s; }
+  .demo:hover{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--copper); }
+  .demo .top{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  .play{ flex:0 0 auto; width:46px; height:46px; border-radius:50%; background:var(--orange); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; }
+  .play:hover{ background:var(--orange-deep); transform:scale(1.06); }
+  .play svg{ width:16px; height:16px; fill:#fff5ec; margin-left:2px; }
+  .play.playing svg.pause{ display:block; margin-left:0; }
+  .demo .meta{ flex:1; }
+  .demo .name{ font-family:'Iceland',sans-serif; font-size:19px; color:var(--ink); letter-spacing:.04em; }
+  .demo .time{ font-size:12.5px; color:var(--copper-deep); font-family:'Orbitron',monospace; letter-spacing:.08em; }
+  .wave{ width:100%; height:46px; margin-top:6px; }
+  .wave rect{ fill:var(--copper); }
+  .headphones{ text-align:center; color:var(--ink-soft); font-size:13.5px; margin-top:26px; font-style:italic; }
+
+  .triptych{ display:grid; grid-template-columns:1.05fr 1fr .9fr; gap:40px; align-items:start; }
+  .block h3{ font-family:'Iceland', sans-serif; font-size:26px; color:var(--orange); margin-bottom:18px; letter-spacing:.04em; }
+  ul.feat{ list-style:none; }
+  ul.feat li{ position:relative; padding-left:28px; margin-bottom:13px; font-size:15.5px; color:var(--ink); }
+  ul.feat li::before{ content:""; position:absolute; left:0; top:8px; width:12px; height:12px; border:1.5px solid var(--copper-deep); border-radius:50%; }
+  ul.feat li::after{ content:""; position:absolute; left:4.5px; top:12.5px; width:3px; height:3px; background:var(--copper-deep); border-radius:50%; }
+  .concept p{ color:var(--ink-soft); margin-bottom:14px; font-size:15.5px; }
+  .concept .chakra-svg{ margin:0 auto 20px; display:block; }
+
+  .pricing{ background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:30px 28px; text-align:center; box-shadow:var(--shadow); }
+  .pricing .tier{ padding:14px 0; }
+  .pricing .label{ font-family:'Iceland',sans-serif; font-size:16px; letter-spacing:.1em; color:var(--copper-deep); }
+  .pricing .amount{ font-family:'Iceland',sans-serif; font-size:58px; color:var(--orange); line-height:1; margin:4px 0; letter-spacing:.02em; }
+  .pricing .amount.full{ color:var(--ink); font-size:48px; }
+  .pricing .note{ font-size:13px; color:var(--ink-soft); font-style:italic; }
+  .pricing .divider{ height:1px; background:var(--copper-soft); margin:14px 0; position:relative; opacity:.7; }
+  .pricing .divider span{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--card); padding:0 12px; color:var(--gold); font-size:14px; }
+
+  .trial-capture{ background:linear-gradient(180deg, var(--card), var(--stone-deep)); border:1px solid var(--copper-soft); border-radius:8px; padding:40px 32px; max-width:620px; margin:0 auto; text-align:center; }
+  .trial-capture h3{ font-family:'Iceland',sans-serif; color:var(--copper-deep); font-size:30px; margin-bottom:10px; letter-spacing:.04em; }
+  .trial-capture > p{ color:var(--ink-soft); font-size:15px; margin-bottom:22px; }
+  .trial-form{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .trial-form input[type=email]{ flex:1; min-width:240px; max-width:340px; padding:14px 16px; font-size:15px; font-family:'Spectral',serif; border:1.5px solid var(--copper-soft); border-radius:var(--radius); background:#fdfbf5; color:var(--ink); transition:border-color .2s; }
+  .trial-form input[type=email]:focus{ outline:none; border-color:var(--copper-deep); }
+  .trial-form button{ font-family:'Iceland',sans-serif; font-size:19px; letter-spacing:.04em; padding:12px 26px; border:none; border-radius:var(--radius); background:var(--copper-deep); color:#fff; cursor:pointer; transition:background .2s, transform .15s; }
+  .trial-form button:hover{ background:var(--copper); transform:translateY(-2px); }
+  .download-links{ display:none; margin-top:24px; }
+  .download-links.show{ display:block; animation:fade .5s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  .download-links .dl-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+  .download-links a{ font-family:'Iceland',sans-serif; font-size:17px; letter-spacing:.04em; padding:12px 22px; border-radius:var(--radius); background:var(--orange); color:#fff5ec; text-decoration:none; display:inline-flex; gap:8px; transition:background .2s, transform .15s; }
+  .download-links a:hover{ background:var(--orange-deep); transform:translateY(-2px); }
+  .privacy{ font-size:12px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+
+  .formats{ text-align:center; }
+  .format-row{ display:flex; justify-content:center; align-items:center; gap:46px; flex-wrap:wrap; margin-top:16px; }
+  .format{ display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--copper-deep); }
+  .format .glyph{ width:56px; height:56px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--copper-soft); border-radius:8px; color:var(--ink); font-family:'Orbitron',monospace; font-size:13px; font-weight:600; letter-spacing:.04em; background:var(--card); transition:border-color .2s; }
+  .format:hover .glyph{ border-color:var(--copper-deep); }
+  .format .glyph svg{ width:28px; height:28px; }
+  .format span{ font-family:'Iceland',sans-serif; letter-spacing:.06em; font-size:15px; }
+  .works{ margin-top:24px; color:var(--ink-soft); font-style:italic; font-size:14px; }
+
+  footer.site{ text-align:center; padding:50px 0 40px; margin-top:30px; border-top:1px solid var(--copper-soft); }
+  footer .brand-text{ font-size:30px; }
+  footer .motto{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-top:8px; max-width:50ch; margin-left:auto; margin-right:auto; }
+  footer .social{ margin-top:22px; display:flex; gap:24px; justify-content:center; }
+  footer .social a{ color:var(--copper-deep); transition:color .2s; }
+  footer .social a:hover{ color:var(--orange); }
+  footer .social svg{ width:22px; height:22px; }
+  footer .copy{ margin-top:20px; font-size:12px; color:var(--ink-soft); font-family:'Orbitron',monospace; letter-spacing:.08em; }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns:1fr; gap:36px; text-align:center; padding:34px 0 44px; }
+    .hero h1{ font-size:76px; }
+    .hero .tagline, .hero .lede{ max-width:none; margin-left:auto; margin-right:auto; }
+    .ornament{ justify-content:center; }
+    .cta-row{ justify-content:center; }
+    .demos{ grid-template-columns:1fr; }
+    .triptych{ grid-template-columns:1fr; gap:48px; }
+    .pricing{ max-width:420px; margin:0 auto; }
+    .section-title{ font-size:34px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== SACRED-CIRCUIT MOTIFS (margins, v2: denser & more intricate) ====== -->
+<!-- LEFT — top -->
+<div class="motif" style="top:80px; left:-10px;" aria-hidden="true">
+  <svg width="120" height="600" viewBox="0 0 120 600">
+    <line class="ln" x1="60" y1="0" x2="60" y2="600"/>
+    <text class="label" x="22" y="14">SV — 07</text>
+    <circle class="node" cx="60" cy="22" r="2.5"/>
+    <line class="ln" x1="60" y1="22" x2="92" y2="22"/>
+    <line class="ln" x1="92" y1="22" x2="92" y2="38"/>
+    <circle class="node-accent" cx="92" cy="38" r="2"/>
+    <g transform="translate(60,90)">
+      <polygon class="ln" points="0,-30 26,15 -26,15"/>
+      <polygon class="accent" points="0,30 26,-15 -26,-15"/>
+      <circle class="ln-soft" cx="0" cy="0" r="36"/>
+      <circle class="ln-soft" cx="0" cy="0" r="22"/>
+      <circle class="node-accent" cx="0" cy="0" r="2.2"/>
+    </g>
+    <line class="ln" x1="60" y1="138" x2="24" y2="138"/>
+    <line class="ln" x1="24" y1="138" x2="24" y2="172"/>
+    <rect class="ln" x="18" y="172" width="12" height="18"/>
+    <line class="ln" x1="24" y1="190" x2="24" y2="210"/>
+    <circle class="node" cx="24" cy="210" r="2"/>
+    <g transform="translate(60,260)">
+      <circle class="ln" cx="0" cy="0" r="28"/>
+      <g class="ln">
+        <line x1="-28" y1="0" x2="28" y2="0"/>
+        <line x1="0" y1="-28" x2="0" y2="28"/>
+        <line x1="-20" y1="-20" x2="20" y2="20"/>
+        <line x1="-20" y1="20" x2="20" y2="-20"/>
+      </g>
+      <circle class="ln" cx="0" cy="0" r="10"/>
+      <circle class="node-accent" cx="0" cy="0" r="2.4"/>
+    </g>
+    <g class="ln">
+      <line x1="56" y1="320" x2="64" y2="320"/>
+      <line x1="58" y1="340" x2="62" y2="340"/>
+      <line x1="58" y1="360" x2="62" y2="360"/>
+      <line x1="56" y1="380" x2="64" y2="380"/>
+      <line x1="58" y1="400" x2="62" y2="400"/>
+      <line x1="58" y1="420" x2="62" y2="420"/>
+      <line x1="56" y1="440" x2="64" y2="440"/>
+    </g>
+    <text class="label" x="22" y="380">CH — 02</text>
+    <g transform="translate(60,500)">
+      <circle class="ln" cx="0" cy="0" r="22"/>
+      <polygon class="ln" points="0,-18 16,9 -16,9"/>
+      <polygon class="ln-soft" points="0,18 16,-9 -16,-9"/>
+      <circle class="node" cx="0" cy="0" r="1.6"/>
+    </g>
+    <line class="ln" x1="60" y1="524" x2="92" y2="524"/>
+    <line class="ln" x1="92" y1="524" x2="92" y2="560"/>
+    <circle class="node-accent" cx="92" cy="560" r="2"/>
+    <text class="label" x="22" y="588">GND</text>
+  </svg>
+</div>
+
+<!-- RIGHT — top -->
+<div class="motif" style="top:80px; right:-10px;" aria-hidden="true">
+  <svg width="120" height="600" viewBox="0 0 120 600">
+    <line class="ln" x1="60" y1="0" x2="60" y2="600"/>
+    <text class="label" x="60" y="14" text-anchor="end">CH — FLOW</text>
+    <circle class="node-accent" cx="60" cy="22" r="2.5"/>
+    <line class="ln" x1="60" y1="22" x2="28" y2="22"/>
+    <line class="ln" x1="28" y1="22" x2="28" y2="44"/>
+    <g transform="translate(60,90)">
+      <circle class="ln" cx="0" cy="0" r="36"/>
+      <circle class="ln-soft" cx="0" cy="0" r="28"/>
+      <circle class="ln" cx="0" cy="0" r="20"/>
+      <circle class="ln-soft" cx="0" cy="0" r="12"/>
+      <circle class="node-accent" cx="0" cy="0" r="3"/>
+      <line class="ln" x1="-40" y1="0" x2="-32" y2="0"/>
+      <line class="ln" x1="40" y1="0" x2="32" y2="0"/>
+      <line class="ln" x1="0" y1="-40" x2="0" y2="-32"/>
+      <line class="ln" x1="0" y1="40" x2="0" y2="32"/>
+    </g>
+    <line class="ln" x1="60" y1="138" x2="60" y2="166"/>
+    <polyline class="ln" points="60,166 50,170 70,176 50,182 70,188 60,192"/>
+    <line class="ln" x1="60" y1="192" x2="60" y2="216"/>
+    <circle class="node" cx="60" cy="216" r="2"/>
+    <g transform="translate(60,270)">
+      <polygon class="ln" points="0,-22 20,12 -20,12"/>
+      <polygon class="ln-soft" points="0,22 20,-12 -20,-12"/>
+      <circle class="ln" cx="0" cy="0" r="28"/>
+      <circle class="node-accent" cx="0" cy="0" r="1.8"/>
+    </g>
+    <line class="ln" x1="60" y1="308" x2="92" y2="308"/>
+    <circle class="ln" cx="92" cy="308" r="4"/>
+    <line class="ln" x1="60" y1="332" x2="28" y2="332"/>
+    <rect class="ln" x="14" y="326" width="14" height="12"/>
+    <g transform="translate(60,400)">
+      <rect class="ln" x="-26" y="-26" width="52" height="52"/>
+      <rect class="ln-soft" x="-18" y="-18" width="36" height="36"/>
+      <polygon class="accent" points="0,-22 22,0 0,22 -22,0"/>
+      <circle class="node" cx="0" cy="0" r="2"/>
+    </g>
+    <line class="ln" x1="60" y1="450" x2="92" y2="450"/>
+    <line class="ln" x1="92" y1="450" x2="92" y2="478"/>
+    <circle class="node" cx="92" cy="478" r="2"/>
+    <g transform="translate(60,540)">
+      <circle class="ln-soft" cx="-9" cy="0" r="18"/>
+      <circle class="ln-soft" cx="9" cy="0" r="18"/>
+      <polygon class="ln" points="0,-22 19,11 -19,11"/>
+      <circle class="node-accent" cx="0" cy="0" r="2"/>
+    </g>
+    <text class="label" x="60" y="588" text-anchor="end">00 — 7</text>
+  </svg>
+</div>
+
+<!-- LEFT — mid -->
+<div class="motif" style="top:1000px; left:-10px;" aria-hidden="true">
+  <svg width="100" height="400" viewBox="0 0 100 400">
+    <line class="ln" x1="50" y1="0" x2="50" y2="400"/>
+    <g transform="translate(50,60)">
+      <polygon class="ln" points="0,-22 22,0 0,22 -22,0"/>
+      <polygon class="ln-soft" points="0,-12 12,0 0,12 -12,0"/>
+      <circle class="node-accent" cx="0" cy="0" r="1.8"/>
+    </g>
+    <line class="ln" x1="50" y1="98" x2="78" y2="98"/>
+    <line class="ln" x1="78" y1="98" x2="78" y2="120"/>
+    <circle class="node" cx="78" cy="120" r="1.8"/>
+    <g transform="translate(50,180)">
+      <circle class="ln" r="24"/>
+      <line class="ln" x1="-24" y1="0" x2="24" y2="0"/>
+      <line class="ln" x1="0" y1="-24" x2="0" y2="24"/>
+      <circle class="ln-soft" r="14"/>
+    </g>
+    <g class="ln" transform="translate(50,260)">
+      <line x1="-4" y1="0" x2="4" y2="0"/>
+      <line x1="-2" y1="8" x2="2" y2="8"/>
+      <line x1="-4" y1="16" x2="4" y2="16"/>
+      <line x1="-2" y1="24" x2="2" y2="24"/>
+    </g>
+    <g transform="translate(50,330)">
+      <polygon class="ln" points="0,-18 16,9 -16,9"/>
+      <circle class="node" cx="0" cy="0" r="1.6"/>
+    </g>
+  </svg>
+</div>
+
+<!-- RIGHT — mid -->
+<div class="motif" style="top:1000px; right:-10px;" aria-hidden="true">
+  <svg width="100" height="400" viewBox="0 0 100 400">
+    <line class="ln" x1="50" y1="0" x2="50" y2="400"/>
+    <g transform="translate(50,60)">
+      <rect class="ln" x="-20" y="-20" width="40" height="40"/>
+      <rect class="ln-soft" x="-12" y="-12" width="24" height="24"/>
+      <circle class="node-accent" r="1.8"/>
+    </g>
+    <line class="ln" x1="50" y1="100" x2="22" y2="100"/>
+    <line class="ln" x1="22" y1="100" x2="22" y2="124"/>
+    <circle class="node" cx="22" cy="124" r="1.8"/>
+    <g transform="translate(50,190)">
+      <polygon class="ln" points="0,-26 22,13 -22,13"/>
+      <polygon class="ln-soft" points="0,26 22,-13 -22,-13"/>
+    </g>
+    <line class="ln" x1="50" y1="240" x2="78" y2="240"/>
+    <g transform="translate(50,310)">
+      <circle class="ln" r="20"/>
+      <circle class="ln" r="14"/>
+      <circle class="ln" r="8"/>
+      <circle class="node-accent" r="1.6"/>
+    </g>
+  </svg>
+</div>
+
+<!-- LEFT — lower -->
+<div class="motif" style="top:1900px; left:-10px;" aria-hidden="true">
+  <svg width="100" height="500" viewBox="0 0 100 500">
+    <line class="ln" x1="50" y1="0" x2="50" y2="500"/>
+    <text class="label" x="50" y="14" text-anchor="middle">SV — 03</text>
+    <g transform="translate(50,80)">
+      <polygon class="accent" points="0,-24 21,12 -21,12"/>
+      <polygon class="ln" points="0,24 21,-12 -21,-12"/>
+      <circle class="node-accent" r="1.8"/>
+    </g>
+    <line class="ln" x1="50" y1="124" x2="74" y2="124"/>
+    <line class="ln" x1="74" y1="124" x2="74" y2="150"/>
+    <circle class="node" cx="74" cy="150" r="1.8"/>
+    <g transform="translate(50,230)">
+      <circle class="ln" r="28"/>
+      <circle class="ln-soft" r="18"/>
+      <line class="ln" x1="-28" y1="0" x2="28" y2="0"/>
+      <line class="ln" x1="0" y1="-28" x2="0" y2="28"/>
+    </g>
+    <g class="ln" transform="translate(50,330)">
+      <line x1="-4" y1="0" x2="4" y2="0"/>
+      <line x1="-2" y1="10" x2="2" y2="10"/>
+      <line x1="-4" y1="20" x2="4" y2="20"/>
+    </g>
+    <g transform="translate(50,420)">
+      <polygon class="ln" points="0,-20 18,10 -18,10"/>
+      <circle class="ln-soft" r="24"/>
+      <circle class="node" r="1.6"/>
+    </g>
+  </svg>
+</div>
+
+<!-- RIGHT — lower -->
+<div class="motif" style="top:1900px; right:-10px;" aria-hidden="true">
+  <svg width="100" height="500" viewBox="0 0 100 500">
+    <line class="ln" x1="50" y1="0" x2="50" y2="500"/>
+    <text class="label" x="50" y="14" text-anchor="middle">CH — 09</text>
+    <g transform="translate(50,80)">
+      <circle class="ln" r="26"/>
+      <polygon class="ln" points="0,-20 17,10 -17,10"/>
+      <polygon class="accent" points="0,20 17,-10 -17,-10"/>
+      <circle class="node-accent" r="1.6"/>
+    </g>
+    <line class="ln" x1="50" y1="120" x2="26" y2="120"/>
+    <rect class="ln" x="14" y="114" width="12" height="14"/>
+    <line class="ln" x1="50" y1="160" x2="78" y2="160"/>
+    <circle class="node" cx="78" cy="160" r="1.8"/>
+    <g transform="translate(50,240)">
+      <circle class="ln" r="24"/>
+      <line class="ln" x1="-24" y1="-12" x2="24" y2="-12"/>
+      <line class="ln" x1="-24" y1="0" x2="24" y2="0"/>
+      <line class="ln" x1="-24" y1="12" x2="24" y2="12"/>
+    </g>
+    <g transform="translate(50,340)">
+      <rect class="ln-soft" x="-20" y="-20" width="40" height="40"/>
+      <polygon class="ln" points="0,-16 16,0 0,16 -16,0"/>
+      <circle class="node-accent" r="1.6"/>
+    </g>
+    <g transform="translate(50,440)">
+      <circle class="ln" r="18"/>
+      <line class="ln" x1="-18" y1="0" x2="18" y2="0"/>
+      <circle class="ln-soft" r="10"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ====== Nav ====== -->
+<header class="site">
+  <div class="wrap">
+    <a href="/" style="text-decoration:none;">
+      <img class="logo-img" src="/assets/sattvagenic-logo.png" alt="Sattvagenic" />
+    </a>
+    <nav class="main">
+      <a href="/gallery">Gallery</a>
+      <a href="/music">Music</a>
+      <a href="/practices">Practices</a>
+      <a href="/about">About</a>
+      <a href="/nadi" aria-current="page">Nadi</a>
+    </nav>
+    <div class="rule"></div>
+  </div>
+</header>
+
+<!-- ====== Hero ====== -->
+<div class="wrap">
+  <section class="hero" style="padding-top:34px;">
+    <div class="hero-copy">
+      <h1>Nadi</h1>
+      <p class="tagline">Hypnotic Resonator FX for deep techno, ambient, dub and experimental sound design.</p>
+      <div class="ornament">
+        <span class="ln"></span>
+        <svg viewBox="0 0 14 14" aria-hidden="true">
+          <polygon points="7,1 13,7 7,13 1,7" fill="none" stroke="currentColor" stroke-width="1"/>
+          <circle cx="7" cy="7" r="1.6" fill="currentColor"/>
+        </svg>
+        <span class="ln"></span>
+      </div>
+      <p class="lede">Nadi is a chakra-inspired resonator plugin that channels the flow of subtle energy into sound. Sculpt rich resonances, rhythmic pulses and evolving textures with tactile control over frequency, movement and consciousness.</p>
+      <div class="cta-row">
+        <a class="btn btn-buy" id="heroBuyBtn" href="https://sattvagenic.gumroad.com/l/rqeedg?wanted=true">Buy Now — £25 Intro</a>
+        <a class="btn btn-trial" href="#trial">Download Trial <small>(14 days)</small></a>
+      </div>
+      <p class="price-note">Intro price of £25 (limited time). Full price £32.</p>
+    </div>
+    <figure class="shot">
+      <img src="/assets/nadi-gui.png" alt="The Nadi plugin interface — seven chakra resonator faders, the shakti energy path, and the main control knobs over a meditative figure." />
+      <figcaption>NADI · SATTVAGENIC</figcaption>
+    </figure>
+  </section>
+</div>
+
+<!-- ====== Audio demos ====== -->
+<div class="wrap">
+  <section id="demos">
+    <h2 class="section-title">Hear Nadi in Action</h2>
+    <p class="section-sub">Three short passages — the same engine, three different worlds.</p>
+    <div class="demos">
+      <div class="demo">
+        <div class="top">
+          <button class="play" data-audio="demo1" aria-label="Play Deep Techno Resonance">
+            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </button>
+          <div class="meta"><div class="name">Deep Techno Resonance</div><div class="time">01:15</div></div>
+        </div>
+        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <audio id="demo1" src="/assets/demos/deep-techno-resonance.mp3" preload="none"></audio>
+      </div>
+      <div class="demo">
+        <div class="top">
+          <button class="play" data-audio="demo2" aria-label="Play Ambient Flow">
+            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </button>
+          <div class="meta"><div class="name">Ambient Flow</div><div class="time">01:22</div></div>
+        </div>
+        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <audio id="demo2" src="/assets/demos/ambient-flow.mp3" preload="none"></audio>
+      </div>
+      <div class="demo">
+        <div class="top">
+          <button class="play" data-audio="demo3" aria-label="Play Dub Echoes">
+            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </button>
+          <div class="meta"><div class="name">Dub Echoes</div><div class="time">01:18</div></div>
+        </div>
+        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <audio id="demo3" src="/assets/demos/dub-echoes.mp3" preload="none"></audio>
+      </div>
+    </div>
+    <p class="headphones">Headphones recommended for the full experience.</p>
+  </section>
+</div>
+
+<div class="wrap"><div class="rule"></div></div>
+
+<!-- ====== Features / Concept / Pricing ====== -->
+<div class="wrap">
+  <section>
+    <div class="triptych">
+      <div class="block">
+        <h3>Key Features</h3>
+        <ul class="feat">
+          <li>Seven chakra resonators, each a distinct material body</li>
+          <li>Individual volume, pan and decay per resonator</li>
+          <li>Raga-inspired, customisable just-intonation tuning</li>
+          <li>The shakti — a moving energy source animating the spine</li>
+          <li>Sync, groove capture and tempo-locked movement</li>
+          <li>MIDI input to play the resonators melodically</li>
+          <li>Grace engine for spontaneous chord blooms</li>
+          <li>Built for techno, ambient, dub & sound design</li>
+        </ul>
+      </div>
+      <div class="block concept">
+        <h3>Chakra-Inspired Resonance</h3>
+        <svg class="chakra-svg" width="120" height="200" viewBox="0 0 120 200" aria-hidden="true">
+          <line x1="60" y1="10" x2="60" y2="190" stroke="var(--copper-soft)" stroke-width="1"/>
+          <g>
+            <circle cx="60" cy="24"  r="9" fill="none" stroke="#7e5aa6" stroke-width="1.5"/>
+            <circle cx="60" cy="48"  r="9" fill="none" stroke="#4a6fb0" stroke-width="1.5"/>
+            <circle cx="60" cy="72"  r="9" fill="none" stroke="#3f9d8f" stroke-width="1.5"/>
+            <circle cx="60" cy="96"  r="9" fill="none" stroke="#4caf50" stroke-width="1.5"/>
+            <circle cx="60" cy="120" r="9" fill="none" stroke="#e0b341" stroke-width="1.5"/>
+            <circle cx="60" cy="144" r="9" fill="none" stroke="#d98324" stroke-width="1.5"/>
+            <circle cx="60" cy="168" r="9" fill="none" stroke="#c8531f" stroke-width="1.5"/>
+          </g>
+          <polygon points="60,4 70,18 50,18" fill="none" stroke="var(--orange)" stroke-width="1.2"/>
+        </svg>
+        <p>Nadi draws on the Sushumna nadi — the central energy channel of yogic philosophy — balancing and energising seven resonant centres.</p>
+        <p>Each resonator is modelled on a sacred material: temple stone, bell metal, crystal singing bowl and more. Together they shape frequency into something that resonates on a deeper level.</p>
+      </div>
+      <div class="block">
+        <h3>Pricing</h3>
+        <div class="pricing">
+          <div class="tier">
+            <div class="label">INTRO PRICE</div>
+            <div class="amount">£25</div>
+            <div class="note">Limited launch offer</div>
+          </div>
+          <div class="divider"><span>◈</span></div>
+          <div class="tier">
+            <div class="label">FULL PRICE</div>
+            <div class="amount full">£32</div>
+            <div class="note">One-off · Lifetime updates</div>
+          </div>
+          <a class="btn btn-buy" id="pricingBuyBtn" style="margin-top:18px; width:100%;" href="https://sattvagenic.gumroad.com/l/rqeedg?wanted=true">Buy Nadi</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap"><div class="rule"></div></div>
+
+<!-- ====== Trial capture ====== -->
+<div class="wrap">
+  <section id="trial">
+    <h2 class="section-title">Try Nadi Free for 14 Days</h2>
+    <p class="section-sub">Fully functional. No card required. Enter your email and the installers are yours.</p>
+    <div class="trial-capture">
+      <h3>Download the Trial</h3>
+      <p>We'll send the occasional Sattvagenic update — never spam, unsubscribe anytime.</p>
+      <form name="nadi-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="trial-form" id="trialForm">
+        <input type="hidden" name="form-name" value="nadi-trial" />
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+        <button type="submit">Get the Trial</button>
+      </form>
+      <div class="download-links" id="downloadLinks">
+        <p style="color:var(--copper-deep); font-family:'Iceland',sans-serif; font-size:20px; letter-spacing:.04em;">Thank you — your downloads are ready:</p>
+        <div class="dl-row">
+          <a href="/downloads/Nadi_v1.0_Mac_Installer.pkg" download>↓ macOS Installer</a>
+          <a href="/downloads/Nadi_v1.0_Windows_Installer.exe" download>↓ Windows Installer</a>
+        </div>
+        <p class="privacy">The Nadi user guide (PDF) is included in your download.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap"><div class="rule"></div></div>
+
+<!-- ====== Formats ====== -->
+<div class="wrap">
+  <section class="formats">
+    <h2 class="section-title">Supported Formats & Platforms</h2>
+    <div class="format-row">
+      <div class="format"><div class="glyph">VST3</div><span>VST3</span></div>
+      <div class="format"><div class="glyph">AU</div><span>Audio Unit</span></div>
+      <div class="format"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C7 6 7 10 12 12c5-2 5-6 0-10zM12 12v10"/></svg></div><span>macOS 10.13+</span></div>
+      <div class="format"><div class="glyph"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5l8-1v7H3zM13 3.8L21 3v9h-8zM3 13h8v6l-8-1zM13 13h8v8l-8-1z"/></svg></div><span>Windows 10+</span></div>
+      <div class="format"><div class="glyph">64</div><span>64-bit</span></div>
+    </div>
+    <p class="works">Works in all major DAWs that support VST3 or Audio Units.</p>
+  </section>
+</div>
+
+<!-- ====== Footer ====== -->
+<footer class="site">
+  <div class="wrap">
+    <img class="logo-img" src="/assets/sattvagenic-logo.png" alt="Sattvagenic" style="height:36px;" />
+    <p class="motto">Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
+    <div class="social">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg></a>
+      <a href="#" aria-label="Bandcamp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 14l5-8h13l-5 8z"/></svg></a>
+      <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+    </div>
+    <p class="copy">© 2025 SATTVAGENIC · ALL RIGHTS RESERVED</p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    const waves = document.querySelectorAll('.wave');
+    waves.forEach((wave, wi) => {
+      const bars = 60, w = 300, gap = 1.4;
+      const bw = (w - (bars-1)*gap) / bars;
+      let seed = (wi+1)*97;
+      const rand = () => { seed = (seed*1103515245 + 12345) & 0x7fffffff; return seed/0x7fffffff; };
+      let html = '';
+      for(let i=0;i<bars;i++){
+        const env = Math.sin((i/bars)*Math.PI);
+        const h = 4 + env*38*(0.45+0.55*rand());
+        const x = i*(bw+gap);
+        const y = (46-h)/2;
+        html += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${(bw/2).toFixed(1)}"/>`;
+      }
+      wave.innerHTML = html;
+    });
+  })();
+  (function(){
+    const buttons = document.querySelectorAll('.play');
+    let current = null;
+    buttons.forEach(btn => {
+      const audio = document.getElementById(btn.dataset.audio);
+      const tri = btn.querySelector('.tri');
+      const pause = btn.querySelector('.pause');
+      const setPlaying = (on) => { tri.style.display = on ? 'none' : 'block'; pause.style.display = on ? 'block' : 'none'; btn.classList.toggle('playing', on); };
+      btn.addEventListener('click', () => {
+        if(!audio) return;
+        if(current && current !== audio){ current.pause(); }
+        if(audio.paused){ audio.play(); setPlaying(true); current = audio; } else { audio.pause(); setPlaying(false); }
+      });
+      audio && audio.addEventListener('ended', () => setPlaying(false));
+      audio && audio.addEventListener('pause', () => setPlaying(false));
+      audio && audio.addEventListener('play', () => setPlaying(true));
+    });
+  })();
+  (function(){
+    const form = document.getElementById('trialForm');
+    const links = document.getElementById('downloadLinks');
+    if(!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      const data = new FormData(form);
+      fetch('/', { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() })
+        .catch(()=>{})
+        .finally(()=>{
+          links.classList.add('show');
+          form.style.display = 'none';
+          links.scrollIntoView({behavior:'smooth', block:'center'});
+        });
+    });
+  // ---- Buy buttons ----
+  //
+  // The Buy buttons (#heroBuyBtn and #pricingBuyBtn) link to:
+  //   https://sattvagenic.gumroad.com/l/rqeedg?wanted=true
+  //
+  // The ?wanted=true query string is a Gumroad shortcut that skips the
+  // product-listing page and lands the user directly on the checkout form.
+  // We open in the same tab (default link behaviour) — this is a deliberate
+  // choice: it's the lowest-friction route to purchase. The browser back
+  // button still works if they change their mind.
+  //
+  // We deliberately do NOT use Gumroad's "gumroad-button" class or load
+  // their gumroad.js overlay script — both restyle the button as a
+  // Gumroad-branded black/pink one, fighting the page's design.
+</script>
+</body>
+</html>

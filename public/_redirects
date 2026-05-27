@@ -1,1 +1,6 @@
-/*    /index.html   200
+/nadi               /nadi.html               200
+/nadi/              /nadi.html               200
+/downloads/*        /downloads/:splat        200
+/assets/demos/*     /assets/demos/:splat     200
+/assets/nadi-*      /assets/:splat           200
+/*                  /index.html              200

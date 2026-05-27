@@ -42,11 +42,11 @@ const galleryImages = [
     title: "The Omniseer",
     description: "Uniting the 11 Great Frequencies,\n\n" +
       "he is the awestruck Godchord,\n\n" +
-      "the pulsing harmonic eternities\n\n" +
-      "sustained in statuesque rapture.\n\n" +
-      "The samsaric vortex, ecstacised,\n\n" +
-      "penetrating Maya,\n\n" +
+      "pulsing harmonic eternities\n\n" +
+      "in statuesque rapture.\n\n" +
+      "Penetrating Maya -\n\n" +
       "Brahman's trikalic imagasm.\n\n" +
+      "The samsaric vortex is ecstacised.\n\n" +
       "Delighted,\n\n" +
       "Nirguna heaves another euphoric formbelch."
   },
@@ -578,8 +578,9 @@ function AppContent({ selectedImage, setSelectedImage }) {
         <li><a href="/Tratak/" target="_blank" rel="noopener noreferrer">Tratak</a></li>
       </ul>
     </li>
-
+<li><a href="/nadi">Nadi</a></li>
     <li><Link to="/about">About</Link></li>
+    
   </ul>
 </nav>
         <MobileLingamMenu />
