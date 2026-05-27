@@ -655,7 +655,7 @@
     <div class="trial-capture">
       <h3>Download the Trial</h3>
       <p>We'll send the occasional Sattvagenic update — never spam, unsubscribe anytime.</p>
-      <form name="nadi-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="trial-form" id="trialForm">
+      <form name="nadi-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="trial-form" id="trialForm" onsubmit="return handleTrialSubmit(event)">
         <input type="hidden" name="form-name" value="nadi-trial" />
         <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
@@ -742,21 +742,60 @@
       audio && audio.addEventListener('play', () => setPlaying(true));
     });
   })();
+
+  // ---- Trial form submit handler ----
+  //
+  // Defined as a GLOBAL function (not inside an IIFE) so the inline
+  // onsubmit="return handleTrialSubmit(event)" attribute on the form can
+  // find it. The inline handler is the primary defence — it runs BEFORE
+  // the browser starts native submission, guaranteeing we can preventDefault.
+  // The addEventListener below is a belt-and-braces backup.
+  function handleTrialSubmit(e) {
+    try {
+      e.preventDefault();
+      const form  = document.getElementById('trialForm');
+      const links = document.getElementById('downloadLinks');
+      if (!form || !links) return false;
+
+      // Reveal downloads + hide form immediately. This MUST happen even if
+      // the network call below fails — the user typed their email, the
+      // contract is "you get the files", so don't block on the capture.
+      const showDownloads = () => {
+        links.classList.add('show');
+        form.style.display = 'none';
+        try { links.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+      };
+
+      // Fire-and-forget POST to Netlify Forms.
+      const data = new FormData(form);
+      fetch('/', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString()
+      })
+        .catch(() => { /* swallow */ })
+        .finally(showDownloads);
+
+      return false;
+    } catch (err) {
+      // Last-ditch: even on unexpected error, show downloads so user gets
+      // the files, and still suppress native submission so they don't end
+      // up on Netlify's generic thank-you page.
+      try {
+        document.getElementById('downloadLinks').classList.add('show');
+        document.getElementById('trialForm').style.display = 'none';
+      } catch(_){}
+      return false;
+    }
+  }
+
+  // Backup listener (in case the inline handler is stripped by some
+  // extension or sanitiser). Capture-phase so it fires first.
   (function(){
     const form = document.getElementById('trialForm');
-    const links = document.getElementById('downloadLinks');
-    if(!form) return;
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      const data = new FormData(form);
-      fetch('/', { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() })
-        .catch(()=>{})
-        .finally(()=>{
-          links.classList.add('show');
-          form.style.display = 'none';
-          links.scrollIntoView({behavior:'smooth', block:'center'});
-        });
-    });
+    if (form) form.addEventListener('submit', handleTrialSubmit, { capture: true });
+  })();
+
   // ---- Buy buttons ----
   //
   // The Buy buttons (#heroBuyBtn and #pricingBuyBtn) link to:
@@ -764,9 +803,8 @@
   //
   // The ?wanted=true query string is a Gumroad shortcut that skips the
   // product-listing page and lands the user directly on the checkout form.
-  // We open in the same tab (default link behaviour) — this is a deliberate
-  // choice: it's the lowest-friction route to purchase. The browser back
-  // button still works if they change their mind.
+  // We open in the same tab (default link behaviour) — lowest-friction
+  // route to purchase. Back button still works if they change their mind.
   //
   // We deliberately do NOT use Gumroad's "gumroad-button" class or load
   // their gumroad.js overlay script — both restyle the button as a
