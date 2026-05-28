@@ -35,18 +35,29 @@ const MobileLingamMenu = () => {
               <h3>Gallery</h3>
               <Link to="/" onClick={closeMenu}>Home</Link>
             </div>
-
+            
             <div className="menu-section">
-              <h3>Music</h3>
-              <Link to="/music" onClick={closeMenu}>Releases</Link>
+              <h3>Plugins</h3>
+              <a href="/nadi" onClick={closeMenu}>Nadi</a>
             </div>
-
+            
             <div className="menu-section">
-              <h3>Practices</h3>
+              <h3>Meditations</h3>
+              <Link to="/meditation" onClick={closeMenu}>Chakra/Yantra Meditation</Link>
               <Link to="/metta-morph" onClick={closeMenu}>Metta-Morph</Link>
-              <a href="/Tratak/" target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Tratak</a>
             </div>
-
+            
+            <div className="menu-section">
+              <h3>Mantric Art</h3>
+              <Link to="/mantra" onClick={closeMenu}>Mritunjay</Link>
+              <Link to="/torus-mantra" onClick={closeMenu}>Om Namah Shivaya</Link>
+            </div>
+            
+            <div className="menu-section">
+              <h3>Writing</h3>
+              <a href="#writings" onClick={closeMenu}>Essays & Texts</a>
+            </div>
+            
            <div className="menu-section">
   <h3>About</h3>
   <Link to="/about" onClick={closeMenu}>About Sattvagenic</Link>
