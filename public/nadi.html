@@ -131,6 +131,45 @@
   nav.main a[aria-current="page"]{ color:var(--orange); border-bottom-color:var(--orange); }
   .rule{ height:1px; background:linear-gradient(to right, transparent, var(--copper-soft), transparent); margin:18px 0 0; opacity:.6; }
 
+  /* ===== Mobile lingam menu — ported from the React site so the brand's
+     signature menu is identical across the static Nadi page and the app.
+     Hidden on desktop; on mobile it replaces the wrapped text nav. ===== */
+  .mobile-lingam-container{ display:none; position:relative; width:100%; align-items:center; justify-content:center; margin-top:16px; }
+  @media (max-width:768px){
+    .mobile-lingam-container{ display:flex; }
+    header.site nav.main{ display:none; }   /* swap text nav for the lingam on mobile */
+  }
+  .lingam-button{
+    cursor:pointer; position:relative; width:50px; height:60px;
+    background:linear-gradient(145deg, #2a2a2a, #0a0a0a);
+    border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; transition:all .3s ease;
+  }
+  .lingam-button:hover{ box-shadow: inset 2px 2px 5px rgba(255,255,255,0.15), inset -2px -2px 5px rgba(0,0,0,0.9), 0 6px 12px rgba(0,0,0,0.4); }
+  .lingam-line{ width:24px; height:2px; background-color:#f0f0f0; margin:2px 0; transition:all .3s ease; border-radius:1px; box-shadow:0 1px 2px rgba(0,0,0,0.3); }
+  .saffron-dot{ position:absolute; width:8px; height:8px; background:radial-gradient(circle, #FF6600, #cc4400); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 6px rgba(255,102,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.3); z-index:2; }
+  .mobile-lingam-container.open .lingam-line:nth-child(1){ transform:rotate(45deg) translate(8px,8px); }
+  .mobile-lingam-container.open .lingam-line:nth-child(2){ opacity:0; }
+  .mobile-lingam-container.open .lingam-line:nth-child(3){ transform:rotate(-45deg) translate(8px,-8px); }
+  .menu-overlay{ display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.5); z-index:998; }
+  .lingam-dropdown{
+    display:none; position:absolute; top:70px; left:50%; transform:translateX(-50%);
+    width:280px; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px);
+    border:1px solid #333; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.7);
+    z-index:999; padding:1rem; text-align:left;
+  }
+  .mobile-lingam-container.open .menu-overlay{ display:block; }
+  .mobile-lingam-container.open .lingam-dropdown{ display:block; animation:lingamDrop .3s ease-out; }
+  @keyframes lingamDrop{ from{ opacity:0; transform:translateX(-50%) translateY(-10px); } to{ opacity:1; transform:translateX(-50%) translateY(0); } }
+  .menu-section{ margin-bottom:1.5rem; }
+  .menu-section:last-child{ margin-bottom:0; }
+  .menu-section h3{ color:#FF6600; font-size:1rem; font-weight:bold; font-family:'Iceland',sans-serif; margin:0 0 .5rem; padding-bottom:.25rem; border-bottom:1px solid #333; text-transform:uppercase; letter-spacing:.5px; }
+  .menu-section a{ display:block; color:#fff; text-decoration:none; padding:.5rem 0; font-size:.9rem; font-family:'Spectral',serif; transition:color .3s ease, padding-left .3s ease; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .menu-section a:last-child{ border-bottom:none; }
+  .menu-section a:hover{ color:#FF6600; padding-left:.5rem; }
+  @media (max-width:480px){ .lingam-dropdown{ width:90vw; max-width:320px; } }
+
   .hero{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; padding:54px 0 64px; }
   .hero h1{
     font-family:'Iceland', sans-serif;
@@ -526,6 +565,55 @@
       <a href="/about">About</a>
       <a href="/nadi" aria-current="page">Nadi</a>
     </nav>
+
+    <!-- Mobile lingam menu (shown only <=768px; mirrors the React site) -->
+    <div class="mobile-lingam-container">
+      <div class="lingam-button" id="lingamBtn" aria-label="Menu" role="button" tabindex="0">
+        <div class="lingam-line"></div>
+        <div class="lingam-line"></div>
+        <div class="lingam-line"></div>
+        <div class="saffron-dot"></div>
+      </div>
+      <div class="menu-overlay" id="lingamOverlay"></div>
+      <div class="lingam-dropdown" id="lingamDropdown">
+        <div class="menu-section">
+          <h3>Gallery</h3>
+          <a href="/">Home</a>
+        </div>
+        <div class="menu-section">
+          <h3>Plugins</h3>
+          <a href="/nadi">Nadi</a>
+        </div>
+        <div class="menu-section">
+          <h3>Music</h3>
+          <a href="/music">Releases</a>
+        </div>
+        <div class="menu-section">
+          <h3>Meditations</h3>
+          <a href="/meditation">Chakra/Yantra Meditation</a>
+          <a href="/metta-morph">Metta-Morph</a>
+          <a href="/Tratak/" target="_blank" rel="noopener noreferrer">Tratak</a>
+        </div>
+        <!-- Mantric Art — hidden until the pages are polished and republished.
+        <div class="menu-section">
+          <h3>Mantric Art</h3>
+          <a href="/mantra">Mritunjay</a>
+          <a href="/torus-mantra">Om Namah Shivaya</a>
+        </div>
+        -->
+        <!-- Writing — hidden until there is content to link to.
+        <div class="menu-section">
+          <h3>Writing</h3>
+          <a href="#writings">Essays &amp; Texts</a>
+        </div>
+        -->
+        <div class="menu-section">
+          <h3>About</h3>
+          <a href="/about">About Sattvagenic</a>
+        </div>
+      </div>
+    </div>
+
     <div class="rule"></div>
   </div>
 </header>
@@ -831,6 +919,29 @@
   // We deliberately do NOT use Gumroad's "gumroad-button" class or load
   // their gumroad.js overlay script — both restyle the button as a
   // Gumroad-branded black/pink one, fighting the page's design.
+
+  // ---- Mobile lingam menu ----
+  // Vanilla port of the React MobileLingamMenu: toggle an .open class on the
+  // container; overlay-click and link-click both close it.
+  (function(){
+    var container = document.querySelector('.mobile-lingam-container');
+    if(!container) return;
+    var btn     = document.getElementById('lingamBtn');
+    var overlay = document.getElementById('lingamOverlay');
+    var open    = function(){ container.classList.add('open'); };
+    var close   = function(){ container.classList.remove('open'); };
+    var toggle  = function(){ container.classList.toggle('open'); };
+
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+    overlay.addEventListener('click', close);
+    document.querySelectorAll('#lingamDropdown a').forEach(function(a){
+      a.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  })();
 </script>
 </body>
 </html>

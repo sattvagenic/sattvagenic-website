@@ -16,7 +16,7 @@ const MobileLingamMenu = () => {
   return (
     <div className="mobile-lingam-container">
       {/* Lingam Button */}
-      <div 
+      <div
         className={`lingam-button ${isOpen ? 'active' : ''}`}
         onClick={toggleMenu}
       >
@@ -35,33 +35,45 @@ const MobileLingamMenu = () => {
               <h3>Gallery</h3>
               <Link to="/" onClick={closeMenu}>Home</Link>
             </div>
-            
+
             <div className="menu-section">
               <h3>Plugins</h3>
               <a href="/nadi" onClick={closeMenu}>Nadi</a>
             </div>
-            
+
+            <div className="menu-section">
+              <h3>Music</h3>
+              <Link to="/music" onClick={closeMenu}>Releases</Link>
+            </div>
+
             <div className="menu-section">
               <h3>Meditations</h3>
               <Link to="/meditation" onClick={closeMenu}>Chakra/Yantra Meditation</Link>
               <Link to="/metta-morph" onClick={closeMenu}>Metta-Morph</Link>
+              <a href="/Tratak/" target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Tratak</a>
             </div>
-            
+
+            {/* Mantric Art — hidden until the pages are polished and republished.
+                To restore: uncomment this block.
             <div className="menu-section">
               <h3>Mantric Art</h3>
               <Link to="/mantra" onClick={closeMenu}>Mritunjay</Link>
               <Link to="/torus-mantra" onClick={closeMenu}>Om Namah Shivaya</Link>
             </div>
-            
+            */}
+
+            {/* Writing — hidden until there is content to link to.
+                To restore: uncomment this block.
             <div className="menu-section">
               <h3>Writing</h3>
               <a href="#writings" onClick={closeMenu}>Essays & Texts</a>
             </div>
-            
-           <div className="menu-section">
-  <h3>About</h3>
-  <Link to="/about" onClick={closeMenu}>About Sattvagenic</Link>
-</div>
+            */}
+
+            <div className="menu-section">
+              <h3>About</h3>
+              <Link to="/about" onClick={closeMenu}>About Sattvagenic</Link>
+            </div>
           </div>
         </>
       )}
