@@ -32,7 +32,12 @@ import nonAttachment from './images/Non-Attachment.jpg';
 import bodhisattva from './images/The Bodhisattva.jpg';
 import vibromancer from './images/The Vibromancer.jpg';
 import sacredStudy from './images/Sacred Study.jpg';
-import Music from './components/Music';
+import Music, { releases } from './components/Music';
+
+// Pick the most recent release by parsing its "Month Year" date string.
+const latestRelease = [...releases].sort(
+  (a, b) => new Date(b.released) - new Date(a.released)
+)[0];
 
 
 const galleryImages = [
@@ -593,8 +598,181 @@ function AppContent({ selectedImage, setSelectedImage }) {
               <h2>Shaivo-Futurism & Dharmic Technology</h2>
               <p>Sattvagenic (adj.): Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
             </section>
-            
-            <section className="gallery">
+
+            <div className="sg-home">
+              {/* ===== Three Pillars ===== */}
+              <section className="sg-pillars">
+                <h2 className="sg-section-title">Three Streams, One Source</h2>
+                <p className="sg-section-sub">Technology as an instrument of consciousness — plugins, music and art flowing from a single vision.</p>
+
+                <div className="sg-pillar-grid">
+                  {/* Plugins */}
+                  <a className="sg-pillar" href="/nadi">
+                    <div className="sg-motif" aria-hidden="true">
+                      <svg viewBox="0 0 120 140">
+                        {/* sushumna + ida/pingala channels */}
+                        <path className="ln-soft" d="M60 14 C40 40, 80 60, 60 86 C40 112, 80 120, 60 128" />
+                        <path className="ln-soft" d="M60 14 C80 40, 40 60, 60 86 C80 112, 40 120, 60 128" />
+                        <line className="ln" x1="60" y1="10" x2="60" y2="130" />
+                        <polygon className="accent" points="60,4 68,16 52,16" />
+                        <circle className="node" cx="60" cy="26" r="3" />
+                        <circle className="node" cx="60" cy="43" r="3" />
+                        <circle className="node-accent" cx="60" cy="60" r="3.4" />
+                        <circle className="node" cx="60" cy="77" r="3" />
+                        <circle className="node" cx="60" cy="94" r="3" />
+                        <circle className="node-accent" cx="60" cy="111" r="3.4" />
+                        <circle className="node" cx="60" cy="128" r="3" />
+                      </svg>
+                    </div>
+                    <span className="sg-eyebrow">Plugins</span>
+                    <h3 className="sg-pillar-title">Sound Tools</h3>
+                    <p className="sg-pillar-text">Chakra-inspired instruments and resonators that turn subtle energy into sound. Nadi is out now; Raga is taking shape.</p>
+                    <span className="sg-enter">Enter the Plugins →</span>
+                  </a>
+
+                  {/* Music */}
+                  <Link className="sg-pillar" to="/music">
+                    <div className="sg-motif" aria-hidden="true">
+                      <svg viewBox="0 0 120 140">
+                        <circle className="ln" cx="60" cy="58" r="44" />
+                        <circle className="ln-soft" cx="60" cy="58" r="33" />
+                        <circle className="ln" cx="60" cy="58" r="22" />
+                        <circle className="ln-soft" cx="60" cy="58" r="11" />
+                        <circle className="node-accent" cx="60" cy="58" r="3.2" />
+                        <g className="ln">
+                          <line x1="34" y1="124" x2="34" y2="118" />
+                          <line x1="42" y1="124" x2="42" y2="110" />
+                          <line x1="50" y1="124" x2="50" y2="100" />
+                          <line x1="58" y1="124" x2="58" y2="112" />
+                          <line x1="66" y1="124" x2="66" y2="98" />
+                          <line x1="74" y1="124" x2="74" y2="116" />
+                          <line x1="82" y1="124" x2="82" y2="106" />
+                          <line x1="90" y1="124" x2="90" y2="120" />
+                        </g>
+                      </svg>
+                    </div>
+                    <span className="sg-eyebrow">Music</span>
+                    <h3 className="sg-pillar-title">Hypnotic Techno</h3>
+                    <p className="sg-pillar-text">Deep, meditative techno released through Aedi Records within the Hypnus ecosystem.</p>
+                    <span className="sg-enter">Hear the Music →</span>
+                  </Link>
+
+                  {/* Art & Practice */}
+                  <a className="sg-pillar" href="#gallery">
+                    <div className="sg-motif" aria-hidden="true">
+                      <svg viewBox="0 0 120 140">
+                        <circle className="ln" cx="60" cy="64" r="48" />
+                        <circle className="ln-soft" cx="60" cy="64" r="40" />
+                        <polygon className="ln" points="60,24 102,96 18,96" />
+                        <polygon className="accent" points="60,104 102,32 18,32" />
+                        <polygon className="ln-soft" points="60,46 84,86 36,86" />
+                        <circle className="node-accent" cx="60" cy="64" r="3.2" />
+                      </svg>
+                    </div>
+                    <span className="sg-eyebrow">Art &amp; Practice</span>
+                    <h3 className="sg-pillar-title">The Vision</h3>
+                    <p className="sg-pillar-text">A gallery of Shaivo-futurist works and contemplative tools — the soul of the project made visible.</p>
+                    <span className="sg-enter">View the Gallery →</span>
+                  </a>
+                </div>
+              </section>
+
+              {/* ===== Featured: Nadi ===== */}
+              <section className="sg-feature">
+                <div className="sg-feature-grid">
+                  <figure className="sg-shot">
+                    <img
+                      src="/assets/nadi-gui.png"
+                      alt="The Nadi plugin interface — seven chakra resonator faders, the shakti energy path, and the main control knobs over a meditative figure."
+                    />
+                    <figcaption>NADI · SATTVAGENIC</figcaption>
+                  </figure>
+
+                  <div className="sg-feature-copy">
+                    <span className="sg-eyebrow">Flagship Plugin · Out Now</span>
+                    <h3 className="sg-feature-title">Nadi</h3>
+                    <p className="sg-feature-tagline">Hypnotic Resonator FX for deep techno, ambient, dub and experimental sound design.</p>
+
+                    <div className="sg-ornament" aria-hidden="true">
+                      <span className="ln"></span>
+                      <svg viewBox="0 0 14 14">
+                        <polygon points="7,1 13,7 7,13 1,7" fill="none" stroke="currentColor" strokeWidth="1" />
+                        <circle cx="7" cy="7" r="1.6" fill="currentColor" />
+                      </svg>
+                      <span className="ln"></span>
+                    </div>
+
+                    <p className="sg-feature-lede">Seven chakra-tuned resonators channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures. VST3 &amp; AU, Mac &amp; Windows.</p>
+
+                    <div className="sg-cta-row">
+                      <a className="sg-btn sg-btn-buy" href="/nadi">Explore Nadi →</a>
+                      <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 14-day Trial</a>
+                    </div>
+                    <p className="sg-price-note">£25 intro · £32 full · one-off, lifetime updates.</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* ===== Latest Release ===== */}
+              <section className="sg-music">
+                <h2 className="sg-section-title">Latest Release</h2>
+                <p className="sg-section-sub">
+                  {latestRelease.title} — {latestRelease.label}, {latestRelease.released}. Featuring “{latestRelease.sattvagenicTrack}” by Sattvagenic.
+                </p>
+                <div className="sg-release">
+                  <figure className="sg-shot sg-shot-embed">
+                    <iframe
+                      title={`${latestRelease.title} – Bandcamp player`}
+                      style={{ border: 0, width: '100%', height: '470px' }}
+                      src={latestRelease.embedSrc}
+                      seamless
+                    >
+                      <a href={latestRelease.bandcampUrl}>{latestRelease.title} by Aedi Records</a>
+                    </iframe>
+                  </figure>
+                </div>
+                <p className="sg-music-link">
+                  <Link to="/music">All releases →</Link>
+                </p>
+              </section>
+
+              {/* ===== Tratak — an experience to step into ===== */}
+              <section className="sg-tratak">
+                <div className="sg-tratak-inner">
+                  <div className="sg-yantra" aria-hidden="true">
+                    <svg viewBox="0 0 200 200">
+                      {/* bhupura gate */}
+                      <rect className="y-ln" x="28" y="28" width="144" height="144" />
+                      <rect className="y-soft" x="36" y="36" width="128" height="128" />
+                      <rect className="y-ln" x="92" y="22" width="16" height="8" />
+                      <rect className="y-ln" x="92" y="170" width="16" height="8" />
+                      <rect className="y-ln" x="22" y="92" width="8" height="16" />
+                      <rect className="y-ln" x="170" y="92" width="8" height="16" />
+                      {/* petal rings */}
+                      <circle className="y-petal" cx="100" cy="100" r="70" />
+                      <circle className="y-petal2" cx="100" cy="100" r="60" />
+                      <circle className="y-ln" cx="100" cy="100" r="54" />
+                      {/* interlocking triangles */}
+                      <polygon className="y-ln" points="100,40 40,150 160,150" />
+                      <polygon className="y-ln" points="100,160 40,52 160,52" />
+                      <polygon className="y-soft" points="100,54 54,140 146,140" />
+                      <polygon className="y-soft" points="100,146 54,62 146,62" />
+                      <polygon className="y-acc" points="100,68 66,128 134,128" />
+                      <polygon className="y-acc" points="100,132 66,74 134,74" />
+                      {/* bindu */}
+                      <circle className="y-ln" cx="100" cy="100" r="9" />
+                      <circle className="y-bindu" cx="100" cy="100" r="3.4" />
+                    </svg>
+                  </div>
+                  <span className="sg-eyebrow sg-eyebrow-dark">Practice · Experience</span>
+                  <h2 className="sg-tratak-title">Tratak</h2>
+                  <p className="sg-tratak-lede">A Sri Yantra that pulses at the rhythm of attention — part music visualiser, part concentration practice. Gaze into the centre, let the breath settle, and let single-pointed focus arise. Best full-screen, with sound.</p>
+                  <a className="sg-btn sg-tratak-btn" href="/Tratak/" target="_blank" rel="noopener noreferrer">Enter Tratak →</a>
+                </div>
+              </section>
+            </div>
+
+            <section className="gallery" id="gallery">
               <h2>Gallery</h2>
               <div className="gallery-grid">
                 {galleryImages.map((image) => (

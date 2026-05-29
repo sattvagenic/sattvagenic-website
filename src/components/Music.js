@@ -1,7 +1,7 @@
 import React from 'react';
 import './Music.css';
 
-const releases = [
+export const releases = [
   {
     id: 'aruq',
     title: 'Aruq',

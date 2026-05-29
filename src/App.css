@@ -10,6 +10,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Karma:wght@400;500&display=swap');
+/* Nadi-coherent homepage: Iceland (display) + Spectral (body) + Orbitron (labels) */
+@import url('https://fonts.googleapis.com/css2?family=Iceland&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=Orbitron:wght@500;600&display=swap');
 
 
 .image-overlay h3 {
@@ -1881,4 +1883,347 @@ nav .dropdown-menu a:hover {
   font-family: 'Orbitron', sans-serif;
   color: var(--saffron);
   font-size: 1.6rem;
+}
+/* =====================================================================
+   THREE-PILLAR HOMEPAGE  —  coherent with the Nadi product page.
+   Palette / type mirror /nadi: warm stone, terracotta orange, oxidised
+   copper-green; Iceland display, Spectral body, Orbitron labels.
+   All rules scoped under .sg-home so nothing leaks to other routes.
+   ===================================================================== */
+.sg-home {
+  --sg-stone:       #e9e3d6;
+  --sg-stone-deep:  #ddd5c4;
+  --sg-ink:         #2b2722;
+  --sg-ink-soft:    #5a5347;
+  --sg-orange:      #c8531f;
+  --sg-orange-deep: #a8410f;
+  --sg-copper:      #4fa58a;
+  --sg-copper-deep: #245c4e;
+  --sg-copper-soft: #7eb6a3;
+  --sg-card:        #f1ecdf;
+  --sg-gold:        #9a7a44;
+  --sg-shadow:      0 18px 50px -28px rgba(43, 39, 34, .55);
+
+  text-align: left;
+  margin: 10px 0 0;
+  position: relative;
+}
+
+/* Section scaffolding ------------------------------------------------ */
+.sg-home section { padding: 46px 0; margin: 0; }
+
+.sg-section-title {
+  font-family: 'Iceland', sans-serif;
+  font-size: 2.8rem;
+  color: var(--sg-orange);
+  text-align: center;
+  letter-spacing: .04em;
+  margin: 0 0 6px;
+  line-height: 1.05;
+}
+.sg-section-sub {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  text-align: center;
+  color: var(--sg-ink-soft);
+  font-size: 1.02rem;
+  max-width: 60ch;
+  margin: 0 auto 34px;
+  line-height: 1.5;
+}
+.sg-eyebrow {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 500;
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--sg-copper-deep);
+  display: block;
+}
+
+/* Three pillars ------------------------------------------------------ */
+.sg-pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.sg-pillar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  text-decoration: none;
+  background: var(--sg-card);
+  border: 1px solid var(--sg-copper-soft);
+  border-radius: 8px;
+  padding: 26px 26px 28px;
+  box-shadow: 0 8px 24px -22px rgba(43, 39, 34, .5);
+  transition: transform .18s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.sg-pillar:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sg-shadow);
+  border-color: var(--sg-copper);
+}
+.sg-motif {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.sg-motif svg { width: 104px; height: 122px; display: block; }
+/* Motif line/node language reused from the Nadi page */
+.sg-motif .ln        { stroke: var(--sg-copper-deep); fill: none; stroke-width: 1.6; opacity: .8; }
+.sg-motif .ln-soft   { stroke: var(--sg-copper);      fill: none; stroke-width: 1.3; opacity: .62; }
+.sg-motif .accent    { stroke: var(--sg-orange);      fill: none; stroke-width: 1.7; opacity: .92; }
+.sg-motif .node      { fill: var(--sg-copper-deep); opacity: .85; }
+.sg-motif .node-accent { fill: var(--sg-orange); opacity: .95; }
+.sg-pillar:hover .sg-motif .accent,
+.sg-pillar:hover .sg-motif .node-accent { opacity: 1; }
+
+.sg-pillar-title {
+  font-family: 'Iceland', sans-serif;
+  font-size: 1.85rem;
+  color: var(--sg-orange);
+  letter-spacing: .03em;
+  margin: 4px 0 10px;
+  line-height: 1.1;
+}
+.sg-pillar-text {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: .98rem;
+  color: var(--sg-ink-soft);
+  line-height: 1.55;
+  margin: 0 0 18px;
+  flex: 1;
+}
+.sg-enter {
+  font-family: 'Iceland', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: .03em;
+  color: var(--sg-copper-deep);
+  transition: color .2s ease;
+}
+.sg-pillar:hover .sg-enter { color: var(--sg-orange); }
+
+/* Featured: Nadi ----------------------------------------------------- */
+.sg-feature {
+  border-top: 1px solid rgba(126, 182, 163, .45);
+  border-bottom: 1px solid rgba(126, 182, 163, .45);
+}
+.sg-feature-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 44px;
+  align-items: center;
+}
+.sg-shot {
+  background: var(--sg-card);
+  border: 1px solid var(--sg-copper-soft);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: var(--sg-shadow);
+  margin: 0;
+}
+.sg-shot img { width: 100%; height: auto; display: block; border-radius: 4px; }
+.sg-shot figcaption {
+  text-align: center;
+  font-family: 'Iceland', sans-serif;
+  font-size: .95rem;
+  letter-spacing: .16em;
+  color: var(--sg-copper-deep);
+  padding-top: 10px;
+}
+.sg-feature-copy { text-align: left; }
+.sg-feature-title {
+  font-family: 'Iceland', sans-serif;
+  font-size: 4.2rem;
+  color: var(--sg-orange);
+  line-height: .95;
+  letter-spacing: .04em;
+  margin: 6px 0 10px;
+}
+.sg-feature-tagline {
+  font-family: 'Spectral', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.18rem;
+  color: var(--sg-ink);
+  line-height: 1.35;
+  max-width: 32ch;
+  margin: 0;
+}
+.sg-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 18px;
+  color: var(--sg-copper-deep);
+}
+.sg-ornament .ln { height: 1px; width: 58px; background: var(--sg-copper); opacity: .6; }
+.sg-ornament svg { width: 13px; height: 13px; }
+.sg-feature-lede {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1rem;
+  color: var(--sg-ink-soft);
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: 0 0 26px;
+}
+.sg-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.sg-btn {
+  font-family: 'Iceland', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: .04em;
+  padding: 12px 24px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid transparent;
+  transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.sg-btn-buy {
+  background: var(--sg-orange);
+  color: #fff5ec;
+  box-shadow: 0 10px 24px -12px rgba(200, 83, 31, .7);
+}
+.sg-btn-buy:hover { background: var(--sg-orange-deep); transform: translateY(-2px); }
+.sg-btn-trial {
+  background: transparent;
+  color: var(--sg-copper-deep);
+  border-color: var(--sg-copper-deep);
+}
+.sg-btn-trial:hover { background: var(--sg-copper-deep); color: #fff; transform: translateY(-2px); }
+.sg-price-note {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: .85rem;
+  color: var(--sg-ink-soft);
+  margin: 14px 0 0;
+}
+
+/* Latest release ----------------------------------------------------- */
+.sg-release { display: flex; justify-content: center; }
+.sg-shot-embed {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  background: #181a1b;
+  border-color: var(--sg-copper-deep);
+}
+.sg-shot-embed iframe { display: block; border-radius: 4px; }
+.sg-music-link { text-align: center; margin: 24px 0 0; }
+.sg-music-link a {
+  font-family: 'Iceland', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: .03em;
+  color: var(--sg-copper-deep);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.sg-music-link a:hover { color: var(--sg-orange); }
+
+/* Smooth scroll to the gallery from the Art pillar */
+html { scroll-behavior: smooth; }
+#gallery { scroll-margin-top: 24px; }
+
+/* Harmonise the existing hero with the Nadi look (homepage only) ----- */
+.hero h2 {
+  font-family: 'Iceland', sans-serif !important;
+  color: #c8531f !important;
+  font-size: 3.4rem;
+  letter-spacing: .03em;
+  text-shadow: none;
+  line-height: 1.05;
+}
+.hero p {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  color: #5a5347;
+  font-size: 1.08rem;
+  max-width: 60ch;
+  margin: 0 auto;
+}
+
+/* Responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .sg-pillar-grid { grid-template-columns: 1fr; gap: 18px; }
+  .sg-feature-grid { grid-template-columns: 1fr; gap: 28px; }
+  .sg-feature-copy { text-align: center; }
+  .sg-feature-tagline,
+  .sg-feature-lede { max-width: none; }
+  .sg-ornament { justify-content: center; }
+  .sg-cta-row { justify-content: center; }
+  .sg-feature-title { font-size: 3.4rem; }
+}
+@media (max-width: 768px) {
+  .sg-section-title { font-size: 2.3rem; }
+  .hero h2 { font-size: 2.6rem; }
+}
+
+/* ===== Tratak — a dark "doorway" band, previewing the immersive app ===== */
+.sg-tratak { padding: 50px 0; }
+.sg-tratak-inner {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 46px 32px 44px;
+  border-radius: 12px;
+  border: 1px solid var(--sg-copper-deep);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 38%, rgba(79, 165, 138, .14), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(200, 83, 31, .10), transparent 72%),
+    linear-gradient(180deg, #1f2b26 0%, #141a17 100%);
+  box-shadow: 0 24px 60px -34px rgba(0, 0, 0, .8), inset 0 0 60px rgba(0, 0, 0, .35);
+  overflow: hidden;
+}
+.sg-yantra { display: flex; justify-content: center; margin-bottom: 14px; }
+.sg-yantra svg {
+  width: 168px; height: 168px;
+  filter: drop-shadow(0 0 7px rgba(126, 182, 163, .45));
+  transform-origin: center;
+  animation: sg-breathe 7s ease-in-out infinite;
+}
+@keyframes sg-breathe {
+  0%, 100% { transform: scale(1);    opacity: .9; }
+  50%      { transform: scale(1.045); opacity: 1; }
+}
+.sg-tratak .y-ln     { stroke: #7eb6a3; fill: none; stroke-width: 1;   opacity: .85; }
+.sg-tratak .y-soft   { stroke: #4fa58a; fill: none; stroke-width: .8;  opacity: .5; }
+.sg-tratak .y-acc    { stroke: #e0743a; fill: none; stroke-width: 1.1; opacity: .9; }
+.sg-tratak .y-petal  { stroke: #7eb6a3; fill: none; stroke-width: 1;   opacity: .4;  stroke-dasharray: 2 6; }
+.sg-tratak .y-petal2 { stroke: #e0743a; fill: none; stroke-width: 1;   opacity: .35; stroke-dasharray: 1 7; }
+.sg-tratak .y-bindu  { fill: #e0743a; }
+
+.sg-eyebrow-dark { color: #9bcab8; opacity: .95; }
+.sg-tratak-title {
+  font-family: 'Iceland', sans-serif;
+  font-size: 3.2rem;
+  color: #e0743a;
+  letter-spacing: .05em;
+  line-height: 1;
+  margin: 4px 0 14px;
+}
+.sg-tratak-lede {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: rgba(233, 227, 214, .82);
+  max-width: 52ch;
+  margin: 0 auto 26px;
+}
+.sg-tratak-btn {
+  background: var(--sg-orange);
+  color: #fff5ec;
+  box-shadow: 0 12px 28px -12px rgba(200, 83, 31, .85);
+}
+.sg-tratak-btn:hover { background: var(--sg-orange-deep); transform: translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-yantra svg { animation: none; }
+}
+@media (max-width: 768px) {
+  .sg-tratak-inner { padding: 36px 22px; }
+  .sg-tratak-title { font-size: 2.6rem; }
+  .sg-yantra svg { width: 140px; height: 140px; }
 }
