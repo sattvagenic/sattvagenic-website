@@ -605,8 +605,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
             <div className="sg-home">
               {/* ===== Three Pillars ===== */}
               <section className="sg-pillars">
-                <h2 className="sg-section-title">Three Streams, One Source</h2>
-                <p className="sg-section-sub">Technology as an instrument of consciousness — plugins, music and art flowing from a single vision.</p>
+                
 
                 <div className="sg-pillar-grid">
                   {/* Plugins */}
@@ -694,7 +693,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                   <div className="sg-feature-copy">
                     <span className="sg-eyebrow">Flagship Plugin · Out Now</span>
                     <h3 className="sg-feature-title">Nadi</h3>
-                    <p className="sg-feature-tagline">Hypnotic Resonator FX for deep techno, ambient, dub and experimental sound design.</p>
+                    <p className="sg-feature-tagline">Hypnotic Resonator FX for evolving, rhythmic textures.</p>
 
                     <div className="sg-ornament" aria-hidden="true">
                       <span className="ln"></span>
