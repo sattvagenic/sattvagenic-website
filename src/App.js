@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import MobileLingamMenu from './components/MobileLingamMenu';
+import HomeDecor from './components/HomeDecor';
 import ConsciousnessLab from './components/ConsciousnessLab';
 import About from './components/About';
 import StoneColumns from './StoneColumns';
@@ -566,9 +567,11 @@ function App() {
 function AppContent({ selectedImage, setSelectedImage }) {
   const location = useLocation(); // Now this works because it's inside Router
   const isMettaMorphPage = location.pathname === '/metta-morph';
-  
+  const isHomePage = location.pathname === '/';
+
   return (
-    <div className={`App ${isMettaMorphPage ? 'metta-morph-background' : ''}`}>
+    <div className={`App ${isMettaMorphPage ? 'metta-morph-background' : ''}${isHomePage ? ' home-frame' : ''}`}>
+      {isHomePage && <HomeDecor />}
       <header>
         <img src={logo} alt="Sattvagenic" class="logo--white" className="site-logo" />
         <nav>

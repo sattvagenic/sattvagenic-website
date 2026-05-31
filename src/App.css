@@ -54,6 +54,119 @@ body {
   z-index: -1;
 }
 
+/* =====================================================================
+   HOMEPAGE-ONLY Shaivo-futurist decoration system (see HomeDecor.js).
+   Borderless stone with a worn damaru behind the hero, sacred-circuit
+   glyph spines + rails in the margins, corner tiles, datura stations and
+   an eased riso grain. Scoped via `home-frame` so other routes are
+   untouched. All decoration hides <=1080px so mobile stays clean.
+   ===================================================================== */
+.App.home-frame {
+  border: 0;
+  box-shadow: none;
+  background: transparent;     /* let the warm .sg-bg show through */
+}
+.App.home-frame::before { display: none; }   /* drop the grey striped halo */
+
+/* warm Nadi-page stone backdrop, full viewport, behind everything */
+.sg-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(79, 165, 138, 0.06), transparent 42%),
+    radial-gradient(circle at 82% 78%, rgba(200, 83, 31, 0.05), transparent 45%),
+    #e9e3d6;
+}
+
+/* lift the real content above the decoration */
+.App.home-frame > header,
+.App.home-frame > main,
+.App.home-frame > nav { position: relative; z-index: 2; }
+
+/* decoration layer: spans the content column, behind content, non-interactive.
+   Anchored to the .App box (not the viewport) so the margin spines sit at the
+   content edges and can never be clipped away. */
+.sg-decor {
+  --edge: 34px;          /* distance of the side decoration from the screen edge */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.sg-decor-defs { position: absolute; width: 0; height: 0; }
+
+/* eased riso overlays (level "A") — fixed so the grain stays even while scrolling.
+   z-index 1: above the decoration (z 0) so it textures the damaru/glyphs, but
+   below the real content (z 2) so headings and body text stay crisp. */
+.sg-grain,
+.sg-mottle { position: fixed; inset: 0; pointer-events: none; mix-blend-mode: multiply; }
+.sg-grain {
+  z-index: 1;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+.sg-mottle {
+  z-index: 1;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* damaru behind the hero (swappable asset).
+   top = vertical position (lower value = higher up), width = size, opacity = faintness */
+.sg-damaru {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, 94vw);
+  height: auto;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* full-height margin rails */
+.sg-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  opacity: 0.5;
+  background: linear-gradient(#245c4e00, #245c4e55 8%, #245c4e55 92%, #245c4e00);
+}
+/* `50vw - 50%` = the margin between the screen edge and this layer's edge
+   (the layer is screen-centred), so these sit var(--edge) in from the true
+   device edge at any width. */
+.sg-rail-l { left: calc(var(--edge) + 60px - (50vw - 50%)); }
+.sg-rail-r { right: calc(var(--edge) + 60px - (50vw - 50%)); }
+
+/* sacred-circuit glyph spines (at the content-column edges) */
+.sg-spine { position: absolute; top: 70px; }
+.sg-spine-l { left: calc(var(--edge) - (50vw - 50%)); }
+.sg-spine-r { right: calc(var(--edge) - (50vw - 50%)); }
+.sg-spine svg { filter: url(#sgWornLine); }
+.sg-decor .gl-ln { stroke: var(--copper-deep, #245c4e); fill: none; stroke-width: 1.1; opacity: 0.6; vector-effect: non-scaling-stroke; }
+.sg-decor .gl-soft { stroke: var(--copper, #4fa58a); fill: none; stroke-width: 0.8; opacity: 0.42; vector-effect: non-scaling-stroke; }
+.sg-decor .gl-accent { stroke: var(--saffron, #c8531f); fill: none; stroke-width: 1.1; opacity: 0.72; vector-effect: non-scaling-stroke; }
+.sg-decor .gl-node { fill: var(--copper-deep, #245c4e); opacity: 0.7; }
+.sg-decor .gl-node-accent { fill: var(--saffron, #c8531f); opacity: 0.85; }
+.sg-decor .gl-label { font-family: 'Orbitron', monospace; font-size: 7.5px; fill: var(--copper-deep, #245c4e); opacity: 0.55; letter-spacing: 0.1em; }
+
+/* mobile: shed the margin decoration, keep a calm hero */
+@media (max-width: 1080px) {
+  .sg-spine, .sg-rail { display: none; }
+}
+@media (max-width: 600px) {
+  .sg-damaru { opacity: 0.42; top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* worn filters are static, but keep this hook for low-power fallbacks */
+  .sg-spine svg { filter: none; }
+}
+
 header {
   padding: 20px 0;
 }
