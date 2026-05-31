@@ -206,6 +206,8 @@ nav li:hover:after {
   width: 100%;
 }
 
+a:visited { color: inherit; }
+
 main {
   padding: 40px 0;
 }
