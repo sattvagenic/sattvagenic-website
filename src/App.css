@@ -206,7 +206,6 @@ nav li:hover:after {
   width: 100%;
 }
 
-a:visited { color: inherit; }
 
 main {
   padding: 40px 0;
@@ -1767,9 +1766,11 @@ html, body {
   color: #FF6600;
 }
 
-/* Main navigation links (keep black) */
+/* Main nav links — keep the warm ink in every state; no browser blue/purple */
+nav > ul > li > a,
+nav > ul > li > a:link,
 nav > ul > li > a:visited {
-  color: black;
+  color: var(--deep-forest);
 }
 
 /* Dropdown menu links (keep white for visibility) */
