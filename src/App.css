@@ -80,9 +80,11 @@ body {
 }
 
 /* lift the real content above the decoration */
-.App.home-frame > header,
 .App.home-frame > main,
 .App.home-frame > nav { position: relative; z-index: 2; }
+/* header sits one above main, so the mobile lingam menu (which lives inside the
+   header) can overlay the hero on the home page instead of rendering beneath it */
+.App.home-frame > header { position: relative; z-index: 3; }
 
 /* decoration layer: spans the content column, behind content, non-interactive.
    Anchored to the .App box (not the viewport) so the margin spines sit at the
@@ -155,12 +157,10 @@ body {
 .sg-decor .gl-node-accent { fill: var(--saffron, #c8531f); opacity: 0.85; }
 .sg-decor .gl-label { font-family: 'Orbitron', monospace; font-size: 7.5px; fill: var(--copper-deep, #245c4e); opacity: 0.55; letter-spacing: 0.1em; }
 
-/* mobile: shed the margin decoration, keep a calm hero */
+/* below ~laptop width (tablets & phones): drop the side decoration AND the
+   damaru, leaving a calm hero. The damaru shows on laptops (~13"+) and up. */
 @media (max-width: 1080px) {
-  .sg-spine, .sg-rail { display: none; }
-}
-@media (max-width: 600px) {
-  .sg-damaru { opacity: 0.42; top: 10px; }
+  .sg-spine, .sg-rail, .sg-damaru { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   /* worn filters are static, but keep this hook for low-power fallbacks */
