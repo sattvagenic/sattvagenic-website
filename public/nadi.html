@@ -225,20 +225,42 @@
   }
   .section-sub{ text-align:center; color:var(--ink-soft); margin-bottom:40px; font-size:15px; font-style:italic; }
 
-  .demos{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-  .demo{ background:var(--card); border:1px solid var(--copper-soft); border-radius:6px; padding:20px; transition:transform .15s, box-shadow .2s, border-color .2s; }
-  .demo:hover{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--copper); }
-  .demo .top{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
-  .play{ flex:0 0 auto; width:46px; height:46px; border-radius:50%; background:var(--orange); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; }
-  .play:hover{ background:var(--orange-deep); transform:scale(1.06); }
-  .play svg{ width:16px; height:16px; fill:#fff5ec; margin-left:2px; }
-  .play.playing svg.pause{ display:block; margin-left:0; }
-  .demo .meta{ flex:1; }
-  .demo .name{ font-family:'Iceland',sans-serif; font-size:19px; color:var(--ink); letter-spacing:.04em; }
-  .demo .time{ font-size:12.5px; color:var(--copper-deep); font-family:'Orbitron',monospace; letter-spacing:.08em; }
-  .wave{ width:100%; height:46px; margin-top:6px; }
-  .wave rect{ fill:var(--copper); }
-  .headphones{ text-align:center; color:var(--ink-soft); font-size:13.5px; margin-top:26px; font-style:italic; }
+  /* ====== Demo playlist player ====== */
+  .player{ max-width:680px; margin:0 auto; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:22px 24px; box-shadow:var(--shadow); }
+  .transport{ display:flex; align-items:center; gap:18px; padding-bottom:18px; border-bottom:1px solid rgba(126,182,163,.4); }
+  .pp{ flex:0 0 auto; width:54px; height:54px; border-radius:50%; background:var(--orange); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; }
+  .pp:hover{ background:var(--orange-deep); transform:scale(1.05); }
+  .pp svg{ width:18px; height:18px; fill:#fff5ec; }
+  .pp .tri{ margin-left:3px; }
+  .now{ flex:1; min-width:0; }
+  .now-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:7px; }
+  .now-title{ font-family:'Iceland',sans-serif; font-size:21px; color:var(--ink); letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .now-time{ font-family:'Orbitron',monospace; font-size:12px; color:var(--copper-deep); letter-spacing:.06em; flex:0 0 auto; }
+  .now-desc{ font-family:'Spectral',serif; font-style:italic; font-size:13px; color:var(--ink-soft); margin:0 0 9px; min-height:1em; }
+  .seek{ width:100%; height:34px; display:block; cursor:pointer; }
+  .seek rect{ transition:fill .1s linear; }
+
+  .tracklist{ list-style:none; margin:14px 0 0; padding:0; }
+  .track{ display:flex; align-items:center; gap:14px; padding:11px 12px; border-radius:6px; cursor:pointer; border-left:2px solid transparent; transition:background .15s, border-color .15s; }
+  .track:hover{ background:rgba(126,182,163,.14); }
+  .track.active{ background:rgba(79,165,138,.16); border-left-color:var(--orange); }
+  .track .idx{ font-family:'Orbitron',monospace; font-size:11px; color:var(--copper-deep); opacity:.6; width:18px; flex:0 0 auto; }
+  .track.active .idx{ opacity:0; }
+  .track .tname{ font-family:'Iceland',sans-serif; font-size:18px; color:var(--ink); letter-spacing:.03em; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .track.active .tname{ color:var(--copper-deep); }
+  .track .tdur{ font-family:'Orbitron',monospace; font-size:11.5px; color:var(--copper-deep); letter-spacing:.06em; flex:0 0 auto; }
+  /* equaliser shown on the active row */
+  .eq{ position:absolute; display:none; gap:2px; width:18px; height:14px; align-items:flex-end; justify-content:center; }
+  .track.active .eq{ display:flex; }
+  .track.active .idx-wrap{ position:relative; width:18px; flex:0 0 auto; }
+  .eq span{ width:2.5px; background:var(--orange); height:30%; border-radius:1px; }
+  .track.playing .eq span{ animation:eqbar .9s ease-in-out infinite; }
+  .track.playing .eq span:nth-child(2){ animation-delay:.3s; }
+  .track.playing .eq span:nth-child(3){ animation-delay:.15s; }
+  @keyframes eqbar{ 0%,100%{ height:25%; } 50%{ height:100%; } }
+  @media (prefers-reduced-motion: reduce){ .track.playing .eq span{ animation:none; height:60%; } }
+  .headphones{ text-align:center; color:var(--ink-soft); font-size:13.5px; margin-top:24px; font-style:italic; }
+
 
   .triptych{ display:grid; grid-template-columns:1.05fr 1fr .9fr; gap:40px; align-items:start; }
   .block h3{ font-family:'Iceland', sans-serif; font-size:26px; color:var(--orange); margin-bottom:18px; letter-spacing:.04em; }
@@ -313,7 +335,7 @@
     .hero .tagline, .hero .lede{ max-width:none; margin-left:auto; margin-right:auto; }
     .ornament{ justify-content:center; }
     .cta-row{ justify-content:center; }
-    .demos{ grid-template-columns:1fr; }
+    .player{ padding:18px 16px; }
     .triptych{ grid-template-columns:1fr; gap:48px; }
     .pricing{ max-width:420px; margin:0 auto; }
     .section-title{ font-size:34px; }
@@ -659,43 +681,26 @@
 <div class="wrap">
   <section id="demos">
     <h2 class="section-title">Hear Nadi in Action</h2>
-    <p class="section-sub">Three short passages — the same engine, three different worlds.</p>
-    <div class="demos">
-      <div class="demo">
-        <div class="top">
-          <button class="play" data-audio="demo1" aria-label="Play Deep Techno Resonance">
-            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-          </button>
-          <div class="meta"><div class="name">Deep Techno Resonance</div><div class="time">01:15</div></div>
+    <p class="section-sub">Six passages — one engine, six worlds. Press play and they flow one into the next.</p>
+    <div class="player">
+      <div class="transport">
+        <button id="ppBtn" class="pp" aria-label="Play">
+          <svg class="tri" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="pause" viewBox="0 0 24 24" aria-hidden="true" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+        <div class="now">
+          <div class="now-top">
+            <span id="nowTitle" class="now-title">Tabla Spell</span>
+            <span id="nowTime" class="now-time">0:00 / 2:02</span>
+          </div>
+          <div id="nowDesc" class="now-desc">1-bar tabla loop, a touch of delay · wet 0 → 100 → 0%</div>
+          <svg id="seek" class="seek" viewBox="0 0 600 34" preserveAspectRatio="none" aria-label="Seek"></svg>
         </div>
-        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <audio id="demo1" src="/assets/demos/deep-techno-resonance.mp3" preload="none"></audio>
       </div>
-      <div class="demo">
-        <div class="top">
-          <button class="play" data-audio="demo2" aria-label="Play Ambient Flow">
-            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-          </button>
-          <div class="meta"><div class="name">Ambient Flow</div><div class="time">01:22</div></div>
-        </div>
-        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <audio id="demo2" src="/assets/demos/ambient-flow.mp3" preload="none"></audio>
-      </div>
-      <div class="demo">
-        <div class="top">
-          <button class="play" data-audio="demo3" aria-label="Play Dub Echoes">
-            <svg class="tri" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-          </button>
-          <div class="meta"><div class="name">Dub Echoes</div><div class="time">01:18</div></div>
-        </div>
-        <svg class="wave" viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <audio id="demo3" src="/assets/demos/dub-echoes.mp3" preload="none"></audio>
-      </div>
+      <ol id="tracklist" class="tracklist"></ol>
+      <p class="headphones">Headphones recommended — and a moment to settle.</p>
     </div>
-    <p class="headphones">Headphones recommended for the full experience.</p>
+    <audio id="player" preload="none"></audio>
   </section>
 </div>
 
@@ -825,42 +830,109 @@
 </footer>
 
 <script>
+  /* ====== Demo playlist player ====== */
   (function(){
-    const waves = document.querySelectorAll('.wave');
-    waves.forEach((wave, wi) => {
-      const bars = 60, w = 300, gap = 1.4;
-      const bw = (w - (bars-1)*gap) / bars;
-      let seed = (wi+1)*97;
-      const rand = () => { seed = (seed*1103515245 + 12345) & 0x7fffffff; return seed/0x7fffffff; };
-      let html = '';
-      for(let i=0;i<bars;i++){
-        const env = Math.sin((i/bars)*Math.PI);
-        const h = 4 + env*38*(0.45+0.55*rand());
-        const x = i*(bw+gap);
-        const y = (46-h)/2;
-        html += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${(bw/2).toFixed(1)}"/>`;
+    const TRACKS = [
+      { name:'Tabla Spell',   file:'/assets/demos/1-tabla-spell.mp3',   dur:122, desc:'1-bar tabla loop, a touch of delay · wet 0 → 100 → 0%' },
+      { name:'Dub Temple',    file:'/assets/demos/2-dub-temple.mp3',     dur:69,  desc:'2-bar hat & snare loop · wet 100 → 0 → 100%' },
+      { name:'Liminal Strut', file:'/assets/demos/3-liminal-strut.mp3',  dur:87,  desc:"1-bar 909 loop, MIDI shifting Nadi's root · wet 100 → 0 → 100%" },
+      { name:'Pranic Acid',   file:'/assets/demos/4-pranic-acid.mp3',    dur:45,  desc:"1-bar conga loop, MIDI shifting Nadi's root · wet 100 → 0 → 100%" },
+      { name:'Bass Tunnel',   file:'/assets/demos/5-bass-tunnel.mp3',    dur:72,  desc:'Two-note sawtooth drone · wet 0 → 100 → 0%' },
+      { name:'Sunrise Arp',   file:'/assets/demos/6-sunrise-arp.mp3',    dur:65,  desc:'2-bar hat & snare loop · wet 0 → 100 → 75%' },
+    ];
+    const audio   = document.getElementById('player');
+    const ppBtn   = document.getElementById('ppBtn');
+    const tri     = ppBtn.querySelector('.tri');
+    const pauseI  = ppBtn.querySelector('.pause');
+    const nowTitle= document.getElementById('nowTitle');
+    const nowTime = document.getElementById('nowTime');
+    const nowDesc = document.getElementById('nowDesc');
+    const seek    = document.getElementById('seek');
+    const list    = document.getElementById('tracklist');
+    if(!audio || !list) return;
+
+    const BARS = 70, W = 600, GAP = 2;
+    const bw = (W - (BARS-1)*GAP) / BARS;
+    let current = -1;
+
+    const fmt = s => { s=Math.max(0,Math.floor(s||0)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+
+    // build the seek waveform for a given track index (deterministic per track)
+    function buildSeek(idx){
+      let seed = (idx+1)*97; const rand = () => { seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+      let html='';
+      for(let i=0;i<BARS;i++){
+        const env = Math.sin((i/BARS)*Math.PI);
+        const h = 4 + env*26*(0.4+0.6*rand());
+        const x = i*(bw+GAP), y=(34-h)/2;
+        html += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${(bw/2).toFixed(1)}" fill="var(--copper-soft)"/>`;
       }
-      wave.innerHTML = html;
+      seek.innerHTML = html;
+    }
+    function paintSeek(progress){ // progress 0..1
+      const bars = seek.children; const cut = progress*BARS;
+      for(let i=0;i<bars.length;i++){ bars[i].setAttribute('fill', i<cut ? 'var(--copper-deep)' : 'var(--copper-soft)'); }
+    }
+
+    // build the track rows
+    TRACKS.forEach((t,i)=>{
+      const li = document.createElement('li');
+      li.className='track'; li.dataset.i=i;
+      li.innerHTML = `<span class="idx-wrap"><span class="idx">${String(i+1).padStart(2,'0')}</span>`+
+                     `<span class="eq"><span></span><span></span><span></span></span></span>`+
+                     `<span class="tname">${t.name}</span>`+
+                     `<span class="tdur">${fmt(t.dur)}</span>`;
+      li.addEventListener('click', ()=> selectAndPlay(i));
+      list.appendChild(li);
     });
-  })();
-  (function(){
-    const buttons = document.querySelectorAll('.play');
-    let current = null;
-    buttons.forEach(btn => {
-      const audio = document.getElementById(btn.dataset.audio);
-      const tri = btn.querySelector('.tri');
-      const pause = btn.querySelector('.pause');
-      const setPlaying = (on) => { tri.style.display = on ? 'none' : 'block'; pause.style.display = on ? 'block' : 'none'; btn.classList.toggle('playing', on); };
-      btn.addEventListener('click', () => {
-        if(!audio) return;
-        if(current && current !== audio){ current.pause(); }
-        if(audio.paused){ audio.play(); setPlaying(true); current = audio; } else { audio.pause(); setPlaying(false); }
-      });
-      audio && audio.addEventListener('ended', () => setPlaying(false));
-      audio && audio.addEventListener('pause', () => setPlaying(false));
-      audio && audio.addEventListener('play', () => setPlaying(true));
+    const rows = Array.from(list.children);
+
+    function setPlayingUI(on){
+      tri.style.display = on ? 'none':'block';
+      pauseI.style.display = on ? 'block':'none';
+      ppBtn.setAttribute('aria-label', on ? 'Pause':'Play');
+      rows.forEach((r,i)=> r.classList.toggle('playing', on && i===current));
+    }
+    function highlight(idx){
+      rows.forEach((r,i)=> r.classList.toggle('active', i===idx));
+      nowTitle.textContent = TRACKS[idx].name;
+      nowDesc.textContent = TRACKS[idx].desc || '';
+      nowTime.textContent = '0:00 / '+fmt(TRACKS[idx].dur);
+      buildSeek(idx); paintSeek(0);
+    }
+    function load(idx){ current=idx; audio.src=TRACKS[idx].file; highlight(idx); }
+    function selectAndPlay(idx){
+      if(idx===current){ togglePlay(); return; }
+      load(idx); audio.play();
+    }
+    function togglePlay(){
+      if(current<0){ load(0); }
+      if(audio.paused) audio.play(); else audio.pause();
+    }
+
+    ppBtn.addEventListener('click', togglePlay);
+    audio.addEventListener('play',  ()=> setPlayingUI(true));
+    audio.addEventListener('pause', ()=> setPlayingUI(false));
+    audio.addEventListener('timeupdate', ()=>{
+      const d = audio.duration || TRACKS[current]?.dur || 0;
+      if(d){ paintSeek(audio.currentTime/d); nowTime.textContent = fmt(audio.currentTime)+' / '+fmt(d); }
     });
+    audio.addEventListener('ended', ()=>{
+      if(current < TRACKS.length-1){ selectAndPlay(current+1); }   // auto-advance
+      else { setPlayingUI(false); load(0); }                        // stop at end, reset to first
+    });
+    // click-to-seek on the waveform
+    seek.addEventListener('click', (e)=>{
+      if(current<0) return;
+      const r = seek.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (e.clientX - r.left)/r.width));
+      if(audio.duration) audio.currentTime = p*audio.duration;
+    });
+
+    // initial state: track 1 loaded but not playing
+    highlight(0); rows[0].classList.add('active');
   })();
+
 
   // ---- Trial form submit handler ----
   //
