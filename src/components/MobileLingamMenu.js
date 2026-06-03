@@ -48,7 +48,6 @@ const MobileLingamMenu = () => {
 
             <div className="menu-section">
               <h3>Meditations</h3>
-              <Link to="/meditation" onClick={closeMenu}>Chakra/Yantra Meditation</Link>
               <Link to="/metta-morph" onClick={closeMenu}>Metta-Morph</Link>
               <a href="/Tratak/" target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Tratak</a>
             </div>
