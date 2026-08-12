@@ -685,7 +685,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                   <figure className="sg-shot">
                     <img
                       src="/assets/nadi-gui.png"
-                      alt="The Nadi plugin interface — seven chakra resonator faders, the shakti energy path, and the main control knobs over a meditative figure."
+                      alt="The Nadi plugin interface — seven chakra resonator faders, the Kundalini's energy path, and the main control knobs over a meditative figure."
                     />
                     <figcaption>NADI · SATTVAGENIC</figcaption>
                   </figure>
@@ -704,13 +704,13 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       <span className="ln"></span>
                     </div>
 
-                    <p className="sg-feature-lede">Seven chakra-tuned resonators channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures. VST3 &amp; AU, Mac &amp; Windows.</p>
+                    <p className="sg-feature-lede">Seven chakra-tuned resonators channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures, with an internal mix engine that keeps them clear and produced. VST3 &amp; AU, Mac &amp; Windows.</p>
 
                     <div className="sg-cta-row">
                       <a className="sg-btn sg-btn-buy" href="/nadi">Explore Nadi →</a>
-                      <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 14-day Trial</a>
+                      <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 30-day Trial</a>
                     </div>
-                    <p className="sg-price-note">£25 intro · £32 full · one-off, lifetime updates.</p>
+                    <p className="sg-price-note">£19 intro · £29 full · one-off, lifetime updates.</p>
                   </div>
                 </div>
               </section>
