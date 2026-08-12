@@ -710,7 +710,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       <a className="sg-btn sg-btn-buy" href="/nadi">Explore Nadi →</a>
                       <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 30-day Trial</a>
                     </div>
-                    <p className="sg-price-note">£19 intro · £29 full · one-off, lifetime updates.</p>
+                    <p className="sg-price-note">£19 intro · £29 full · one-off, lifetime updates. Excl. VAT.</p>
                   </div>
                 </div>
               </section>
