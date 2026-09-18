@@ -1,0 +1,27 @@
+! Yaman.scl
+!
+Yaman in F# - Nadi (just intonation). Romantic and serene; tivra Ma is the signature. Lydian in feel.
+!
+ 7
+!
+ 9/8
+ 5/4
+ 45/32
+ 3/2
+ 5/3
+ 15/8
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   Re    203.91 cents
+!   Ga    386.31 cents
+!   Ma+   590.22 cents
+!   Pa    701.96 cents
+!   Dha   884.36 cents
+!   Ni   1088.27 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+! Intended root: F#3 = 369.9944 Hz — set your synth's base/root note to F#.

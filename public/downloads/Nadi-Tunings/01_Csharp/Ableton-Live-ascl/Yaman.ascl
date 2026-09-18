@@ -1,0 +1,30 @@
+! Yaman.ascl
+!
+Yaman in C# - Nadi (just intonation). Romantic and serene; tivra Ma is the signature. Lydian in feel.
+!
+ 7
+!
+ 9/8
+ 5/4
+ 45/32
+ 3/2
+ 5/3
+ 15/8
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   Re    203.91 cents
+!   Ga    386.31 cents
+!   Ma+   590.22 cents
+!   Pa    701.96 cents
+!   Dha   884.36 cents
+!   Ni   1088.27 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+!
+! @ABL NOTE_NAMES "Sa" "Re" "Ga" "Ma+" "Pa" "Dha" "Ni"
+! @ABL REFERENCE_PITCH 3 0 277.182631
+! @ABL SOURCE sattvagenic.com/nadi

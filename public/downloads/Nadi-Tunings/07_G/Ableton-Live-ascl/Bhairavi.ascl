@@ -1,0 +1,30 @@
+! Bhairavi.ascl
+!
+Bhairavi in G - Nadi (just intonation). Devotional and contemplative; all komal except Ma and Pa. Phrygian in feel.
+!
+ 7
+!
+ 16/15
+ 6/5
+ 4/3
+ 3/2
+ 8/5
+ 9/5
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   re    111.73 cents
+!   ga    315.64 cents
+!   Ma    498.04 cents
+!   Pa    701.96 cents
+!   dha   813.69 cents
+!   ni   1017.60 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+!
+! @ABL NOTE_NAMES "Sa" "re" "ga" "Ma" "Pa" "dha" "ni"
+! @ABL REFERENCE_PITCH 3 0 391.995436
+! @ABL SOURCE sattvagenic.com/nadi

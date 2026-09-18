@@ -1,0 +1,23 @@
+! Bhupali.scl
+!
+Bhupali in A - Nadi (just intonation). Serene major pentatonic: Sa Re Ga Pa Dha. No Ma, no Ni.
+!
+ 5
+!
+ 9/8
+ 5/4
+ 3/2
+ 5/3
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   Re    203.91 cents
+!   Ga    386.31 cents
+!   Pa    701.96 cents
+!   Dha   884.36 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+! Intended root: A3 = 440.0000 Hz — set your synth's base/root note to A.

@@ -1,0 +1,40 @@
+! Nadi_Chromatic.ascl
+!
+Nadi Chromatic in C - Nadi (just intonation). All twelve just-intonation degrees Nadi uses. For Custom rasa, or free playing.
+!
+ 12
+!
+ 16/15
+ 9/8
+ 6/5
+ 5/4
+ 4/3
+ 45/32
+ 3/2
+ 8/5
+ 5/3
+ 9/5
+ 15/8
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   re    111.73 cents
+!   Re    203.91 cents
+!   ga    315.64 cents
+!   Ga    386.31 cents
+!   Ma    498.04 cents
+!   Ma+   590.22 cents
+!   Pa    701.96 cents
+!   dha   813.69 cents
+!   Dha   884.36 cents
+!   ni   1017.60 cents
+!   Ni   1088.27 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+!
+! @ABL NOTE_NAMES "Sa" "re" "Re" "ga" "Ga" "Ma" "Ma+" "Pa" "dha" "Dha" "ni" "Ni"
+! @ABL REFERENCE_PITCH 3 0 261.625565
+! @ABL SOURCE sattvagenic.com/nadi

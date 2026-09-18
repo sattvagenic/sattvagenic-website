@@ -1,0 +1,30 @@
+! Charukesi.ascl
+!
+Charukesi in F# - Nadi (just intonation). Major third with flat sixth and seventh; bright ascending, plaintive descending.
+!
+ 7
+!
+ 9/8
+ 5/4
+ 4/3
+ 3/2
+ 8/5
+ 9/5
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   Re    203.91 cents
+!   Ga    386.31 cents
+!   Ma    498.04 cents
+!   Pa    701.96 cents
+!   dha   813.69 cents
+!   ni   1017.60 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+!
+! @ABL NOTE_NAMES "Sa" "Re" "Ga" "Ma" "Pa" "dha" "ni"
+! @ABL REFERENCE_PITCH 3 0 369.994422
+! @ABL SOURCE sattvagenic.com/nadi

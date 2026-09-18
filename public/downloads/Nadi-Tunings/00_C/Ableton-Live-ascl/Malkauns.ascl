@@ -1,0 +1,26 @@
+! Malkauns.ascl
+!
+Malkauns in C - Nadi (just intonation). Deep and meditative midnight pentatonic: Sa, komal Ga, Ma, komal Dha, komal Ni.
+!
+ 5
+!
+ 6/5
+ 4/3
+ 8/5
+ 9/5
+ 2/1
+!
+! Scale degrees (the annotations that used to sit on the pitch lines):
+!   ga    315.64 cents
+!   Ma    498.04 cents
+!   dha   813.69 cents
+!   ni   1017.60 cents
+!   Sa'  1200.00 cents
+!
+! Matches Nadi's internal tuning exactly, so instruments in this tuning
+! and Nadi's resonators lock together instead of beating.
+! Sattvagenic - sattvagenic.com/nadi
+!
+! @ABL NOTE_NAMES "Sa" "ga" "Ma" "dha" "ni"
+! @ABL REFERENCE_PITCH 3 0 261.625565
+! @ABL SOURCE sattvagenic.com/nadi
