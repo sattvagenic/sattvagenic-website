@@ -39,6 +39,7 @@ const MobileLingamMenu = () => {
             <div className="menu-section">
               <h3>Plugins</h3>
               <a href="/nadi" onClick={closeMenu}>Nadi</a>
+              <a href="/tunings.html" onClick={closeMenu}>Raga Tunings</a>
             </div>
 
             <div className="menu-section">

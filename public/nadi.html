@@ -107,7 +107,7 @@
   .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
   header.site{ padding:26px 0 10px; text-align:center; position:relative; z-index:2; }
-  .logo-img{ height:42px; width:auto; display:inline-block; vertical-align:middle; }
+  .logo-img{ height:42px; width:auto; max-width:100%; object-fit:contain; display:inline-block; vertical-align:middle; }
   .brand-text{
     font-family:'Iceland', sans-serif;
     letter-spacing:.18em;
@@ -234,15 +234,43 @@
   }
   .section-sub{ text-align:center; color:var(--ink-soft); margin-bottom:40px; font-size:15px; font-style:italic; }
 
-  /* Click-to-play video facade — keeps the heavy YouTube iframe off the page until tapped */
-  .video-frame{ position:relative; width:100%; max-width:860px; margin:0 auto; aspect-ratio:16/9; border-radius:8px; overflow:hidden; cursor:pointer; background:#0d0a07 url('/assets/nadi-video-poster.jpg') center/cover no-repeat; border:1px solid var(--copper-soft); box-shadow:var(--shadow); }
-  .video-frame::after{ content:""; position:absolute; inset:0; background:rgba(20,15,8,.20); transition:background .25s; }
-  .video-frame:hover::after{ background:rgba(20,15,8,.04); }
-  .video-play{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2; width:82px; height:82px; border-radius:50%; border:none; cursor:pointer; background:var(--orange); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 26px rgba(0,0,0,.45); transition:transform .2s, background .2s; }
-  .video-frame:hover .video-play{ transform:translate(-50%,-50%) scale(1.08); background:var(--orange-deep); }
-  .video-play svg{ width:36px; height:36px; fill:var(--card); margin-left:5px; }
-  .video-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; z-index:3; }
-  .video-frame.playing::after{ display:none; }
+  .hero-watch{ margin-top:20px; }
+  .text-link{ color:var(--copper-deep); text-underline-offset:4px; text-decoration-thickness:1px; }
+  .text-link:hover{ color:var(--orange-deep); }
+  .hero-watch .text-link{ font-family:'Iceland',sans-serif; font-size:20px; letter-spacing:.03em; }
+  a:focus-visible, button:focus-visible{ outline:3px solid var(--copper-deep); outline-offset:4px; }
+
+  /* Each poster loads its YouTube player only when selected. */
+  .video-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; }
+  .video-card{ min-width:0; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; box-shadow:var(--shadow); }
+  .video-frame{ position:relative; width:100%; aspect-ratio:16/9; min-height:200px; background:#0d0a07; border-radius:7px 7px 0 0; overflow:hidden; }
+  .video-poster{ display:block; position:absolute; inset:0; width:100%; height:100%; border:0; padding:0; cursor:pointer; background:#0d0a07; }
+  .video-poster[hidden]{ display:none; }
+  .video-poster img{ display:block; width:100%; height:100%; object-fit:contain; }
+  .video-poster::after{ content:""; position:absolute; inset:0; background:rgba(20,15,8,.1); transition:background .2s; }
+  .video-poster:hover::after{ background:transparent; }
+  .video-poster:focus-visible{ outline:3px solid #f6c45b; outline-offset:-6px; }
+  .video-play{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1; width:64px; height:64px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,.5); transition:transform .2s, background .2s; }
+  .video-poster:hover .video-play{ transform:translate(-50%,-50%) scale(1.06); background:var(--orange-deep); }
+  .video-play svg{ width:30px; height:30px; fill:#fff5ec; margin-left:3px; }
+  .video-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .video-copy{ padding:22px 24px 24px; }
+  .video-kicker, .resource-kicker{ font-family:'Iceland',sans-serif; color:var(--copper-deep); font-size:16px; letter-spacing:.09em; }
+  .video-card h3{ font-family:'Iceland',sans-serif; font-size:29px; font-weight:400; line-height:1.2; color:var(--ink); margin:6px 0 10px; }
+  .video-description{ font-size:15px; color:var(--ink-soft); margin-bottom:14px; }
+  .video-copy .text-link{ font-size:14px; }
+  .tuning-resource{ display:flex; justify-content:space-between; align-items:center; gap:32px; margin-top:32px; padding:28px 32px; border:1px solid var(--copper-soft); border-radius:8px; background:linear-gradient(120deg,rgba(79,165,138,.12),rgba(241,236,223,.7)); }
+  .tuning-resource h3{ font-family:'Iceland',sans-serif; font-size:30px; font-weight:400; color:var(--copper-deep); margin:3px 0 8px; line-height:1.2; }
+  .tuning-resource p:last-child{ max-width:65ch; font-size:15px; color:var(--ink-soft); }
+  .tuning-resource .btn{ flex-shrink:0; }
+  @media (max-width:860px){
+    .video-grid{ grid-template-columns:1fr; max-width:660px; margin:0 auto; }
+    .tuning-resource{ max-width:660px; margin-left:auto; margin-right:auto; flex-direction:column; align-items:flex-start; gap:20px; padding:24px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .video-play, .video-poster::after{ transition:none; }
+  }
 
   /* ====== Demo playlist player ====== */
   .player{ max-width:680px; margin:0 auto; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:22px 24px; box-shadow:var(--shadow); }
@@ -303,7 +331,7 @@
   .trial-capture h3{ font-family:'Iceland',sans-serif; color:var(--copper-deep); font-size:30px; margin-bottom:10px; letter-spacing:.04em; }
   .trial-capture > p{ color:var(--ink-soft); font-size:15px; margin-bottom:22px; }
   .trial-form{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .trial-form input[type=email]{ flex:1; min-width:240px; max-width:340px; padding:14px 16px; font-size:15px; font-family:'Spectral',serif; border:1.5px solid var(--copper-soft); border-radius:var(--radius); background:#fdfbf5; color:var(--ink); transition:border-color .2s; }
+  .trial-form input[type=email]{ flex:1; min-width:min(240px,100%); max-width:340px; padding:14px 16px; font-size:15px; font-family:'Spectral',serif; border:1.5px solid var(--copper-soft); border-radius:var(--radius); background:#fdfbf5; color:var(--ink); transition:border-color .2s; }
   .trial-form input[type=email]:focus{ outline:none; border-color:var(--copper-deep); }
   .trial-form button{ font-family:'Iceland',sans-serif; font-size:19px; letter-spacing:.04em; padding:12px 26px; border:none; border-radius:var(--radius); background:var(--copper-deep); color:#fff; cursor:pointer; transition:background .2s, transform .15s; }
   .trial-form button:hover{ background:var(--copper); transform:translateY(-2px); }
@@ -612,6 +640,7 @@
       </span>
       <a href="/about">About</a>
       <a href="/nadi" aria-current="page">Nadi</a>
+      <a href="/tunings.html">Tunings</a>
     </nav>
 
     <!-- Mobile lingam menu (shown only <=768px; mirrors the React site) -->
@@ -631,6 +660,7 @@
         <div class="menu-section">
           <h3>Plugins</h3>
           <a href="/nadi">Nadi</a>
+          <a href="/tunings.html">Raga Tunings</a>
         </div>
         <div class="menu-section">
           <h3>Music</h3>
@@ -693,6 +723,7 @@
         <a class="btn btn-trial" href="#trial">Download Trial <small>(30 days)</small></a>
       </div>
       <p class="price-note">Intro price of £19 (limited time). Full price £29. Prices exclude VAT, which is added at checkout where applicable. Checkout is processed in USD.</p>
+      <p class="hero-watch"><a class="text-link" href="#video">Watch the 4-minute dry/wet demo &darr;</a></p>
     </div>
     <figure class="shot">
       <img src="/assets/nadi-gui.png" alt="The Nadi plugin interface — seven chakra resonator faders, the Kundalini's energy path, and the main control knobs over a meditative figure." />
@@ -701,23 +732,56 @@
   </section>
 </div>
 
-<!-- ====== Video walkthrough ====== -->
+<!-- ====== Dry/wet demo, walkthrough and companion tunings ====== -->
 <div class="wrap">
-  <section id="video">
-    <h2 class="section-title">See Nadi in Action</h2>
-    <p class="section-sub">A full walkthrough — the presets, the controls, and Nadi running live.</p>
-    <div class="video-frame" id="nadiVideo" data-id="oEhq9n_U5ZY" role="button" tabindex="0" aria-label="Play the Nadi walkthrough video">
-      <button class="video-play" aria-label="Play video" tabindex="-1">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-      </button>
+  <section id="video" aria-labelledby="video-title">
+    <h2 class="section-title" id="video-title">See Nadi in Action</h2>
+    <p class="section-sub">Hear the transformation, then explore how it works.</p>
+    <div class="video-grid">
+      <article class="video-card" aria-labelledby="dry-wet-title">
+        <div class="video-frame" data-video-id="qE0n06DlR3w" data-video-title="Nadi — Dry / Wet Demo">
+          <button class="video-poster" type="button" aria-label="Play Nadi dry/wet demo, 4 minutes 1 second">
+            <img src="/assets/nadi-dry-wet.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" />
+            <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+        </div>
+        <div class="video-copy">
+          <p class="video-kicker">START HERE · 4:01</p>
+          <h3 id="dry-wet-title">Dry / Wet Demo</h3>
+          <p class="video-description">A quick listen to the source sound and the resonant textures Nadi draws from it.</p>
+          <a class="text-link" href="https://youtu.be/qE0n06DlR3w" target="_blank" rel="noopener noreferrer" aria-label="Watch the Nadi dry/wet demo on YouTube (opens in a new tab)">Watch on YouTube &nearr;</a>
+        </div>
+      </article>
+      <article class="video-card" aria-labelledby="walkthrough-title">
+        <div class="video-frame" data-video-id="8pSJGwrVNws" data-video-title="Nadi — Full Walkthrough">
+          <button class="video-poster" type="button" aria-label="Play Nadi full walkthrough, 45 minutes 30 seconds">
+            <img src="/assets/nadi-walkthrough.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" />
+            <span class="video-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+        </div>
+        <div class="video-copy">
+          <p class="video-kicker">GO DEEPER · 45:30</p>
+          <h3 id="walkthrough-title">Full Walkthrough</h3>
+          <p class="video-description">Take your time with the controls, presets and possibilities of Nadi.</p>
+          <a class="text-link" href="https://youtu.be/8pSJGwrVNws" target="_blank" rel="noopener noreferrer" aria-label="Watch the Nadi full walkthrough on YouTube (opens in a new tab)">Watch on YouTube &nearr;</a>
+        </div>
+      </article>
     </div>
+    <aside class="tuning-resource" aria-labelledby="tuning-resource-title">
+      <div>
+        <p class="resource-kicker">FREE COMPANION TUNINGS</p>
+        <h3 id="tuning-resource-title">Bring your synths into tune with Nadi</h3>
+        <p>Matching just-intonation pitch sets for Ableton Live 12 and Scala-compatible instruments. All twelve tonics, with a guide to getting set up. Free, no sign-up.</p>
+      </div>
+      <a class="btn btn-trial" href="/tunings.html">Explore the tunings &rarr;</a>
+    </aside>
   </section>
 </div>
 
 <!-- ====== Audio demos ====== -->
 <div class="wrap">
   <section id="demos">
-    <h2 class="section-title">Hear Nadi in Action</h2>
+    <h2 class="section-title">More Sounds to Explore</h2>
     <p class="section-sub">Each demo is one loop played through Nadi. Only the dry/wet is controlled.</p>
     <div class="player">
       <div class="transport">
@@ -1068,21 +1132,36 @@
   })();
 </script>
 <script>
-/* Nadi video — load the YouTube embed only on click/tap, autoplay once requested */
+/* Load a player only on request; stop other media before starting it. */
 (function(){
-  var v = document.getElementById('nadiVideo');
-  if(!v) return;
-  function play(){
-    if(v.classList.contains('playing')) return;
-    var id = v.getAttribute('data-id');
-    v.classList.add('playing');
-    v.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-      '?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="Nadi walkthrough" ' +
-      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-      'allowfullscreen></iframe>';
+  var frames = Array.from(document.querySelectorAll('[data-video-id]'));
+  var audio = document.getElementById('player');
+
+  function stopVideos(){
+    frames.forEach(function(frame){
+      var iframe = frame.querySelector('iframe');
+      if(iframe) iframe.remove();
+      frame.querySelector('.video-poster').hidden = false;
+    });
   }
-  v.addEventListener('click', play);
-  v.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); } });
+
+  frames.forEach(function(frame){
+    var poster = frame.querySelector('.video-poster');
+    poster.addEventListener('click', function(){
+      stopVideos();
+      if(audio) audio.pause();
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + frame.dataset.videoId + '?autoplay=1&rel=0&playsinline=1';
+      iframe.title = frame.dataset.videoTitle;
+      iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      poster.hidden = true;
+      frame.appendChild(iframe);
+      iframe.focus();
+    });
+  });
+  if(audio) audio.addEventListener('play', stopVideos);
 })();
 </script>
 </body>

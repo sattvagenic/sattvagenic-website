@@ -587,6 +587,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
       </ul>
     </li>
 <li><a href="/nadi">Nadi</a></li>
+    <li><a href="/tunings.html">Tunings</a></li>
     <li><Link to="/about">About</Link></li>
     
   </ul>
@@ -711,6 +712,9 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 30-day Trial</a>
                     </div>
                     <p className="sg-price-note">£19 intro · £29 full · one-off, lifetime updates. Excl. VAT.</p>
+                    <p className="sg-price-note">
+                      <a href="/tunings.html" style={{ color: 'inherit', textUnderlineOffset: '3px' }}>Free raga tunings for Live 12 &amp; Scala →</a>
+                    </p>
                   </div>
                 </div>
               </section>

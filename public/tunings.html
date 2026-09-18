@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============================================================
+     SEO / SOCIAL  — fixes the "React App" problem for this page.
+     Real metadata present in the served HTML so crawlers and
+     link-unfurlers see a proper title, description and image.
+     Update og:image and og:url to your live domain.
+     ============================================================ -->
+<title>Free Raga Tunings for Ableton Live 12 | Sattvagenic</title>
+<meta name="description" content="Free just-intonation tunings for Ableton Live 12 and Scala synths: fourteen raga- and rasa-derived pitch sets plus a chromatic set in all twelve tonics." />
+<link rel="canonical" href="https://www.sattvagenic.com/tunings.html" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Free Raga Tunings — Just Intonation for Live 12 and Scala Synths" />
+<meta property="og:description" content="Fourteen raga- and rasa-derived pitch sets plus a chromatic just-intonation set, in all twelve tonics. Free, no sign-up." />
+<meta property="og:url" content="https://www.sattvagenic.com/tunings.html" />
+<meta property="og:image" content="https://www.sattvagenic.com/assets/nadi-og.png" />
+<meta property="og:site_name" content="Sattvagenic" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Free Just-Intonation Raga Tunings" />
+<meta name="twitter:description" content="Fourteen raga- and rasa-derived pitch sets plus a chromatic set, for Ableton Live 12 and Scala-compatible instruments. Free, no sign-up." />
+<meta name="twitter:image" content="https://www.sattvagenic.com/assets/nadi-og.png" />
+
+
+
+<!-- Fonts: Iceland (display) — the face already used inside the plugin itself,
+     so site and product feel like one. Spectral is a refined serif for body;
+     Orbitron lends a touch of schematic feel to small technical labels. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Iceland&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=Orbitron:wght@500;600&display=swap" rel="stylesheet" />
+
+<!-- Note: we deliberately do NOT load Gumroad's gumroad.js overlay script,
+     because including it tends to restyle "Buy Now" buttons with Gumroad's
+     own black-branded look. Instead, Buy buttons open Gumroad in a new tab
+     (see the script at the bottom of the page), preserving our design. -->
+
+<style>
+  :root{
+    /* Palette: orange CTAs + much more copper/patina-green than v1,
+       so the page balances rather than reading as all-orange. */
+    --stone:        #e9e3d6;
+    --stone-deep:   #ddd5c4;
+    --ink:          #2b2722;
+    --ink-soft:     #5a5347;
+    --orange:       #c8531f;
+    --orange-deep:  #a8410f;
+    --copper:       #4fa58a;
+    --copper-deep:  #245c4e;
+    --copper-soft:  #7eb6a3;
+    --line:         #b7ad97;
+    --card:         #f1ecdf;
+    --gold:         #9a7a44;
+
+    --maxw: 1180px;
+    --radius: 4px;
+    --shadow: 0 18px 50px -28px rgba(43,39,34,.55);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Spectral', Georgia, serif;
+    color:var(--ink);
+    background-color:var(--stone);
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(79,165,138,.08), transparent 30%),
+      radial-gradient(circle at 85% 8%, rgba(200,83,31,.05), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(36,92,78,.06), transparent 40%);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Sacred-circuit motifs */
+  .motif{ position:absolute; pointer-events:none; z-index:0; }
+  .motif svg{ display:block; }
+  .motif .ln{ stroke:var(--copper-deep); fill:none; stroke-width:.9; opacity:.55; vector-effect:non-scaling-stroke; }
+  .motif .ln-soft{ stroke:var(--copper); fill:none; stroke-width:.7; opacity:.4; vector-effect:non-scaling-stroke; }
+  .motif .accent{ stroke:var(--orange); fill:none; stroke-width:.9; opacity:.7; vector-effect:non-scaling-stroke; }
+  .motif .node{ fill:var(--copper-deep); opacity:.7; }
+  .motif .node-accent{ fill:var(--orange); opacity:.85; }
+  .motif .label{ font-family:'Orbitron', monospace; font-size:7.5px; fill:var(--copper-deep); opacity:.55; letter-spacing:.1em; }
+  @media (max-width: 1080px){ .motif{ display:none; } }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+
+  header.site{ padding:26px 0 10px; text-align:center; position:relative; z-index:2; }
+  .logo-img{ height:42px; width:auto; max-width:100%; object-fit:contain; display:inline-block; vertical-align:middle; }
+  .brand-text{
+    font-family:'Iceland', sans-serif;
+    letter-spacing:.18em;
+    font-size:34px;
+    color:var(--ink);
+    text-transform:lowercase;
+    text-decoration:none;
+  }
+  nav.main{ margin-top:18px; display:flex; justify-content:center; gap:34px; flex-wrap:wrap; }
+  nav.main a{
+    font-family:'Iceland', sans-serif;
+    font-size:18px;
+    letter-spacing:.05em;
+    color:var(--copper-deep);
+    text-decoration:none;
+    padding-bottom:3px;
+    border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  nav.main a:hover{ color:var(--orange); }
+  nav.main a[aria-current="page"]{ color:var(--orange); border-bottom-color:var(--orange); }
+  /* Practices dropdown (desktop nav) — mirrors the Practices menu on the React pages */
+  .nav-dd{ position:relative; }
+  .nav-dd-label{ font-family:'Iceland', sans-serif; font-size:18px; letter-spacing:.05em; color:var(--copper-deep); padding-bottom:3px; border-bottom:1px solid transparent; cursor:default; transition:color .2s; }
+  .nav-dd:hover .nav-dd-label{ color:var(--orange); }
+  .nav-dd-menu{ position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(4px); display:flex; flex-direction:column; min-width:150px; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; box-shadow:var(--shadow); padding:6px 0; opacity:0; visibility:hidden; transition:opacity .2s, transform .2s; z-index:60; }
+  .nav-dd-menu::before{ content:''; position:absolute; top:-10px; left:0; right:0; height:10px; }  /* hover bridge */
+  .nav-dd:hover .nav-dd-menu{ opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .nav-dd-menu a{ font-family:'Iceland', sans-serif; font-size:17px; letter-spacing:.04em; color:var(--copper-deep); text-decoration:none; padding:8px 20px; white-space:nowrap; border-bottom:none; transition:color .2s, background .2s; }
+  .nav-dd-menu a:hover{ color:var(--orange); background:rgba(126,182,163,.16); }
+  .rule{ height:1px; background:linear-gradient(to right, transparent, var(--copper-soft), transparent); margin:18px 0 0; opacity:.6; }
+
+  /* ===== Mobile lingam menu — ported from the React site so the brand's
+     signature menu is identical across the static Nadi page and the app.
+     Hidden on desktop; on mobile it replaces the wrapped text nav. ===== */
+  .mobile-lingam-container{ display:none; position:relative; width:100%; align-items:center; justify-content:center; margin-top:16px; }
+  @media (max-width:768px){
+    .mobile-lingam-container{ display:flex; }
+    header.site nav.main{ display:none; }   /* swap text nav for the lingam on mobile */
+  }
+  .lingam-button{
+    cursor:pointer; position:relative; width:50px; height:60px;
+    background:linear-gradient(145deg, #2a2a2a, #0a0a0a);
+    border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; transition:all .3s ease;
+  }
+  .lingam-button:hover{ box-shadow: inset 2px 2px 5px rgba(255,255,255,0.15), inset -2px -2px 5px rgba(0,0,0,0.9), 0 6px 12px rgba(0,0,0,0.4); }
+  .lingam-line{ width:24px; height:2px; background-color:#f0f0f0; margin:2px 0; transition:all .3s ease; border-radius:1px; box-shadow:0 1px 2px rgba(0,0,0,0.3); }
+  .saffron-dot{ position:absolute; width:8px; height:8px; background:radial-gradient(circle, #FF6600, #cc4400); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 6px rgba(255,102,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.3); z-index:2; }
+  .mobile-lingam-container.open .lingam-line:nth-child(1){ transform:rotate(45deg) translate(8px,8px); }
+  .mobile-lingam-container.open .lingam-line:nth-child(2){ opacity:0; }
+  .mobile-lingam-container.open .lingam-line:nth-child(3){ transform:rotate(-45deg) translate(8px,-8px); }
+  .menu-overlay{ display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.5); z-index:998; }
+  .lingam-dropdown{
+    display:none; position:absolute; top:70px; left:50%; transform:translateX(-50%);
+    width:280px; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px);
+    border:1px solid #333; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.7);
+    z-index:999; padding:1rem; text-align:left;
+  }
+  .mobile-lingam-container.open .menu-overlay{ display:block; }
+  .mobile-lingam-container.open .lingam-dropdown{ display:block; animation:lingamDrop .3s ease-out; }
+  @keyframes lingamDrop{ from{ opacity:0; transform:translateX(-50%) translateY(-10px); } to{ opacity:1; transform:translateX(-50%) translateY(0); } }
+  .menu-section{ margin-bottom:1.5rem; }
+  .menu-section:last-child{ margin-bottom:0; }
+  .menu-section h3{ color:#FF6600; font-size:1rem; font-weight:bold; font-family:'Iceland',sans-serif; margin:0 0 .5rem; padding-bottom:.25rem; border-bottom:1px solid #333; text-transform:uppercase; letter-spacing:.5px; }
+  .menu-section a{ display:block; color:#fff; text-decoration:none; padding:.5rem 0; font-size:.9rem; font-family:'Spectral',serif; transition:color .3s ease, padding-left .3s ease; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .menu-section a:last-child{ border-bottom:none; }
+  .menu-section a:hover{ color:#FF6600; padding-left:.5rem; }
+  @media (max-width:480px){ .lingam-dropdown{ width:90vw; max-width:320px; } }
+
+  .hero{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; padding:54px 0 64px; }
+  .hero h1{
+    font-family:'Iceland', sans-serif;
+    font-size:96px;
+    color:var(--orange);
+    line-height:.95;
+    letter-spacing:.04em;
+    margin-bottom:16px;
+  }
+  .hero .aura-tag{ font-family:'Spectral',serif; font-style:italic; font-size:24px; color:var(--orange); letter-spacing:.01em; margin:6px 0 0; }
+  .hero .tagline{ font-size:20px; color:var(--ink); font-weight:500; margin-bottom:24px; max-width:40ch; line-height:1.4; }
+  .hero .lede{ font-size:16.5px; color:var(--ink-soft); max-width:46ch; margin-bottom:30px; }
+  .ornament{ display:flex; align-items:center; gap:14px; margin:22px 0 26px; color:var(--copper-deep); }
+  .ornament .ln{ height:1px; width:64px; background:var(--copper); opacity:.6; }
+  .ornament svg{ width:14px; height:14px; }
+
+  .cta-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Iceland', sans-serif;
+    font-size:19px;
+    letter-spacing:.04em;
+    padding:14px 26px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    line-height:1.2;
+    border:1.5px solid transparent;
+    transition:transform .15s, background .2s, color .2s, box-shadow .2s;
+  }
+  .btn small{ font-size:13px; opacity:.85; font-family:'Spectral', serif; font-style:italic; letter-spacing:0; margin-top:2px; }
+  .btn-buy{ background:var(--orange); color:#fff5ec; box-shadow:0 10px 24px -12px rgba(200,83,31,.7); }
+  .btn-buy:hover{ background:var(--orange-deep); transform:translateY(-2px); }
+  .btn-trial{ background:transparent; color:var(--copper-deep); border-color:var(--copper-deep); }
+  .btn-trial:hover{ background:var(--copper-deep); color:#fff; transform:translateY(-2px); }
+  .price-note{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); }
+
+  .shot{ position:relative; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:14px; box-shadow:var(--shadow); }
+  .shot img{ width:100%; height:auto; display:block; border-radius:4px; }
+  .shot figcaption{ text-align:center; font-family:'Iceland',sans-serif; font-size:15px; letter-spacing:.16em; color:var(--copper-deep); padding-top:10px; }
+
+  section{ padding:60px 0; position:relative; }
+  .section-title{
+    font-family:'Iceland', sans-serif;
+    font-size:42px;
+    color:var(--orange);
+    text-align:center;
+    margin-bottom:6px;
+    letter-spacing:.04em;
+  }
+  .section-sub{ text-align:center; color:var(--ink-soft); margin-bottom:40px; font-size:15px; font-style:italic; }
+
+  /* Click-to-play video facade — keeps the heavy YouTube iframe off the page until tapped */
+  .video-frame{ position:relative; width:100%; max-width:860px; margin:0 auto; aspect-ratio:16/9; border-radius:8px; overflow:hidden; cursor:pointer; background:#0d0a07 url('/assets/nadi-video-poster.jpg') center/cover no-repeat; border:1px solid var(--copper-soft); box-shadow:var(--shadow); }
+  .video-frame::after{ content:""; position:absolute; inset:0; background:rgba(20,15,8,.20); transition:background .25s; }
+  .video-frame:hover::after{ background:rgba(20,15,8,.04); }
+  .video-play{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2; width:82px; height:82px; border-radius:50%; border:none; cursor:pointer; background:var(--orange); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 26px rgba(0,0,0,.45); transition:transform .2s, background .2s; }
+  .video-frame:hover .video-play{ transform:translate(-50%,-50%) scale(1.08); background:var(--orange-deep); }
+  .video-play svg{ width:36px; height:36px; fill:var(--card); margin-left:5px; }
+  .video-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; z-index:3; }
+  .video-frame.playing::after{ display:none; }
+
+  /* ====== Demo playlist player ====== */
+  .player{ max-width:680px; margin:0 auto; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:22px 24px; box-shadow:var(--shadow); }
+  .transport{ display:flex; align-items:center; gap:18px; padding-bottom:18px; border-bottom:1px solid rgba(126,182,163,.4); }
+  .pp{ flex:0 0 auto; width:54px; height:54px; border-radius:50%; background:var(--orange); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; }
+  .pp:hover{ background:var(--orange-deep); transform:scale(1.05); }
+  .pp svg{ width:18px; height:18px; fill:#fff5ec; }
+  .pp .tri{ margin-left:3px; }
+  .now{ flex:1; min-width:0; }
+  .now-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:7px; }
+  .now-title{ font-family:'Iceland',sans-serif; font-size:21px; color:var(--ink); letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .now-time{ font-family:'Orbitron',monospace; font-size:12px; color:var(--copper-deep); letter-spacing:.06em; flex:0 0 auto; }
+  .now-desc{ font-family:'Spectral',serif; font-style:italic; font-size:13px; color:var(--ink-soft); margin:0 0 9px; min-height:1em; }
+  .seek{ width:100%; height:34px; display:block; cursor:pointer; }
+  .seek rect{ transition:fill .1s linear; }
+
+  .tracklist{ list-style:none; margin:14px 0 0; padding:0; }
+  .track{ display:flex; align-items:center; gap:14px; padding:11px 12px; border-radius:6px; cursor:pointer; border-left:2px solid transparent; transition:background .15s, border-color .15s; }
+  .track:hover{ background:rgba(126,182,163,.14); }
+  .track.active{ background:rgba(79,165,138,.16); border-left-color:var(--orange); }
+  .track .idx{ font-family:'Orbitron',monospace; font-size:11px; color:var(--copper-deep); opacity:.6; width:18px; flex:0 0 auto; }
+  .track.active .idx{ opacity:0; }
+  .track .tname{ font-family:'Iceland',sans-serif; font-size:18px; color:var(--ink); letter-spacing:.03em; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .track.active .tname{ color:var(--copper-deep); }
+  .track .tdur{ font-family:'Orbitron',monospace; font-size:11.5px; color:var(--copper-deep); letter-spacing:.06em; flex:0 0 auto; }
+  /* equaliser shown on the active row */
+  .eq{ position:absolute; display:none; gap:2px; width:18px; height:14px; align-items:flex-end; justify-content:center; }
+  .track.active .eq{ display:flex; }
+  .track.active .idx-wrap{ position:relative; width:18px; flex:0 0 auto; }
+  .eq span{ width:2.5px; background:var(--orange); height:30%; border-radius:1px; }
+  .track.playing .eq span{ animation:eqbar .9s ease-in-out infinite; }
+  .track.playing .eq span:nth-child(2){ animation-delay:.3s; }
+  .track.playing .eq span:nth-child(3){ animation-delay:.15s; }
+  @keyframes eqbar{ 0%,100%{ height:25%; } 50%{ height:100%; } }
+  @media (prefers-reduced-motion: reduce){ .track.playing .eq span{ animation:none; height:60%; } }
+  .headphones{ text-align:center; color:var(--ink-soft); font-size:13.5px; margin-top:24px; font-style:italic; }
+
+
+  .triptych{ display:grid; grid-template-columns:1.05fr 1fr .9fr; gap:40px; align-items:start; }
+  .block h3{ font-family:'Iceland', sans-serif; font-size:26px; color:var(--orange); margin-bottom:18px; letter-spacing:.04em; }
+  ul.feat{ list-style:none; }
+  ul.feat li{ position:relative; padding-left:28px; margin-bottom:13px; font-size:15.5px; color:var(--ink); }
+  ul.feat li::before{ content:""; position:absolute; left:0; top:8px; width:12px; height:12px; border:1.5px solid var(--copper-deep); border-radius:50%; }
+  ul.feat li::after{ content:""; position:absolute; left:4.5px; top:12.5px; width:3px; height:3px; background:var(--copper-deep); border-radius:50%; }
+  .concept p{ color:var(--ink-soft); margin-bottom:14px; font-size:15.5px; }
+  .concept .chakra-svg{ margin:0 auto 20px; display:block; }
+
+  .pricing{ background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:30px 28px; text-align:center; box-shadow:var(--shadow); }
+  .pricing .tier{ padding:14px 0; }
+  .pricing .label{ font-family:'Iceland',sans-serif; font-size:16px; letter-spacing:.1em; color:var(--copper-deep); }
+  .pricing .amount{ font-family:'Iceland',sans-serif; font-size:58px; color:var(--orange); line-height:1; margin:4px 0; letter-spacing:.02em; }
+  .pricing .amount.full{ color:var(--ink); font-size:48px; }
+  .pricing .note{ font-size:13px; color:var(--ink-soft); font-style:italic; }
+  .pricing .divider{ height:1px; background:var(--copper-soft); margin:14px 0; position:relative; opacity:.7; }
+  .pricing .divider span{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--card); padding:0 12px; color:var(--gold); font-size:14px; }
+
+  .trial-capture{ background:linear-gradient(180deg, var(--card), var(--stone-deep)); border:1px solid var(--copper-soft); border-radius:8px; padding:40px 32px; max-width:620px; margin:0 auto; text-align:center; }
+  .trial-capture h3{ font-family:'Iceland',sans-serif; color:var(--copper-deep); font-size:30px; margin-bottom:10px; letter-spacing:.04em; }
+  .trial-capture > p{ color:var(--ink-soft); font-size:15px; margin-bottom:22px; }
+  .trial-form{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .trial-form input[type=email]{ flex:1; min-width:240px; max-width:340px; padding:14px 16px; font-size:15px; font-family:'Spectral',serif; border:1.5px solid var(--copper-soft); border-radius:var(--radius); background:#fdfbf5; color:var(--ink); transition:border-color .2s; }
+  .trial-form input[type=email]:focus{ outline:none; border-color:var(--copper-deep); }
+  .trial-form button{ font-family:'Iceland',sans-serif; font-size:19px; letter-spacing:.04em; padding:12px 26px; border:none; border-radius:var(--radius); background:var(--copper-deep); color:#fff; cursor:pointer; transition:background .2s, transform .15s; }
+  .trial-form button:hover{ background:var(--copper); transform:translateY(-2px); }
+  .download-links{ display:none; margin-top:24px; }
+  .download-links.show{ display:block; animation:fade .5s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  .download-links .dl-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+  .download-links a{ font-family:'Iceland',sans-serif; font-size:17px; letter-spacing:.04em; padding:12px 22px; border-radius:var(--radius); background:var(--orange); color:#fff5ec; text-decoration:none; display:inline-flex; gap:8px; transition:background .2s, transform .15s; }
+  .download-links a:hover{ background:var(--orange-deep); transform:translateY(-2px); }
+  .privacy{ font-size:12px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+  /* Windows-installer note: dimmer, smaller, in a subtle bordered box to
+     separate it from the main thank-you message without alarming the user. */
+  .windows-note{
+    margin-top:18px;
+    padding:14px 16px;
+    border:1px solid var(--copper-soft);
+    border-radius:var(--radius);
+    background:rgba(126,182,163,.08);
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    text-align:left;
+  }
+  .windows-note strong{ color:var(--copper-deep); font-weight:600; }
+  .windows-note em{ font-style:normal; color:var(--ink); font-weight:500; }
+
+  .formats{ text-align:center; }
+  .format-row{ display:flex; justify-content:center; align-items:center; gap:46px; flex-wrap:wrap; margin-top:16px; }
+  .format{ display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--copper-deep); }
+  .format .glyph{ width:56px; height:56px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--copper-soft); border-radius:8px; color:var(--ink); font-family:'Orbitron',monospace; font-size:13px; font-weight:600; letter-spacing:.04em; background:var(--card); transition:border-color .2s; }
+  .format:hover .glyph{ border-color:var(--copper-deep); }
+  .format .glyph svg{ width:28px; height:28px; }
+  .format span{ font-family:'Iceland',sans-serif; letter-spacing:.06em; font-size:15px; }
+  .works{ margin-top:24px; color:var(--ink-soft); font-style:italic; font-size:14px; }
+
+  footer.site{ text-align:center; padding:50px 0 40px; margin-top:30px; border-top:1px solid var(--copper-soft); }
+  footer .brand-text{ font-size:30px; }
+  footer .motto{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-top:8px; max-width:50ch; margin-left:auto; margin-right:auto; }
+  footer .social{ margin-top:22px; display:flex; gap:24px; justify-content:center; }
+  footer .social a{ color:var(--copper-deep); transition:color .2s; }
+  footer .social a:hover{ color:var(--orange); }
+  footer .social svg{ width:22px; height:22px; }
+  footer .copy{ margin-top:20px; font-size:12px; color:var(--ink-soft); font-family:'Orbitron',monospace; letter-spacing:.08em; }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns:1fr; gap:36px; text-align:center; padding:34px 0 44px; }
+    .hero h1{ font-size:76px; }
+    .hero .tagline, .hero .lede{ max-width:none; margin-left:auto; margin-right:auto; }
+    .ornament{ justify-content:center; }
+    .cta-row{ justify-content:center; }
+    .player{ padding:18px 16px; }
+    .triptych{ grid-template-columns:1fr; gap:48px; }
+    .pricing{ max-width:420px; margin:0 auto; }
+    .section-title{ font-size:34px; }
+  }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a href="/" style="text-decoration:none;">
+      <img class="logo-img" src="/assets/sattvagenic-logo.png" alt="Sattvagenic" />
+    </a>
+    <nav class="main">
+      <a href="/">Gallery</a>
+      <a href="/music">Music</a>
+      <span class="nav-dd">
+        <span class="nav-dd-label">Practices</span>
+        <span class="nav-dd-menu">
+          <a href="/metta-morph">Metta-Morph</a>
+          <a href="/Tratak/" target="_blank" rel="noopener noreferrer">Tratak</a>
+        </span>
+      </span>
+      <a href="/about">About</a>
+      <a href="/nadi">Nadi</a>
+      <a href="/tunings.html" aria-current="page">Tunings</a>
+    </nav>
+
+    <!-- Mobile lingam menu (shown only <=768px; mirrors the React site) -->
+    <div class="mobile-lingam-container">
+      <div class="lingam-button" id="lingamBtn" aria-label="Menu" role="button" tabindex="0">
+        <div class="lingam-line"></div>
+        <div class="lingam-line"></div>
+        <div class="lingam-line"></div>
+        <div class="saffron-dot"></div>
+      </div>
+      <div class="menu-overlay" id="lingamOverlay"></div>
+      <div class="lingam-dropdown" id="lingamDropdown">
+        <div class="menu-section">
+          <h3>Gallery</h3>
+          <a href="/">Home</a>
+        </div>
+        <div class="menu-section">
+          <h3>Plugins</h3>
+          <a href="/nadi">Nadi</a>
+          <a href="/tunings.html">Raga Tunings</a>
+        </div>
+        <div class="menu-section">
+          <h3>Music</h3>
+          <a href="/music">Releases</a>
+        </div>
+        <div class="menu-section">
+          <h3>Meditations</h3>
+          <a href="/metta-morph">Metta-Morph</a>
+          <a href="/Tratak/" target="_blank" rel="noopener noreferrer">Tratak</a>
+        </div>
+        <!-- Mantric Art — hidden until the pages are polished and republished.
+        <div class="menu-section">
+          <h3>Mantric Art</h3>
+          <a href="/mantra">Mritunjay</a>
+          <a href="/torus-mantra">Om Namah Shivaya</a>
+        </div>
+        -->
+        <!-- Writing — hidden until there is content to link to.
+        <div class="menu-section">
+          <h3>Writing</h3>
+          <a href="#writings">Essays &amp; Texts</a>
+        </div>
+        -->
+        <div class="menu-section">
+          <h3>About</h3>
+          <a href="/about">About Sattvagenic</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <section class="hero" style="padding-top:34px; grid-template-columns:1fr; text-align:center;">
+    <div style="max-width:62ch; margin:0 auto;">
+      <h1>Raga Tunings</h1>
+      <p class="tagline" style="max-width:none;">Fourteen raga- and rasa-derived pitch sets in just intonation,
+      plus a chromatic JI set — for Ableton Live 12 and Scala-compatible instruments.</p>
+      <p class="lede" style="max-width:none;">All twelve tonics. Both formats. Free, no sign-up.</p>
+      <div class="cta-row" style="justify-content:center;">
+        <a class="btn btn-buy" href="/downloads/Nadi-Tunings.zip" download>&darr; Download the tunings</a>
+        <a class="btn btn-trial" href="#how">How to use them</a>
+      </div>
+      <p class="note">230&nbsp;KB · .ascl for Live 12 · .scl for Scala-compatible instruments</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Why they exist</h2>
+    <p class="section-sub">The short version: Nadi and most synths speak slightly different pitch languages.</p>
+    <div class="block concept">
+      <p>Most synths use <strong>twelve-tone equal temperament</strong>, or 12-TET, where every
+      semitone has the same frequency ratio. It is a clever compromise: one keyboard can move
+      freely between keys without being retuned.</p>
+      <p><strong>Just intonation</strong> builds intervals from small whole-number ratios such as
+      3/2, 5/4 and 9/8. With stable, harmonically rich sounds, more partials coincide and beating
+      can be reduced, giving intervals a more fused, settled quality.</p>
+      <p>These files are fixed just-intonation realisations of Nadi's raga- and rasa-derived pitch
+      sets. They are not a claim that each raga has one universally correct set of frequencies:
+      in Indian classical performance, intonation is shaped by melodic context, movement and
+      ornament. Here, the aim is practical — to give Nadi and compatible instruments the same
+      pitch framework.</p>
+      <p>The difference is small but audible. A 5/4 major third sits about <strong>14 cents below</strong>
+      its 12-TET equivalent; a 5/3 major sixth about 16 cents below. Layer a JI-tuned resonator
+      with a 12-TET synth and sustained notes can beat against one another. That is a tuning
+      mismatch, not a mix problem. Load the matching file and the layers settle together.</p>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2 class="section-title">How to use them</h2>
+    <p class="section-sub">Choose your tonic (Sa), load the tuning, then match Nadi.</p>
+
+    <div class="triptych">
+      <div class="block">
+        <h3>Ableton Live 12</h3>
+        <ul class="feat">
+          <li>Open the folder for your tonic — <em>00_C</em>, <em>05_F</em>, and so on.</li>
+          <li>Add the downloaded folder to Live's <strong>Places</strong> and double-click the
+              <em>.ascl</em> file, or drag the file directly into Live's <strong>Tuning</strong> section.</li>
+          <li>The piano roll now shows the tuning's swara names — Sa, Re, ga, Ma, Pa — instead
+              of standard note names.</li>
+          <li>Live's own instruments follow automatically.</li>
+        </ul>
+        <p class="works">Live applies one tuning to the whole Set. Use <strong>Bypass Tuning</strong>
+        on any MIDI track that should remain in 12-TET; Drum Racks bypass it automatically.
+        Compatible MPE plug-ins can follow when their pitch-bend range is set to 48 semitones.</p>
+      </div>
+
+      <div class="block">
+        <h3>Scala-compatible synths</h3>
+        <ul class="feat">
+          <li>Load the matching <em>.scl</em> in the synth's own tuning or microtuning section.</li>
+          <li>Spire and Pigments import <em>.scl</em> directly; many other instruments do too.</li>
+          <li>Standard <em>.scl</em> files store intervals rather than an absolute root. Set the
+              synth's tonic or reference note to the folder you chose, with A4 at 440&nbsp;Hz.</li>
+          <li>Some instruments use a separate keyboard-mapping file (<em>.kbm</em>). If prompted,
+              follow the synth's own microtuning instructions rather than assuming its default.</li>
+        </ul>
+        <p class="works">This route works in any DAW that can host the synth and doesn't depend
+        on MPE.</p>
+      </div>
+
+      <div class="block">
+        <h3>With Nadi</h3>
+        <ul class="feat">
+          <li>Set Nadi's <strong>Rasa</strong> to the matching mode.</li>
+          <li><strong>Shift-click</strong> Nadi's Sa dial to the same note as the folder you
+              loaded — Shift snaps it to exact semitones.</li>
+          <li>Use the octave arrows to place it in whichever register suits the track.</li>
+          <li>Done. Resonators and instruments in one tuning.</li>
+        </ul>
+        <p class="works">For the closest alignment, match both Rasa and Sa. Once aligned, try
+        moving Nadi by a fourth or fifth as a deliberate harmonic colour and judge the result by ear.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">What's in the download</h2>
+    <div class="block">
+      <ul class="feat">
+        <li><strong>Fifteen tuning sets</strong> — the fourteen pitch sets used by Nadi: Shanta,
+            Bhairavi, Yaman, Malkauns, Bhairav, Todi, Megh, Pahadi, Marwa, Darbari, Durga,
+            Bhupali, Kafi and Charukesi, plus a twelve-degree chromatic set for free playing.</li>
+        <li><strong>All twelve tonics</strong> — one folder per root, so there's no interval
+            editing or arithmetic.</li>
+        <li><strong>Two formats</strong> — <em>.ascl</em> for Ableton Live 12, with swara names in
+            the piano roll and an embedded reference pitch; <em>.scl</em> in the original Scala
+            format for compatible instruments.</li>
+        <li><strong>A Sa frequency table</strong> — every root across five octaves, for setting a
+            resonator or synth by frequency rather than by note.</li>
+        <li><strong>Exact ratios</strong> — every interval written as a fraction with its value in
+            cents, so you can see precisely what you're playing.</li>
+      </ul>
+      <p class="works">The <em>.ascl</em> files use A4 = 440&nbsp;Hz as their embedded reference.
+      Standard <em>.scl</em> files describe interval relationships rather than an absolute pitch,
+      so set the tonic and reference frequency inside the synth.</p>
+      <p class="works"><strong>A tuning is not the whole raga.</strong> These files set pitch
+      positions; characteristic phrases, ascending and descending movement, note hierarchy and
+      ornamentation remain part of the music.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Where they came from</h2>
+    <div class="block concept">
+      <p>These tunings began as companions to <a href="/nadi">Nadi</a>, a seven-voice resonator
+      effect whose resonance banks use fixed just intervals drawn from raga and rasa modes. Nadi
+      can sound beautiful on its own, but when its resonances sit against a 12-TET synth, the two
+      pitch frameworks can pull slightly apart. These files let compatible instruments meet Nadi
+      on the same framework.</p>
+      <p>They're useful beyond Nadi and free whether or not you ever use it. If you're curious
+      what those resonances can do to a drum loop, there's a 30-day trial.</p>
+      <div class="cta-row">
+        <a class="btn btn-buy" href="/nadi">About Nadi</a>
+        <a class="btn btn-trial" href="/downloads/Nadi-Tunings.zip" download>&darr; Download the tunings</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <img class="logo-img" src="/assets/sattvagenic-logo.png" alt="Sattvagenic" style="height:36px;" />
+    <p class="motto">Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
+    <div class="social">
+      <a href="mailto:hello@sattvagenic.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+    </div>
+    <p class="copy">© 2026 SATTVAGENIC · ALL RIGHTS RESERVED</p>
+  </div>
+</footer>
+
+<script>
+  // ---- Mobile lingam menu ----
+  // Vanilla port of the React MobileLingamMenu: toggle an .open class on the
+  // container; overlay-click and link-click both close it.
+  (function(){
+    var container = document.querySelector('.mobile-lingam-container');
+    if(!container) return;
+    var btn     = document.getElementById('lingamBtn');
+    var overlay = document.getElementById('lingamOverlay');
+    var open    = function(){ container.classList.add('open'); };
+    var close   = function(){ container.classList.remove('open'); };
+    var toggle  = function(){ container.classList.toggle('open'); };
+
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+    overlay.addEventListener('click', close);
+    document.querySelectorAll('#lingamDropdown a').forEach(function(a){
+      a.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  })();
+</script>
+</body>
+</html>
