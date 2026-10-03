@@ -11,12 +11,12 @@
      Update og:image and og:url to your live domain.
      ============================================================ -->
 <title>Nadi — Hypnotic Resonator FX Plugin | Sattvagenic</title>
-<meta name="description" content="Nadi is a chakra-inspired resonator FX plugin — aura for audio. Seven tuned resonators turn any source into evolving, meditative and rhythmic textures, with an internal mix engine that keeps them clear and produced. VST3 and AU, Mac and Windows. 30-day free trial." />
+<meta name="description" content="Nadi is a chakra-inspired resonator FX plugin — aura for audio. Seven tuned resonators turn any source into evolving, meditative and rhythmic textures, with an internal mix engine that keeps them clear and produced. VST3 and AU, Mac and Windows. Free public beta." />
 <link rel="canonical" href="https://www.sattvagenic.com/nadi" />
 
 <meta property="og:type" content="product" />
 <meta property="og:title" content="Nadi — Hypnotic Resonator FX Plugin" />
-<meta property="og:description" content="A chakra-inspired resonator plugin. Channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures. 30-day free trial." />
+<meta property="og:description" content="A chakra-inspired resonator plugin. Channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures. Free public beta." />
 <meta property="og:url" content="https://www.sattvagenic.com/nadi" />
 <meta property="og:image" content="https://www.sattvagenic.com/assets/nadi-og.png" />
 <meta property="og:site_name" content="Sattvagenic" />
@@ -36,7 +36,7 @@
   "category": "Audio Software / VST Plugin",
   "offers": {
     "@type": "Offer",
-    "price": "19.00",
+    "price": "0.00",
     "priceCurrency": "GBP",
     "availability": "https://schema.org/InStock",
     "url": "https://www.sattvagenic.com/nadi"
@@ -51,10 +51,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Iceland&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=Orbitron:wght@500;600&display=swap" rel="stylesheet" />
 
-<!-- Note: we deliberately do NOT load Gumroad's gumroad.js overlay script,
-     because including it tends to restyle "Buy Now" buttons with Gumroad's
-     own black-branded look. Instead, Buy buttons open Gumroad in a new tab
-     (see the script at the bottom of the page), preserving our design. -->
+<!-- PUBLIC BETA: the Buy buttons and pricing are taken out for now; the page
+     points to the free beta download (email in return). At launch, restore the
+     Buy buttons (https://sattvagenic.gumroad.com/l/rqeedg?wanted=true) and the
+     pricing block from the pre-beta copy of this file. -->
 
 <style>
   :root{
@@ -218,6 +218,8 @@
   .btn-trial{ background:transparent; color:var(--copper-deep); border-color:var(--copper-deep); }
   .btn-trial:hover{ background:var(--copper-deep); color:#fff; transform:translateY(-2px); }
   .price-note{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); }
+  .beta-pill{ display:inline-block; margin:2px 0 6px; padding:3px 12px; border:1px solid var(--copper-deep); border-radius:999px; font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--copper-deep); }
+  .download-links .dl-soon{ font-family:'Iceland',sans-serif; font-size:17px; letter-spacing:.04em; padding:12px 22px; border-radius:var(--radius); border:1.5px dashed var(--copper-soft); color:var(--ink-soft); display:inline-flex; }
 
   .shot{ position:relative; background:var(--card); border:1px solid var(--copper-soft); border-radius:8px; padding:14px; box-shadow:var(--shadow); }
   .shot img{ width:100%; height:auto; display:block; border-radius:4px; }
@@ -342,6 +344,9 @@
   .download-links a{ font-family:'Iceland',sans-serif; font-size:17px; letter-spacing:.04em; padding:12px 22px; border-radius:var(--radius); background:var(--orange); color:#fff5ec; text-decoration:none; display:inline-flex; gap:8px; transition:background .2s, transform .15s; }
   .download-links a:hover{ background:var(--orange-deep); transform:translateY(-2px); }
   .privacy{ font-size:12px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+  /* plain text links inside the note under the download buttons (not buttons themselves) */
+  .download-links .privacy a{ display:inline; padding:0; background:none; color:var(--copper-deep); font-family:inherit; font-size:inherit; letter-spacing:0; border-radius:0; text-decoration:underline; text-underline-offset:3px; }
+  .download-links .privacy a:hover{ background:none; color:var(--orange-deep); transform:none; }
   /* Windows-installer note: dimmer, smaller, in a subtle bordered box to
      separate it from the main thank-you message without alarming the user. */
   .windows-note{
@@ -700,6 +705,7 @@
   <section class="hero" style="padding-top:34px;">
     <div class="hero-copy">
       <h1>Nadi</h1>
+      <p class="beta-pill">Public Beta</p>
       <p class="aura-tag">Aura for audio.</p>
       <div class="ornament">
         <span class="ln"></span>
@@ -719,10 +725,10 @@
       -->
       <p class="lede">A chakra-inspired resonator plugin that channels the flow of subtle energy into sound. Seven tuned resonators sculpt rich resonances, rhythmic pulses and evolving textures from your source, with tactile control over frequency, movement and consciousness. VST3 and AU, for Mac and Windows.</p>
       <div class="cta-row">
-        <a class="btn btn-buy" id="heroBuyBtn" href="https://sattvagenic.gumroad.com/l/rqeedg?wanted=true">Buy Now — £19 Intro</a>
-        <a class="btn btn-trial" href="#trial">Download Trial <small>(30 days)</small></a>
+        <a class="btn btn-buy" href="#trial">Join the Free Beta</a>
+        <a class="btn btn-trial" href="#video">Hear the demos</a>
       </div>
-      <p class="price-note">Intro price of £19 (limited time). Full price £29. Prices exclude VAT, which is added at checkout where applicable. Checkout is processed in USD.</p>
+      <p class="price-note">Nadi is in public beta: free to download in return for your email, and fully working for 30 days. The full release is coming soon, with a new interface and new resonant materials.</p>
       <p class="hero-watch"><a class="text-link" href="#video">Watch the 4-minute dry/wet demo &darr;</a></p>
     </div>
     <figure class="shot">
@@ -771,7 +777,7 @@
       <div>
         <p class="resource-kicker">FREE COMPANION TUNINGS</p>
         <h3 id="tuning-resource-title">Bring your synths into tune with Nadi</h3>
-        <p>Matching just-intonation pitch sets for Ableton Live 12 and Scala-compatible instruments. All twelve tonics, with a guide to getting set up. Free, no sign-up.</p>
+        <p>Matching just-intonation pitch sets for all fourteen of Nadi's ragas, for Ableton Live 12 and Scala-compatible instruments. All twelve tonics, with a guide to getting set up. Included with Nadi, and free for anyone — no sign-up.</p>
       </div>
       <a class="btn btn-trial" href="/tunings.html">Explore the tunings &rarr;</a>
     </aside>
@@ -816,15 +822,16 @@
         <ul class="feat">
           <li>Seven chakra resonators, each a distinct material body</li>
           <li>The Kundalini — a rhythmic energy source sweeping the spine, exciting each resonator she passes</li>
-          <li>Twelve raga tunings in just intonation, customisable per chakra</li>
+          <li>Fourteen raga tunings in just intonation, customisable per chakra — plus Major and Minor in equal temperament for standard tracks</li>
           <li>Aroha &amp; avaroha — raga-true ascent and descent phrasing, with built-in call-and-response</li>
-          <li>Tempo-locked grooves that reproduce exactly — triplet and dotted divisions, plus an Offset to slide the pattern against the bar</li>
+          <li>Tempo-locked grooves that reproduce exactly — time the whole climb or every step from chakra to chakra, with triplet and dotted divisions and an Offset to slide the pattern against the bar</li>
           <li>Individual volume, pan and decay per resonator</li>
-          <li>One-click Inspire — a fresh character every time, never a runaway</li>
+          <li>One-click Inspire for a fresh character, Mutate for a gentle variation — with melodies drawn from each raga's own notes, never a runaway</li>
           <li>MIDI input to play the resonators melodically</li>
-          <li>Grace engine for spontaneous chord blooms</li>
+          <li>Grace and Ananda — raga-aware chord blooms, spontaneous or played by hand, with a lock to repeat a chord you love</li>
           <li>An internal mix engine — each resonator is shaped <em>before</em> the seven are summed, for definition, stereo movement and clarity no plugin after Nadi could give</li>
-          <li>Twenty-six factory presets, grouped by the sound they produce: Melodic, Bass, Perc and Drone</li>
+          <li>Thirty factory presets, grouped by the sound they produce: Melodic, Bass, Perc and Drone</li>
+          <li>Free companion tuning files, so your synths can play in Nadi's ragas</li>
           <li>Transforms any source — drums, synths, vocals, field recordings</li>
         </ul>
       </div>
@@ -847,20 +854,21 @@
         <p>Each resonator is modelled on a sacred material: temple stone, bell metal, crystal singing bowl and more. Together they shape frequency into something that resonates on a deeper level.</p>
       </div>
       <div class="block">
-        <h3>Pricing</h3>
+        <h3>Public Beta</h3>
         <div class="pricing">
           <div class="tier">
-            <div class="label">INTRO PRICE</div>
-            <div class="amount">£19</div>
-            <div class="note">Limited launch offer</div>
+            <div class="label">DURING THE BETA</div>
+            <div class="amount">Free</div>
+            <div class="note">Fully working for 30 days · No card</div>
           </div>
           <div class="divider"><span>◈</span></div>
           <div class="tier">
-            <div class="label">FULL PRICE</div>
-            <div class="amount full">£29</div>
-            <div class="note">One-off · Lifetime updates<br><span style="opacity:.75">Excl. VAT</span></div>
+            <div class="label">COMING SOON</div>
+            <div class="amount full">v2</div>
+            <div class="note">A new carved interface, resonant materials to choose for every chakra, and new presets</div>
           </div>
-          <a class="btn btn-buy" id="pricingBuyBtn" style="margin-top:18px; width:100%;" href="https://sattvagenic.gumroad.com/l/rqeedg?wanted=true">Buy Nadi</a>
+          <p class="note" style="margin-top:14px;">Found something odd, or made something you love? Tell us at <a class="text-link" href="mailto:hello@sattvagenic.com">hello@sattvagenic.com</a>. Beta users hear first when the full release lands.</p>
+          <a class="btn btn-buy" style="margin-top:18px; width:100%;" href="#trial">Join the Free Beta</a>
         </div>
       </div>
     </div>
@@ -872,31 +880,32 @@
 <!-- ====== Trial capture ====== -->
 <div class="wrap">
   <section id="trial">
-    <h2 class="section-title">Try Nadi Free for 30 Days</h2>
-    <p class="section-sub">Fully functional. No card required. Enter your email and the installers are yours.</p>
+    <h2 class="section-title">Join the Nadi Beta</h2>
+    <p class="section-sub">Free and fully working for 30 days. No card required. Enter your email and the installers are yours.</p>
     <div class="trial-capture">
-      <h3>Download the Trial</h3>
-      <p>We'll send the occasional Sattvagenic update — never spam, unsubscribe anytime.</p>
+      <h3>Download the Beta</h3>
+      <p>We'll tell you when the full release lands, plus the occasional Sattvagenic update — never spam, unsubscribe anytime.</p>
       <form name="nadi-trial" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="trial-form" id="trialForm" onsubmit="return handleTrialSubmit(event)">
         <input type="hidden" name="form-name" value="nadi-trial" />
         <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
-        <button type="submit">Get the Trial</button>
+        <button type="submit">Get the Beta</button>
       </form>
       <div class="download-links" id="downloadLinks">
         <p style="color:var(--copper-deep); font-family:'Iceland',sans-serif; font-size:20px; letter-spacing:.04em;">Thank you — your downloads are ready:</p>
         <div class="dl-row">
-          <a href="/downloads/Nadi_v1.2_Mac_Installer.pkg" download>↓ macOS Installer</a>
+          <a href="/downloads/Nadi_v1.2_Mac_Installer.pkg" download id="macDl">↓ macOS Installer</a>
+          <span class="dl-soon" id="macSoon">macOS installer — coming in a few days</span>
           <a href="/downloads/Nadi_v1.2_Windows_Installer.exe" download>↓ Windows Installer</a>
           <a href="/downloads/Nadi-1.2-Windows-VST3.zip" download>↓ Windows VST3 (.zip)</a>
         </div>
-        <p class="privacy">The Nadi user guide (PDF) is included in your download.</p>
+        <p class="privacy">The Windows installer also puts the user guide (PDF) and the companion raga tunings in <em>Documents\Sattvagenic\Nadi</em>. On a Mac, or for the plain VST3, download them here: <a class="text-link" href="/downloads/Nadi_User_Guide.pdf" download>user guide (PDF)</a> · <a class="text-link" href="/downloads/Nadi-Tunings.zip" download>raga tunings (.zip)</a>.</p>
 
         <!-- Windows note: explains the Safe Browsing / SmartScreen warning
              that Chrome/Windows may show on an unsigned indie installer.
              Visible but not alarming — boxed, dimmer than the main copy. -->
         <div class="windows-note">
-          <strong>Windows note:</strong> The Windows installer is currently unsigned, so Chrome or Windows may show a warning because this is new/unknown indie software. If you downloaded it from <em>sattvagenic.com</em> or the official Gumroad page, choose <em>"Keep"</em> / <em>"Run anyway"</em> to install. A signed Windows installer is planned once the release has a bit more traction. If you'd rather avoid the warning entirely, the <em>.zip</em> above contains the plain VST3 folder — copy it into <em>C:\Program Files\Common Files\VST3</em> and rescan. 
+          <strong>Windows note:</strong> The Windows installer is currently unsigned, so Chrome or Windows may show a warning because this is new/unknown indie software. If you downloaded it from <em>sattvagenic.com</em>, choose <em>"Keep"</em> / <em>"Run anyway"</em> to install. A signed Windows installer is planned once the release has a bit more traction. If you'd rather avoid the warning entirely, the <em>.zip</em> above contains the plain VST3 folder — copy it into <em>C:\Program Files\Common Files\VST3</em> and rescan. 
         </div>
       </div>
     </div>
@@ -1094,19 +1103,22 @@
     if (form) form.addEventListener('submit', handleTrialSubmit, { capture: true });
   })();
 
-  // ---- Buy buttons ----
-  //
-  // The Buy buttons (#heroBuyBtn and #pricingBuyBtn) link to:
+  // ---- macOS download switch ----
+  // While the Mac installer is waiting on Apple's notarisation, the page shows
+  // "coming in a few days" in its place. Once Nadi_v1.2_Mac_Installer.pkg is
+  // uploaded to /downloads/, change false to true.
+  var MAC_READY = false;
+  (function(){
+    var dl = document.getElementById('macDl'), soon = document.getElementById('macSoon');
+    if (dl)   dl.style.display   = MAC_READY ? '' : 'none';
+    if (soon) soon.style.display = MAC_READY ? 'none' : '';
+  })();
+
+  // ---- Buy buttons (launch) ----
+  // Taken out for the public beta. At launch they link to
   //   https://sattvagenic.gumroad.com/l/rqeedg?wanted=true
-  //
-  // The ?wanted=true query string is a Gumroad shortcut that skips the
-  // product-listing page and lands the user directly on the checkout form.
-  // We open in the same tab (default link behaviour) — lowest-friction
-  // route to purchase. Back button still works if they change their mind.
-  //
-  // We deliberately do NOT use Gumroad's "gumroad-button" class or load
-  // their gumroad.js overlay script — both restyle the button as a
-  // Gumroad-branded black/pink one, fighting the page's design.
+  // (?wanted=true skips Gumroad's listing page and opens checkout). We don't
+  // load gumroad.js or use its button class: both restyle the button.
 
   // ---- Mobile lingam menu ----
   // Vanilla port of the React MobileLingamMenu: toggle an .open class on the

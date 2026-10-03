@@ -629,7 +629,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                     </div>
                     <span className="sg-eyebrow">Plugins</span>
                     <h3 className="sg-pillar-title">Sound Tools</h3>
-                    <p className="sg-pillar-text">Chakra-inspired instruments and resonators that turn subtle energy into sound. Nadi is out now; Raga is taking shape.</p>
+                    <p className="sg-pillar-text">Chakra-inspired instruments and resonators that turn subtle energy into sound. Nadi is in free public beta; Raga is taking shape.</p>
                     <span className="sg-enter">Enter the Plugins →</span>
                   </a>
 
@@ -692,7 +692,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                   </figure>
 
                   <div className="sg-feature-copy">
-                    <span className="sg-eyebrow">Flagship Plugin · Out Now</span>
+                    <span className="sg-eyebrow">Flagship Plugin · Public Beta</span>
                     <h3 className="sg-feature-title">Nadi</h3>
                     <p className="sg-feature-tagline">Hypnotic Resonator FX for evolving, rhythmic textures.</p>
 
@@ -709,9 +709,9 @@ function AppContent({ selectedImage, setSelectedImage }) {
 
                     <div className="sg-cta-row">
                       <a className="sg-btn sg-btn-buy" href="/nadi">Explore Nadi →</a>
-                      <a className="sg-btn sg-btn-trial" href="/nadi#trial">Free 30-day Trial</a>
+                      <a className="sg-btn sg-btn-trial" href="/nadi#trial">Join the Free Beta</a>
                     </div>
-                    <p className="sg-price-note">£19 intro · £29 full · one-off, lifetime updates. Excl. VAT.</p>
+                    <p className="sg-price-note">Free during the beta, in return for your email. The full release is coming soon, with a new interface and new resonant materials.</p>
                     <p className="sg-price-note">
                       <a href="/tunings.html" style={{ color: 'inherit', textUnderlineOffset: '3px' }}>Free raga tunings for Live 12 &amp; Scala →</a>
                     </p>
