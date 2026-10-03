@@ -798,9 +798,9 @@
         <div class="now">
           <div class="now-top">
             <span id="nowTitle" class="now-title">Tabla Spell</span>
-            <span id="nowTime" class="now-time">0:00 / 2:02</span>
+            <span id="nowTime" class="now-time">0:00 / 1:12</span>
           </div>
-          <div id="nowDesc" class="now-desc">1-bar tabla loop, a touch of delay · wet 0 → 100 → 0%</div>
+          <div id="nowDesc" class="now-desc">Tabla loop, a touch of reverb and delay on dry and wet · wet 0 → 100 → 0%</div>
           <svg id="seek" class="seek" viewBox="0 0 600 34" preserveAspectRatio="none" aria-label="Seek"></svg>
         </div>
       </div>
@@ -948,13 +948,14 @@
   /* ====== Demo playlist player ====== */
   (function(){
     const TRACKS = [
-      { name:'Tabla Spell',   file:'/assets/demos/1-tabla-spell.mp3',   dur:122, desc:'1-bar tabla loop, a touch of delay · wet 0 → 100 → 0%' },
-      { name:'Dub Temple',    file:'/assets/demos/2-dub-temple.mp3',     dur:69,  desc:'2-bar hat & snare loop · wet 100 → 0 → 100%' },
-      { name:'Dendro-gnosis', file:'/assets/demos/dendro-gnosis.mp3', dur:158, desc:'Heavily reverbed field recording, two Nadis an octave apart · wet 0 → 100 → 0%' },
-      { name:'Liminal Strut', file:'/assets/demos/3-liminal-strut.mp3',  dur:87,  desc:"1-bar 909 loop, MIDI shifting Nadi's root · wet 100 → 0 → 100%" },
-      { name:'Pranic Acid',   file:'/assets/demos/4-pranic-acid.mp3',    dur:45,  desc:"1-bar conga loop, MIDI shifting Nadi's root · wet 100 → 0 → 100%" },
-      { name:'Bass Tunnel',   file:'/assets/demos/5-bass-tunnel.mp3',    dur:72,  desc:'Two-note sawtooth drone · wet 0 → 100 → 0%' },
-      { name:'Sunrise Arp',   file:'/assets/demos/6-sunrise-arp.mp3',    dur:65,  desc:'2-bar hat & snare loop · wet 0 → 100 → 75%' },
+      { name:'Tabla Spell',    file:'/assets/demos/tabla-spell-2.mp3',  dur:72,  desc:'Tabla loop, a touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
+      { name:'Wolf Moon',      file:'/assets/demos/wolf-moon.mp3',      dur:51,  desc:'A touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
+      { name:'Tribe of Bits',  file:'/assets/demos/tribe-of-bits.mp3',  dur:43,  desc:'A touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
+      { name:'Dendro-gnosis',  file:'/assets/demos/dendro-gnosis.mp3',  dur:158, desc:'Heavily reverbed field recording, two Nadis an octave apart · wet 0 → 100 → 0%' },
+      { name:'Bass from Bits', file:'/assets/demos/bass-from-bits.mp3', dur:40,  desc:'A touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
+      { name:'Pranic Acid',    file:'/assets/demos/4-pranic-acid.mp3',  dur:45,  desc:"1-bar conga loop, MIDI shifting Nadi's root · wet 100 → 0 → 100%" },
+      { name:'Lunar Sub',      file:'/assets/demos/lunar-sub.mp3',      dur:55,  desc:'A touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
+      { name:'Sunrise Arp',    file:'/assets/demos/sunrise-arp-2.mp3',  dur:47,  desc:'A touch of reverb and delay on dry and wet · wet 0 → 100 → 0%' },
     ];
     const audio   = document.getElementById('player');
     const ppBtn   = document.getElementById('ppBtn');
