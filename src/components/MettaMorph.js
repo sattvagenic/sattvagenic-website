@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './MettaMorph.css';
 import { prepareFaceMorph } from './MettaMorphGeometry';
-import { MorphRenderer, coverCanvas, VIEW_W, VIEW_H } from './MettaMorphRenderer';
+import { MorphRenderer, coverCanvas, cropRect, drawCrop, FRAME, VIEW_W, VIEW_H } from './MettaMorphRenderer';
 import BodyChart, { SENSATIONS, BRUSHES, STRENGTHS, describeMarks } from './MettaMorphBody';
 import { EquanimityAudio } from './MettaMorphAudio';
 
@@ -35,10 +35,30 @@ function toCanvas(img, max = 2048) {
   c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
   return c;
 }
-function thumbOf(canvas, width = 320) {
-  const c = document.createElement('canvas'); c.width = width; c.height = Math.round(width * canvas.height / canvas.width);
-  c.getContext('2d').drawImage(canvas, 0, 0, c.width, c.height);
-  return c.toDataURL('image/jpeg', 0.85);
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const MAX_ZOOM = 4;
+/* The frame that puts a point of the source (in source pixels) at the centre of the view, as near as the edges allow. */
+function frameAt(source, cx, cy, z) {
+  const r = cropRect(source.width, source.height, VIEW_W, VIEW_H, { x: 0, y: 0, z });
+  const sx = source.width - r.w, sy = source.height - r.h;
+  return { x: sx > 0.5 ? clamp((cx - r.w / 2) / sx, 0, 1) : 0.5, y: sy > 0.5 ? clamp((cy - r.h / 2) / sy, 0, 1) : 0.5, z };
+}
+/* Start a found face in the middle of the frame, a little low so the forehead is not cut. */
+function autoFrame(source, face) {
+  if (!face || !face.points) return FRAME;
+  const xs = face.points.map(p => p[0]), ys = face.points.map(p => p[1]);
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, top = Math.min(...ys), bottom = Math.max(...ys);
+  return frameAt(source, cx * source.width, (top + bottom) / 2 * source.height - (bottom - top) * 0.15 * source.height, 1);
+}
+function zoomFrame(source, f, z) {
+  const r = cropRect(source.width, source.height, VIEW_W, VIEW_H, f);
+  return frameAt(source, r.x + r.w / 2, r.y + r.h / 2, clamp(z, 1, MAX_ZOOM));
+}
+/* Move the picture by (dx, dy) screen pixels inside a box of the given size. */
+function panFrame(source, f, dx, dy, box) {
+  const r = cropRect(source.width, source.height, box.width, box.height, f);
+  const sx = source.width - r.w, sy = source.height - r.h;
+  return { ...f, x: sx > 0.5 ? clamp(f.x - dx * (r.w / box.width) / sx, 0, 1) : f.x, y: sy > 0.5 ? clamp(f.y - dy * (r.h / box.height) / sy, 0, 1) : f.y };
 }
 
 /* A worn glyph after the woodblock marks in the reference: a rail, rungs, a stack of bars and one rust triangle. */
@@ -67,10 +87,107 @@ function StepHead({ n, title, hint }) {
   );
 }
 
-function Plate({ slot, label, hint, image, onFile, onClear }) {
-  const input = useRef(null);
+function MoveGlyph() {
+  return (
+    <svg className="mm-move" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M10 1.5v17M1.5 10h17M10 1.5 7.6 4M10 1.5 12.4 4M10 18.5 7.6 16M10 18.5 12.4 16M1.5 10 4 7.6M1.5 10 4 12.4M18.5 10 16 7.6M18.5 10 16 12.4" />
+    </svg>
+  );
+}
+
+function Plate({ slot, label, hint, image, mode, locked, onFile, onClear, onFrame }) {
+  const input = useRef(null), frameRef = useRef(null), canvasRef = useRef(null);
   const [over, setOver] = useState(false);
-  const status = !image ? null : image.status === 'reading' ? 'Reading the image…' : image.face ? 'Face found' : 'No face found';
+  const [view, setView] = useState(image ? image.frame : FRAME);
+  const viewRef = useRef(view), committed = useRef(null), timer = useRef(0), pointers = useRef(new Map());
+  const ready = !!image && image.status !== 'reading';
+  const movable = ready && !locked;
+  const source = image && image.canvas;
+
+  // Follow the frame from outside (a new image, or Reset), but not the echo of our own commit.
+  const frame = image ? image.frame : FRAME;
+  useEffect(() => {
+    if (frame === committed.current) return;
+    viewRef.current = frame; setView(frame);
+  }, [frame]);
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  // Draw the preview: exactly the crop the stage will show.
+  useEffect(() => {
+    const c = canvasRef.current, box = frameRef.current;
+    if (!c || !box || !source) return undefined;
+    const draw = () => {
+      const r = box.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+      const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+      if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+      const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+      drawCrop(ctx, source, w, h, viewRef.current);
+    };
+    draw();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(draw) : null;
+    if (ro) ro.observe(box);
+    return () => ro && ro.disconnect();
+  }, [view, source]);
+
+  const update = (f, now = false) => {
+    viewRef.current = f; setView(f);
+    clearTimeout(timer.current);
+    const send = () => { committed.current = f; onFrame(slot, f); };
+    if (now) send(); else timer.current = setTimeout(send, 140);
+  };
+  const box = () => frameRef.current.getBoundingClientRect();
+  const spread = pts => {
+    const n = pts.length, cx = pts.reduce((a, p) => a + p[0], 0) / n, cy = pts.reduce((a, p) => a + p[1], 0) / n;
+    return { cx, cy, d: n > 1 ? Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]) : 0 };
+  };
+  const down = e => {
+    if (!movable) return;
+    e.preventDefault();
+    frameRef.current.setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, [e.clientX, e.clientY]);
+  };
+  const move = e => {
+    const P = pointers.current;
+    if (!P.has(e.pointerId)) return;
+    const before = spread([...P.values()]);
+    P.set(e.pointerId, [e.clientX, e.clientY]);
+    const after = spread([...P.values()]);
+    let f = viewRef.current;
+    if (P.size > 1 && before.d > 0) f = zoomFrame(source, f, f.z * after.d / before.d);   // pinch
+    update(panFrame(source, f, after.cx - before.cx, after.cy - before.cy, box()));
+  };
+  const up = e => {
+    if (!pointers.current.delete(e.pointerId)) return;
+    if (!pointers.current.size) update(viewRef.current, true);
+  };
+  const key = e => {
+    if (!movable) return;
+    const step = e.shiftKey ? 30 : 8, f = viewRef.current;
+    const moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+    if (moves[e.key]) { e.preventDefault(); update(panFrame(source, f, ...moves[e.key], box())); }
+    else if (e.key === '+' || e.key === '=') { e.preventDefault(); update(zoomFrame(source, f, f.z * 1.1)); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); update(zoomFrame(source, f, f.z / 1.1)); }
+  };
+  // Ctrl + scroll (and a trackpad pinch, which arrives the same way) zooms. Plain scrolling still scrolls the page.
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el || !movable) return undefined;
+    const wheel = e => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      update(zoomFrame(source, viewRef.current, viewRef.current.z * Math.exp(-e.deltaY * 0.01)));
+    };
+    el.addEventListener('wheel', wheel, { passive: false });
+    return () => el.removeEventListener('wheel', wheel);
+  });  // re-bound each render so it always sees the current image
+
+  const status = !image ? null
+    : image.status === 'reading' ? 'Reading the image…'
+    : locked ? 'Face found · lined up for you'
+    : mode === 'compassion' && !image.face ? 'No face found · drag to frame it'
+    : 'Drag to frame it';
+  const moved = view.x !== image?.auto?.x || view.y !== image?.auto?.y || view.z !== image?.auto?.z;
+
   return (
     <div className={`mm-plate${image ? ' is-loaded' : ''}${over ? ' is-over' : ''}`}
       onDragOver={e => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)}
@@ -80,13 +197,35 @@ function Plate({ slot, label, hint, image, onFile, onClear }) {
         <span className="mm-plate-label">{label}</span>
         {image && <button type="button" className="mm-x" onClick={() => onClear(slot)} aria-label={`Remove ${label.toLowerCase()}`}>×</button>}
       </div>
-      <button type="button" className="mm-plate-frame" onClick={() => input.current.click()}
-        aria-label={image ? `Change ${label.toLowerCase()}` : `Choose ${label.toLowerCase()}`}>
-        {image ? <img src={image.thumb} alt="" /> : (
+      {image ? (
+        <div ref={frameRef} className={`mm-plate-frame is-image${movable ? ' is-movable' : ''}`}
+          tabIndex={movable ? 0 : undefined} role={movable ? 'group' : undefined}
+          aria-label={movable ? `Frame ${label.toLowerCase()}: drag, or use the arrow keys; plus and minus zoom` : undefined}
+          onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onKeyDown={key}>
+          <canvas ref={canvasRef} aria-hidden="true" />
+          {movable && <span className="mm-plate-arch" aria-hidden="true" />}
+          {movable && <MoveGlyph />}
+        </div>
+      ) : (
+        <button type="button" className="mm-plate-frame" onClick={() => input.current.click()} aria-label={`Choose ${label.toLowerCase()}`}>
           <span className="mm-plate-empty"><span className="mm-plus" aria-hidden="true">+</span><span>{hint}</span><small>Choose or drop an image</small></span>
-        )}
-      </button>
-      <p className="mm-plate-status" aria-live="polite">{status || ' '}</p>
+        </button>
+      )}
+      <p className="mm-plate-status" aria-live="polite">{status || ' '}</p>
+      {image && (
+        <div className="mm-plate-tools">
+          {movable && (
+            <label className="mm-zoom"><span aria-hidden="true">−</span>
+              <input type="range" min="100" max={MAX_ZOOM * 100} step="1" value={Math.round(view.z * 100)} aria-label={`Zoom ${label.toLowerCase()}`}
+                onChange={e => update(zoomFrame(source, viewRef.current, Number(e.target.value) / 100))} />
+              <span aria-hidden="true">+</span></label>
+          )}
+          <span className="mm-plate-links">
+            {movable && <button type="button" className="mm-link" disabled={!moved} onClick={() => update(image.auto, true)}>Reset</button>}
+            <button type="button" className="mm-link" onClick={() => input.current.click()}>Replace</button>
+          </span>
+        </div>
+      )}
       <input ref={input} type="file" accept="image/*" hidden onChange={e => { onFile(e.target.files[0], slot); e.target.value = ''; }} />
     </div>
   );
@@ -126,7 +265,7 @@ export default function MettaMorph() {
       const canvas = toCanvas(img); URL.revokeObjectURL(url);
       if (token !== tokens.current[slot]) return;
       setMessage('');
-      setImages(prev => { const n = [...prev]; n[slot] = { canvas, thumb: thumbOf(canvas), face: null, status: 'reading' }; return n; });
+      setImages(prev => { const n = [...prev]; n[slot] = { canvas, face: null, status: 'reading', frame: FRAME, auto: FRAME }; return n; });
       let face = null;
       try {
         faceModule.current = faceModule.current || import('./MettaMorphFace');
@@ -135,9 +274,13 @@ export default function MettaMorph() {
       if (token !== tokens.current[slot]) return;
       setImages(prev => {
         if (!prev[slot] || prev[slot].canvas !== canvas) return prev;
-        const n = [...prev]; n[slot] = { ...prev[slot], face, status: face ? 'face' : 'none' }; return n;
+        const auto = autoFrame(canvas, face);
+        const n = [...prev]; n[slot] = { ...prev[slot], face, status: face ? 'face' : 'none', frame: auto, auto }; return n;
       });
     } catch (_) { URL.revokeObjectURL(url); setMessage('That image could not be opened.'); }
+  }, []);
+  const onFrame = useCallback((slot, frame) => {
+    setImages(prev => { if (!prev[slot]) return prev; const n = [...prev]; n[slot] = { ...prev[slot], frame }; return n; });
   }, []);
   const onClear = useCallback(slot => {
     tokens.current[slot]++;
@@ -148,6 +291,11 @@ export default function MettaMorph() {
   const bothFaces = ready && !!images[0].face && !!images[1].face;
   const want = choice || (mode === 'compassion' ? 'face' : 'erode');
   const transition = !ready ? null : (want === 'face' && bothFaces ? 'face' : 'erode');
+  // A face plate is "locked" while the faces will be lined up automatically: framing it would change nothing.
+  const lockedOf = slot => !!(images[slot] && images[slot].face && want === 'face' && transition !== 'erode');
+  // What the stage depends on. Reframing only matters when the images erode; the faces align themselves.
+  const [canvas0, canvas1] = images.map(i => i && i.canvas), [face0, face1] = images.map(i => i && i.face);
+  const [frame0, frame1] = images.map(i => (i && transition === 'erode' ? i.frame : null));
 
   /* ---------- renderer ---------- */
   useEffect(() => {
@@ -160,15 +308,15 @@ export default function MettaMorph() {
     if (!transition) { r.clear(); return; }
     try {
       if (transition === 'face') {
-        const prep = prepareFaceMorph([{ img: images[0].canvas, face: images[0].face }, { img: images[1].canvas, face: images[1].face }], VIEW_W, VIEW_H);
+        const prep = prepareFaceMorph([{ img: canvas0, face: face0 }, { img: canvas1, face: face1 }], VIEW_W, VIEW_H);
         r.setFace(prep.layers, prep.mesh);
-      } else r.setErode(coverCanvas(images[0].canvas), coverCanvas(images[1].canvas));
+      } else r.setErode(coverCanvas(canvas0, VIEW_W, VIEW_H, frame0), coverCanvas(canvas1, VIEW_W, VIEW_H, frame1));
       r.render(amountRef.current / 100);
     } catch (_) {
       setMessage('These faces could not be aligned, so the images will erode into each other instead.');
       setChoice('erode');
     }
-  }, [transition, images]);
+  }, [transition, canvas0, canvas1, face0, face1, frame0, frame1]);
   useEffect(() => {
     amountRef.current = amount;
     if (rendererRef.current) rendererRef.current.render(amount / 100);
@@ -297,15 +445,15 @@ export default function MettaMorph() {
       <section className="mm-step">
         <StepHead n="I" title="Offer two images" hint="They stay on this device. Nothing is uploaded." />
         <div className="mm-plates">
-          <Plate slot={0} label={M.a} hint={M.aHint} image={images[0]} onFile={onFile} onClear={onClear} />
+          <Plate slot={0} label={M.a} hint={M.aHint} image={images[0]} mode={mode} locked={lockedOf(0)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
           <div className="mm-plates-arrow" aria-hidden="true">⟶</div>
-          <Plate slot={1} label={M.b} hint={M.bHint} image={images[1]} onFile={onFile} onClear={onClear} />
+          <Plate slot={1} label={M.b} hint={M.bHint} image={images[1]} mode={mode} locked={lockedOf(1)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
         </div>
       </section>
 
       <section className="mm-step">
         <StepHead n="II" title="Cross the threshold" hint="Move slowly, or let it cycle. Mark the moment something shifts." />
-        <div className="mm-stage">
+        <div className={`mm-stage${transition === 'erode' ? ' is-erode' : ''}`}>
           <span className="mm-tick tl" aria-hidden="true" /><span className="mm-tick tr" aria-hidden="true" />
           <span className="mm-tick bl" aria-hidden="true" /><span className="mm-tick br" aria-hidden="true" />
           <div className={`mm-window ${transition || 'is-empty'}`}>

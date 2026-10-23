@@ -39,12 +39,21 @@ let NOISE = null;
 const noise = () => NOISE || (NOISE = makeNoise());
 
 /* ---------- image helpers ---------- */
-export function coverCanvas(source, width = VIEW_W, height = VIEW_H) {
+/* How an image is framed: x and y say where the view sits across the spare image (0 = left or top edge,
+   1 = right or bottom edge, like CSS object-position), and z zooms in beyond a plain cover fit. */
+export const FRAME = { x: 0.5, y: 0.5, z: 1 };
+export function cropRect(sw, sh, width, height, frame = FRAME) {
+  const s = Math.max(width / sw, height / sh) * Math.max(1, frame.z || 1);
+  const w = Math.min(sw, width / s), h = Math.min(sh, height / s);
+  return { x: (sw - w) * frame.x, y: (sh - h) * frame.y, w, h };
+}
+export function drawCrop(ctx, source, width, height, frame = FRAME) {
+  const r = cropRect(source.width, source.height, width, height, frame);
+  ctx.drawImage(source, r.x, r.y, r.w, r.h, 0, 0, width, height);
+}
+export function coverCanvas(source, width = VIEW_W, height = VIEW_H, frame = FRAME) {
   const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  const scale = Math.max(width / source.width, height / source.height);
-  const w = source.width * scale, h = source.height * scale;
-  ctx.drawImage(source, (width - w) / 2, (height - h) / 2, w, h);
+  drawCrop(canvas.getContext('2d'), source, width, height, frame);
   return canvas;
 }
 
