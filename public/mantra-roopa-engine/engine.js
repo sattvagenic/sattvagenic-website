@@ -176,6 +176,10 @@ const HUD_CSS = `
   .mr-caption small { display: none; }
   .mr-caption { bottom: 8%; }
   .mr-svg text { font-size: 9px; }
+  .mr-frame { inset: 10px; }
+  .mr-title { left: 22px; right: 22px; }
+  .mr-kicker { letter-spacing: 0.16em; }
+  .mr-sub { letter-spacing: 0.08em; }
 }
 `;
 
@@ -748,7 +752,7 @@ export function mount(container, options = {}) {
     };
     hud.svg.innerHTML =
       lab([om[0] + W * 0.05, om[1] - H * 0.028], [W * (small ? 0.6 : 0.66), H * (small ? 0.25 : 0.215)], small ? M.callouts.heartShort : M.callouts.heart, 'right') +
-      lab(nd, [W * (small ? 0.3 : 0.2), H * 0.245], M.callouts.nadi, 'left') +
+      lab(nd, [W * (small ? 0.38 : 0.2), H * 0.245], M.callouts.nadi, 'left') +
       (small ? '' : lab(ou, [W * 0.955, H * 0.31], M.callouts.outer, 'left'));   // up by the readouts, clear of the glass at any width
   }
 

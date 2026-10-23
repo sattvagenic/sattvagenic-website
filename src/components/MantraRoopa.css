@@ -58,8 +58,9 @@
 }
 
 @media (max-width: 768px) {
-  .mroopa { padding: 4px 8px 40px; }
-  .mroopa-stage { height: calc(100svh - 96px); min-height: 520px; }
+  /* on phones the plate runs edge to edge, so the frame and its labels have room */
+  .mroopa { padding: 4px 0 40px; }
+  .mroopa-stage { height: calc(100svh - 96px); min-height: 520px; border-left: 0; border-right: 0; }
   .mroopa-notes { margin-top: 24px; padding: 0 8px; }
   .mroopa-notes p { font-size: 0.98rem; }
 }
