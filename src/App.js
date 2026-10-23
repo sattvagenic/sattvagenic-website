@@ -612,7 +612,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                 <div className="hp-hero-text">
                   <p className="hp-kicker">Folio 01 · 72 000 nadis · 21 600 breaths · 1 bindu</p>
                   <h2>Shaivo-Futurism <span className="hp-amp">&amp;</span> Dharmic Technology</h2>
-                  <p className="hp-def">Sattvagenic (adj.): Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
+                  <p className="hp-def">Tools for equanimity and ecstasy</p>
                   <p className="hp-inscription">
                     <span className="hp-deva" lang="sa">चैतन्यमात्मा</span>
                     <span className="hp-gloss">Śiva Sūtra 1.1 · Consciousness is the self</span>
