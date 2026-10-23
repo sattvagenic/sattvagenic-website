@@ -1,149 +1,198 @@
-/* Music Page Styles - matches the About page aesthetic */
+/* Music — an introduction folio, then the releases as numbered plates,
+   on the shared ground (see SiteGround.css). The mandala stays as a faint watermark. */
 .music-page-wrapper {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
-  background-image: url('buddha-mandala.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
 }
+.music-page-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1100px;
+  z-index: -1;
+  pointer-events: none;
+  background: url('buddha-mandala.png') center top / min(1100px, 100%) auto no-repeat;
+  opacity: 0.13;
+  filter: grayscale(0.5) sepia(0.3);
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, #000 30%, transparent 75%);
+}
+
+/* the currents fill the viewport behind the page, in the margins only (see NadiCurrents.js) */
+.nadi-currents { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.9; }
+@media (max-width: 1099px) { .nadi-currents { display: none; } }
 
 .music-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 50px 20px 60px;
   min-height: 80vh;
   position: relative;
 }
 
-.music-intro {
-  background: rgba(26, 38, 33, 0.95);
-  border-radius: 8px;
-  padding: 40px;
-  margin-bottom: 30px;
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(79, 212, 198, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.music-intro h2 {
-  color: var(--saffron);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  text-shadow: 0 0 10px rgba(212, 128, 77, 0.3);
+/* folio and plates share the double vermilion rule and corner brackets */
+.music-intro,
+.release-card {
   position: relative;
-  padding-bottom: 10px;
+  background: rgba(12, 16, 15, 0.8);
+  border: 1px solid rgba(212, 85, 45, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.95);
+}
+.music-intro::before,
+.release-card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(212, 85, 45, 0.18);
+  pointer-events: none;
+}
+.music-intro::after,
+.release-card::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    linear-gradient(#e8dfcf, #e8dfcf) top left / 16px 1px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) top left / 1px 16px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) top right / 16px 1px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) top right / 1px 16px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) bottom left / 16px 1px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) bottom left / 1px 16px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) bottom right / 16px 1px no-repeat,
+    linear-gradient(#e8dfcf, #e8dfcf) bottom right / 1px 16px no-repeat;
 }
 
+.music-intro {
+  padding: 50px 54px 42px;
+  margin-bottom: 44px;
+  text-align: left;
+}
+.music-intro h2 {
+  color: #e8dfcf;
+  font-family: 'Iceland', sans-serif;
+  font-weight: 400;
+  font-size: 2.6rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin: 0 0 22px;
+  padding-bottom: 14px;
+  text-shadow: none;
+  position: relative;
+}
 .music-intro h2::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--cyber-blue), transparent);
+  width: 120px;
+  height: 7px;
+  background:
+    radial-gradient(circle, #ec6b40 0 2px, transparent 2.5px) left center / 7px 7px no-repeat,
+    linear-gradient(rgba(212, 85, 45, 0.65), rgba(212, 85, 45, 0.65)) center / 100% 1px no-repeat;
 }
-
 .music-intro p {
-  color: rgba(255, 255, 255, 0.9);
-  font-family: 'Karma', serif;
-  font-size: 1.1rem;
-  line-height: 1.8;
+  color: #b9ae9c;
+  font-family: 'Spectral', Georgia, serif;
+  font-weight: 300;
+  font-size: 1.12rem;
+  line-height: 1.75;
   text-align: left;
+  margin: 0;
 }
-
 .music-intro a {
-  color: var(--cyber-blue);
+  color: #8fd6b8;
   text-decoration: none;
-  border-bottom: 1px solid rgba(79, 212, 198, 0.4);
-  transition: border-color 0.3s ease;
+  border-bottom: 1px solid rgba(143, 214, 184, 0.4);
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
-
 .music-intro a:hover {
-  border-bottom-color: var(--cyber-blue);
+  color: #e8dfcf;
+  border-bottom-color: #8fd6b8;
 }
 
+/* the releases, numbered like plates in a catalogue */
 .music-releases {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 44px;
+  counter-reset: release;
 }
-
 .release-card {
-  background: rgba(26, 38, 33, 0.95);
-  border-radius: 8px;
-  padding: 30px;
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(79, 212, 198, 0.1);
-  backdrop-filter: blur(10px);
+  counter-increment: release;
+  padding: 40px 34px 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .release-info {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-align: center;
   width: 100%;
 }
-
-.release-info h3 {
-  color: var(--saffron);
-  font-family: 'Cinzel', serif;
-  font-size: 1.6rem;
-  margin: 0 0 6px 0;
-  letter-spacing: 0.05em;
-}
-
-.release-label {
-  color: var(--cyber-blue);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
+.release-info::before {
+  content: 'Rel. ' counter(release, decimal-leading-zero);
+  display: block;
+  margin-bottom: 12px;
+  font: 400 0.72rem/1 'Share Tech Mono', ui-monospace, monospace;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  margin: 0 0 8px 0;
+  color: #81796d;
 }
-
+.release-info h3 {
+  color: #e8dfcf;
+  font-family: 'Iceland', sans-serif;
+  font-weight: 400;
+  font-size: 2.1rem;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.06em;
+}
+.release-label {
+  color: #8fd6b8;
+  font-family: 'Share Tech Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+}
 .release-note {
-  color: rgba(255, 255, 255, 0.75);
-  font-family: 'Karma', serif;
-  font-size: 0.95rem;
+  color: #b9ae9c;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1rem;
   font-style: italic;
   margin: 0;
 }
-
 .release-embed {
-  border-radius: 4px;
+  border-radius: 1px;
   overflow: hidden;
   background: #181a1b;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+  outline: 1px solid rgba(232, 223, 207, 0.16);
+  outline-offset: 6px;
 }
 
 @media (max-width: 768px) {
   .music-container {
-    padding: 20px 10px;
+    padding: 24px 10px 40px;
   }
-
-  .music-intro,
+  .music-intro {
+    padding: 32px 22px 28px;
+  }
   .release-card {
-    padding: 20px;
+    padding: 30px 18px 24px;
   }
-
   .music-intro h2 {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
-
   .music-intro p {
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
-
   .release-info h3 {
-    font-size: 1.3rem;
+    font-size: 1.7rem;
   }
 }

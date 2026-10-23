@@ -1,0 +1,101 @@
+/* =====================================================================
+   THE SHARED GROUND: "old matter, new signal"
+   Every page of the React site stands on the same dark patina, with the
+   same header. Pages then add their own touches (see HomeDecor.css,
+   About.css, Music.css, MettaMorph.css).
+
+   Palette: ink ground · bone · vermilion (sindoor) for measurement ·
+   jade for anything live · verdigris and ochre as aged pigment.
+   ===================================================================== */
+.App.sg-night {
+  --hp-ink: #111513;
+  --hp-panel: rgba(12, 16, 15, 0.74);
+  --hp-bone: #e8dfcf;
+  --hp-bone-dim: #b9ae9c;
+  --hp-bone-faint: #81796d;
+  --hp-verm: #d4552d;
+  --hp-verm-hi: #ec6b40;
+  --hp-jade: #8fd6b8;
+  --hp-verd: #4fa58a;
+  --hp-ochre: #c99a3e;
+  --hp-line: rgba(232, 223, 207, 0.16);
+  --hp-mono: 'Share Tech Mono', ui-monospace, monospace;
+  --hp-deva: 'Tiro Devanagari Sanskrit', 'Noto Serif Devanagari', serif;
+  color: var(--hp-bone);
+  /* the old grey stone frame gives way to the ground */
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.App.sg-night::before { display: none; }
+
+/* The ground sits behind everything (z-index -1), so page content needs no special stacking. */
+.site-ground {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79, 165, 138, 0.10), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(5, 7, 6, 0.75) 100%),
+    url('../images/home/patina.jpg') center / 1024px repeat,
+    #111513;
+}
+.site-grain {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url('../images/home/grain.png') repeat; background-size: 160px;
+  mix-blend-mode: overlay; opacity: 0.55;
+}
+
+/* ---------- header ---------- */
+.App.sg-night .site-logo {
+  filter: brightness(0) invert(0.88) sepia(0.18) drop-shadow(0 0 18px rgba(143, 214, 184, 0.08));
+  opacity: 0.92;
+}
+.App.sg-night > header nav li,
+.App.sg-night > header nav > ul > li > a,
+.App.sg-night > header nav > ul > li > a:link,
+.App.sg-night > header nav > ul > li > a:visited {
+  font-family: 'Iceland', sans-serif; font-size: 19px; letter-spacing: 0.08em;
+  color: var(--hp-bone-dim) !important; text-decoration: none;
+}
+.App.sg-night > header nav li:hover,
+.App.sg-night > header nav > ul > li > a:hover { color: var(--hp-bone) !important; text-shadow: none; }
+.App.sg-night > header nav li:after { background-color: var(--hp-verm); height: 1px; }
+.App.sg-night > header nav ul { gap: 30px; }
+.App.sg-night .dropdown-menu { background: #0d1110; border: 1px solid rgba(212, 85, 45, 0.45); border-radius: 2px; }
+.App.sg-night .dropdown-menu a,
+.App.sg-night nav .dropdown-menu a:link,
+.App.sg-night nav .dropdown-menu a:visited { color: var(--hp-bone-dim); font-family: 'Iceland', sans-serif; font-size: 18px; letter-spacing: 0.05em; }
+.App.sg-night .dropdown-menu a:hover,
+.App.sg-night nav .dropdown-menu a:hover { color: var(--hp-bone); background: rgba(212, 85, 45, 0.12); }
+
+/* ---------- glyphs either side of the logo on the inner pages (HeaderOrnament.js) ---------- */
+.hd-ornament { position: absolute; top: 16px; left: 0; right: 0; height: 0; pointer-events: none; z-index: 1; }
+.hd-orn { position: absolute; top: 0; width: 340px; height: 236px; overflow: visible; }
+.hd-orn-left { left: calc(50% - 310px - 340px); }
+.hd-orn-right { right: calc(50% - 310px - 340px); }
+.hd-orn polyline, .hd-orn path, .hd-orn line, .hd-orn polygon, .hd-orn circle { fill: none; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.hd-orn .hd-bone { stroke: #e8dfcf; opacity: 0.5; }
+.hd-orn .hd-jade { stroke: #6fb79c; opacity: 0.6; }
+.hd-orn .hd-soft { stroke: #4fa58a; opacity: 0.38; }
+.hd-orn .hd-verm { stroke: #d4552d; opacity: 0.85; }
+.hd-orn .hd-star { fill: #ec6b40; stroke: none; }
+.hd-orn .hd-node { fill: #8fd6b8; stroke: none; opacity: 0.85; }
+.hd-orn .hd-dot-verm { fill: #ec6b40; stroke: none; }
+.hd-orn .hd-term { stroke: #6fb79c; opacity: 0.7; }
+.hd-orn .hd-tag { fill: #b9542a; opacity: 0.92; }
+.hd-orn .hd-tag-deva { font: 400 17px 'Tiro Devanagari Sanskrit', serif; fill: #f2e9da; }
+.hd-orn .hd-tag-dots { font: 400 10px 'Share Tech Mono', monospace; fill: #f2e9da; opacity: 0.7; letter-spacing: 0.2em; }
+.hd-orn .hd-mono { font: 400 9.5px 'Share Tech Mono', ui-monospace, monospace; letter-spacing: 0.18em; fill: #b9ae9c; }
+.hd-orn .hd-faint { fill: #81796d; }
+@media (max-width: 1259px) { .hd-ornament { display: none; } }
+
+/* ---------- shared marks, for any page to use ---------- */
+/* a node on a vermilion rule, above a section title */
+.sg-rule-node {
+  display: block; width: 120px; height: 9px; margin: 0 auto 18px;
+  background:
+    radial-gradient(circle, var(--hp-verm-hi) 0 2.5px, transparent 3px) center / 9px 9px no-repeat,
+    linear-gradient(rgba(212, 85, 45, 0.6), rgba(212, 85, 45, 0.6)) center / 100% 1px no-repeat;
+}
+
+/* App.css gives main width:100% plus padding on phones, which pushes it 20px past the screen */
+@media (max-width: 768px) { .App.sg-night > main { box-sizing: border-box; } }

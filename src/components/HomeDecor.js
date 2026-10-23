@@ -1,39 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './HomeDecor.css';
 
 /*
- * HomeDecor — the homepage's ground and margins. "Old matter, new signal":
- * a dark patina like an aged wall painting, worn grain, and down each margin a
- * sacred-circuit spine with a column of the Shiva Sutras running beside it.
+ * HomeDecor — the homepage's margins: down each side a sacred-circuit spine
+ * with a column of the Shiva Sutras running beside it. (The patina ground,
+ * grain and fonts are shared by every page, in SiteGround.)
  * Everything here is decorative: aria-hidden and pointer-events: none.
  * The margins hide below 1080px so phones stay calm.
  */
-const FONTS = 'https://fonts.googleapis.com/css2?family=Iceland&family=Share+Tech+Mono'
-  + '&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Tiro+Devanagari+Sanskrit&display=swap';
 
 // Shiva Sutras 1.1–1.6, read down the two margins.
 const SUTRAS_L = 'चैतन्यमात्मा ॥ १ ॥ ज्ञानं बन्धः ॥ २ ॥ योनिवर्गः कलाशरीरम् ॥ ३ ॥';
 const SUTRAS_R = 'ज्ञानाधिष्ठानं मातृका ॥ ४ ॥ उद्यमो भैरवः ॥ ५ ॥ शक्तिचक्रसन्धाने विश्वसंहारः ॥ ६ ॥';
 
 function HomeDecor() {
-  // Load the homepage fonts once. (An @import inside App.css arrives too late in the file to count.)
-  useEffect(() => {
-    if (document.getElementById('sg-home-fonts')) return;
-    const link = document.createElement('link');
-    link.id = 'sg-home-fonts'; link.rel = 'stylesheet'; link.href = FONTS;
-    document.head.appendChild(link);
-  }, []);
-  // Match the page behind the site to the ground, so overscroll never flashes light stone.
-  useEffect(() => {
-    const previous = document.body.style.backgroundColor;
-    document.body.style.backgroundColor = '#111513';
-    return () => { document.body.style.backgroundColor = previous; };
-  }, []);
-
   return (
     <>
-      <div className="sg-bg" aria-hidden="true" />
-      <div className="sg-grain" aria-hidden="true" />
       <div className="sg-decor" aria-hidden="true">
         <svg className="sg-decor-defs" width="0" height="0" focusable="false">
           <defs>

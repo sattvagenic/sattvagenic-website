@@ -6,62 +6,10 @@
 
    Palette: ink ground · bone · vermilion (sindoor) for measurement ·
    jade for anything live · verdigris and ochre as aged pigment.
-   Everything is scoped to .App.home-frame, so other pages are untouched.
+   Everything here is scoped to .App.home-frame (the homepage only).
    Loaded after App.css (imported by HomeDecor.js), so it wins ties.
    ===================================================================== */
-.App.home-frame {
-  --hp-ink: #111513;
-  --hp-panel: rgba(12, 16, 15, 0.74);
-  --hp-bone: #e8dfcf;
-  --hp-bone-dim: #b9ae9c;
-  --hp-bone-faint: #81796d;
-  --hp-verm: #d4552d;
-  --hp-verm-hi: #ec6b40;
-  --hp-jade: #8fd6b8;
-  --hp-verd: #4fa58a;
-  --hp-ochre: #c99a3e;
-  --hp-line: rgba(232, 223, 207, 0.16);
-  --hp-mono: 'Share Tech Mono', ui-monospace, monospace;
-  --hp-deva: 'Tiro Devanagari Sanskrit', 'Noto Serif Devanagari', serif;
-  color: var(--hp-bone);
-}
-
-/* ---------- ground ---------- */
-.App.home-frame .sg-bg {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79, 165, 138, 0.10), transparent 70%),
-    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(5, 7, 6, 0.75) 100%),
-    url('../images/home/patina.jpg') center / 1024px repeat,
-    var(--hp-ink);
-}
-.App.home-frame .sg-grain {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: url('../images/home/grain.png') repeat; background-size: 160px;
-  mix-blend-mode: overlay; opacity: 0.55;
-}
-
-/* ---------- header ---------- */
-.App.home-frame .site-logo {
-  filter: brightness(0) invert(0.88) sepia(0.18) drop-shadow(0 0 18px rgba(143, 214, 184, 0.08));
-  opacity: 0.92;
-}
-.App.home-frame > header nav li,
-.App.home-frame > header nav > ul > li > a,
-.App.home-frame > header nav > ul > li > a:link,
-.App.home-frame > header nav > ul > li > a:visited {
-  font-family: 'Iceland', sans-serif; font-size: 19px; letter-spacing: 0.08em;
-  color: var(--hp-bone-dim); text-decoration: none;
-}
-.App.home-frame > header nav li:hover,
-.App.home-frame > header nav > ul > li > a:hover { color: var(--hp-bone); }
-.App.home-frame > header nav li:after { background-color: var(--hp-verm); height: 1px; }
-.App.home-frame > header nav ul { gap: 30px; }
-.App.home-frame .dropdown-menu { background: #0d1110; border: 1px solid rgba(212, 85, 45, 0.45); border-radius: 2px; }
-.App.home-frame .dropdown-menu a,
-.App.home-frame nav .dropdown-menu a:link,
-.App.home-frame nav .dropdown-menu a:visited { color: var(--hp-bone-dim); font-family: 'Iceland', sans-serif; font-size: 18px; letter-spacing: 0.05em; }
-.App.home-frame .dropdown-menu a:hover,
-.App.home-frame nav .dropdown-menu a:hover { color: var(--hp-bone); background: rgba(212, 85, 45, 0.12); }
+/* Colours, fonts, the ground and the header live in SiteGround.css (shared by every page). */
 
 /* ---------- margins: spines, rails, sutra columns ---------- */
 .App.home-frame .sg-rail { background: linear-gradient(transparent, rgba(143, 214, 184, 0.22) 8%, rgba(143, 214, 184, 0.22) 92%, transparent); opacity: 1; }

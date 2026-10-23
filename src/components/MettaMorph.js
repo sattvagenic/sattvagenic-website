@@ -9,13 +9,13 @@ import { EquanimityAudio } from './MettaMorphAudio';
 
 const MODES = {
   compassion: {
-    name: 'Compassion', a: 'Someone dear', b: 'Someone difficult',
+    name: 'Compassion', a: 'Someone dear', b: 'Someone difficult', deva: [['प्रिय', 'priya'], ['अप्रिय', 'apriya']],
     aHint: 'A face you feel warmly towards', bHint: 'A face you find hard to like',
     intro: 'A face you love slowly becomes one you find difficult. Watch for the moment the warmth begins to close, and where you feel it.',
     prompts: ['Rest with this face as it is.', 'Where does the warmth begin to close?', 'Can kindness reach this face too?'],
   },
   equanimity: {
-    name: 'Equanimity', a: 'Something pleasant', b: 'Something repellent',
+    name: 'Equanimity', a: 'Something pleasant', b: 'Something repellent', deva: [['सुख', 'sukha'], ['दुःख', 'duḥkha']],
     aHint: 'An image you are drawn to', bHint: 'An image you would rather not look at',
     intro: 'Something you are drawn to slowly becomes something you resist. Watch for the moment wanting turns into pushing away, and where you feel it.',
     prompts: ['Rest with the image as it is.', 'Where does wanting turn to pushing away?', 'Can it be just as it is?'],
@@ -78,12 +78,47 @@ function Glyph({ className = '' }) {
   );
 }
 
+/* Three sightings, like stars taken through an instrument: icchā, jñāna and kriyā,
+   the three powers of Śiva (will, knowing and action) in the Pratyabhijñā. */
+function Sightings() {
+  const star = 'M0,-17 L3,-3 L17,0 L3,3 L0,17 L-3,3 L-17,0 L-3,-3 Z';
+  const marks = [[38, 'इच्छा'], [130, 'ज्ञान'], [222, 'क्रिया']];
+  return (
+    <svg className="mm-sight" viewBox="0 0 260 96" aria-hidden="true">
+      <line className="mm-sight-ln" x1="2" y1="34" x2="258" y2="34" />
+      {marks.map(([x, label], i) => (
+        <g key={label} transform={`translate(${x} 34)`}>
+          <circle className="mm-sight-ring" r="27" />
+          <path className="mm-sight-star" d={star} />
+          {i === 1 && <line className="mm-sight-ln" x1="0" y1="27" x2="0" y2="44" />}
+          <text className="mm-sight-label" y="62" textAnchor="middle" lang="sa">{label}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function StepHead({ n, title, hint }) {
   return (
     <header className="mm-step-head">
       <span className="mm-num">{n}</span>
       <div><h2>{title}</h2>{hint && <p>{hint}</p>}</div>
     </header>
+  );
+}
+
+/* A carved niche on the altar, holding one offering: a small sighting, its name in Sanskrit, then the plate. */
+function Niche({ slot, deva, children }) {
+  const star = 'M0,-11 L2,-2 L11,0 L2,2 L0,11 L-2,2 L-11,0 L-2,-2 Z';
+  return (
+    <div className={`mm-niche mm-niche-${slot ? 'b' : 'a'}`}>
+      <div className="mm-niche-head" aria-hidden="true">
+        <svg viewBox="-24 -24 48 48"><circle r="17" /><path d={star} /></svg>
+        <span className="mm-niche-deva" lang="sa">{deva[0]}</span>
+        <span className="mm-niche-roman">{deva[1]}</span>
+      </div>
+      {children}
+    </div>
   );
 }
 
@@ -417,6 +452,10 @@ export default function MettaMorph() {
 
   return (
     <div className="mm-root">
+      <span className="mm-corner tl" aria-hidden="true">MM · 01</span>
+      <span className="mm-corner tr" aria-hidden="true" lang="sa">रूपान्तर</span>
+      <span className="mm-corner bl" aria-hidden="true">seeker ?= sought</span>
+      <span className="mm-corner br" aria-hidden="true">॥ ॐ ॥</span>
       <svg className="mm-defs" aria-hidden="true" focusable="false">
         <filter id="mm-worn"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="n" />
           <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G" /></filter>
@@ -429,7 +468,10 @@ export default function MettaMorph() {
           <h1 className="mm-title">Metta-Morph</h1>
           <p className="mm-deva" lang="sa">मैत्री रूप</p>
         </div>
-        <p className="mm-lede">Change the image.<br />Notice where the feeling turns.</p>
+        <div className="mm-head-right">
+          <Sightings />
+          <p className="mm-lede">Change the image.<br />Notice where the feeling turns.</p>
+        </div>
       </header>
 
       <section className="mm-intent" aria-label="Intention">
@@ -442,17 +484,16 @@ export default function MettaMorph() {
         <p className="mm-intro">{M.intro}</p>
       </section>
 
-      <section className="mm-step">
-        <StepHead n="I" title="Offer two images" hint="They stay on this device. Nothing is uploaded." />
-        <div className="mm-plates">
-          <Plate slot={0} label={M.a} hint={M.aHint} image={images[0]} mode={mode} locked={lockedOf(0)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
-          <div className="mm-plates-arrow" aria-hidden="true">⟶</div>
-          <Plate slot={1} label={M.b} hint={M.bHint} image={images[1]} mode={mode} locked={lockedOf(1)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
-        </div>
-      </section>
-
-      <section className="mm-step">
-        <StepHead n="II" title="Cross the threshold" hint="Move slowly, or let it cycle. Mark the moment something shifts." />
+      <section className={`mm-step mm-altar${ready ? ' is-ready' : ''}`}>
+        <StepHead n="I · II" title="Offer, then cross the threshold"
+          hint="Place an image in each niche. They stay on this device; nothing is uploaded. Then move slowly, or let it cycle, and mark the moment something shifts." />
+        <div className="mm-altar-grid">
+          <Niche slot={0} deva={M.deva[0]}>
+            <Plate slot={0} label={M.a} hint={M.aHint} image={images[0]} mode={mode} locked={lockedOf(0)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
+          </Niche>
+          <Niche slot={1} deva={M.deva[1]}>
+            <Plate slot={1} label={M.b} hint={M.bHint} image={images[1]} mode={mode} locked={lockedOf(1)} onFile={onFile} onClear={onClear} onFrame={onFrame} />
+          </Niche>
         <div className={`mm-stage${transition === 'erode' ? ' is-erode' : ''}`}>
           <span className="mm-tick tl" aria-hidden="true" /><span className="mm-tick tr" aria-hidden="true" />
           <span className="mm-tick bl" aria-hidden="true" /><span className="mm-tick br" aria-hidden="true" />
@@ -463,7 +504,7 @@ export default function MettaMorph() {
             {!transition && (
               <div className="mm-empty">
                 <svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="22" /><circle cx="30" cy="30" r="13" /><circle cx="30" cy="30" r="2.2" className="dot" /></svg>
-                <p>{images[0] || images[1] ? (ready ? '' : 'Reading…') : 'Offer two images to begin'}</p>
+                <p>{images[0] || images[1] ? (ready ? '' : 'Reading…') : 'Place an image in each niche'}</p>
               </div>
             )}
           </div>
@@ -471,6 +512,7 @@ export default function MettaMorph() {
           <span className="mm-stage-label" aria-hidden="true">{transition === 'face' ? 'Faces · mesh' : transition === 'erode' ? 'Erosion' : ''}</span>
         </div>
 
+          <div className="mm-under">
         <div className="mm-scale">
           <div className="mm-ends"><span className="mm-end-a">{M.a}</span><span className="mm-end-b">{M.b}</span></div>
           <div className="mm-track">
@@ -521,6 +563,8 @@ export default function MettaMorph() {
 
         <p className="mm-prompt">{prompt}</p>
         <p className="mm-message" role="status">{message}</p>
+          </div>
+        </div>
       </section>
 
       <div className="mm-pair">

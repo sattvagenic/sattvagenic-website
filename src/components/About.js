@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './About.css';
+import Marginalia from './Marginalia';
 
 const About = () => {
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -7,6 +8,7 @@ const About = () => {
   return (
     <div className="about-page-wrapper">
       <div className="about-container">
+        <Marginalia />
         <div className="about-content">
           <section className="about-section">
             <h2>What is Sattvagenic?</h2>

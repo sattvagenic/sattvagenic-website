@@ -1,5 +1,6 @@
 import React from 'react';
 import './Music.css';
+import NadiCurrents from './NadiCurrents';
 
 export const releases = [
   {
@@ -37,6 +38,7 @@ export const releases = [
 const Music = () => {
   return (
     <div className="music-page-wrapper">
+      <NadiCurrents />
       <div className="music-container">
         <section className="music-intro">
           <h2>Music</h2>

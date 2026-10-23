@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import MobileLingamMenu from './components/MobileLingamMenu';
+import SiteGround from './components/SiteGround';
+import HeaderOrnament from './components/HeaderOrnament';
 import HomeDecor from './components/HomeDecor';
 import HeroPlate from './components/HeroPlate';
 import About from './components/About';
@@ -574,8 +576,9 @@ function AppContent({ selectedImage, setSelectedImage }) {
   const isHomePage = location.pathname === '/';
 
   return (
-    <div className={`App ${isMettaMorphPage ? 'mm-page' : ''}${isHomePage ? ' home-frame' : ''}`}>
-      {isHomePage && <HomeDecor />}
+    <div className={`App sg-night${isMettaMorphPage ? ' mm-page' : ''}${isHomePage ? ' home-frame' : ''}`}>
+      <SiteGround />
+      {isHomePage ? <HomeDecor /> : <HeaderOrnament path={location.pathname} />}
       <header>
         <img src={logo} alt="Sattvagenic" class="logo--white" className="site-logo" />
         <nav>

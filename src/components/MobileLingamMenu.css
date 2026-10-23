@@ -1,4 +1,4 @@
-/* Mobile Lingam Menu Styles */
+/* Mobile Lingam Menu — a dark stone lingam with a bone rim, so it reads on the dark ground */
 .mobile-lingam-container {
   display: none; /* Hidden by default */
   position: relative;
@@ -21,12 +21,14 @@
   position: relative;
   width: 50px;
   height: 60px;
-  background: linear-gradient(145deg, #2a2a2a, #0a0a0a);
+  background: linear-gradient(145deg, #2c3330, #0c0f0e);
+  border: 1px solid rgba(232, 223, 207, 0.22);
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  box-shadow: 
-    inset 2px 2px 5px rgba(255,255,255,0.1),
-    inset -2px -2px 5px rgba(0,0,0,0.8),
-    0 4px 8px rgba(0,0,0,0.3);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.08),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.8),
+    0 0 0 4px rgba(17, 21, 19, 0.6),
+    0 6px 14px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,34 +37,28 @@
 }
 
 .lingam-button:hover {
-  box-shadow: 
-    inset 2px 2px 5px rgba(255,255,255,0.15),
-    inset -2px -2px 5px rgba(0,0,0,0.9),
-    0 6px 12px rgba(0,0,0,0.4);
+  border-color: rgba(212, 85, 45, 0.6);
 }
 
 .lingam-line {
   width: 24px;
-  height: 2px;
-  background-color: #f0f0f0;
-  margin: 2px 0;
+  height: 1.5px;
+  background-color: #e8dfcf;
+  margin: 2.5px 0;
   transition: all 0.3s ease;
   border-radius: 1px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .saffron-dot {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: radial-gradient(circle, #FF6600, #cc4400);
+  background: radial-gradient(circle, #ec6b40, #b4441f);
   border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 
-    0 0 6px rgba(255, 102, 0, 0.8),
-    inset 1px 1px 2px rgba(255,255,255,0.3);
+  box-shadow: 0 0 6px rgba(236, 107, 64, 0.7);
   z-index: 2;
 }
 
@@ -86,23 +82,24 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(5, 7, 6, 0.6);
   z-index: 998;
 }
 
-/* Dropdown Menu */
+/* Dropdown Menu: a small folio */
 .lingam-dropdown {
   position: absolute;
-  top: 70px;
+  top: 74px;
   left: 50%;
   transform: translateX(-50%);
   width: 280px;
-  background: #0a0a0a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  background: #0d1110;
+  border: 1px solid rgba(212, 85, 45, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 0 0 5px #0d1110, 0 0 0 6px rgba(212, 85, 45, 0.18), 0 18px 40px rgba(0, 0, 0, 0.8);
   z-index: 999;
-  padding: 1rem;
+  padding: 1.2rem 1.3rem;
+  text-align: left;
   animation: dropDown 0.3s ease-out;
 }
 
@@ -119,7 +116,7 @@
 
 /* Menu Sections */
 .menu-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.3rem;
 }
 
 .menu-section:last-child {
@@ -127,24 +124,27 @@
 }
 
 .menu-section h3 {
-  color: #FF6600;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid #333;
+  color: #ec6b40;
+  font-family: 'Share Tech Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 400;
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(232, 223, 207, 0.12);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.24em;
 }
 
 .menu-section a {
   display: block;
-  color: #fff;
+  color: #e8dfcf;
+  font-family: 'Iceland', sans-serif;
   text-decoration: none;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.45rem 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+  border-bottom: 1px solid rgba(232, 223, 207, 0.06);
 }
 
 .menu-section a:last-child {
@@ -152,7 +152,7 @@
 }
 
 .menu-section a:hover {
-  color: #FF6600;
+  color: #8fd6b8;
   padding-left: 0.5rem;
 }
 
