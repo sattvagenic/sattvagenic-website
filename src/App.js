@@ -6,6 +6,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import MobileLingamMenu from './components/MobileLingamMenu';
 import HomeDecor from './components/HomeDecor';
+import HeroPlate from './components/HeroPlate';
 import About from './components/About';
 import StoneColumns from './StoneColumns';
 // Imports for currently hidden routes (kept for future re-enabling):
@@ -602,8 +603,18 @@ function AppContent({ selectedImage, setSelectedImage }) {
         <Route path="/" element={
           <main>
             <section className="hero">
-              <h2>Shaivo-Futurism & Dharmic Technology</h2>
-              <p>Sattvagenic (adj.): Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
+              <div className="hp-hero">
+                <div className="hp-hero-text">
+                  <p className="hp-kicker">Folio 01 · 72 000 nadis · 21 600 breaths · 1 bindu</p>
+                  <h2>Shaivo-Futurism <span className="hp-amp">&amp;</span> Dharmic Technology</h2>
+                  <p className="hp-def">Sattvagenic (adj.): Producing a state of expansive lucidity, energetic harmony and elevated consciousness.</p>
+                  <p className="hp-inscription">
+                    <span className="hp-deva" lang="sa">चैतन्यमात्मा</span>
+                    <span className="hp-gloss">Śiva Sūtra 1.1 · Consciousness is the self</span>
+                  </p>
+                </div>
+                <HeroPlate />
+              </div>
             </section>
 
             <div className="sg-home">
@@ -614,6 +625,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                 <div className="sg-pillar-grid">
                   {/* Plugins */}
                   <a className="sg-pillar" href="/nadi">
+                    <span className="sg-folio-no" aria-hidden="true">१</span>
                     <div className="sg-motif" aria-hidden="true">
                       <svg viewBox="0 0 120 140">
                         {/* sushumna + ida/pingala channels */}
@@ -632,12 +644,13 @@ function AppContent({ selectedImage, setSelectedImage }) {
                     </div>
                     <span className="sg-eyebrow">Plugins</span>
                     <h3 className="sg-pillar-title">Sound Tools</h3>
-                    <p className="sg-pillar-text">Chakra-inspired instruments and resonators that turn subtle energy into sound. Nadi is in free public beta; Raga is taking shape.</p>
+                    <p className="sg-pillar-text">Instruments and effects shaped by the subtle body and the raga tradition. Nadi is in free public beta; Samsara, a polyrhythmic drum machine, is next.</p>
                     <span className="sg-enter">Enter the Plugins →</span>
                   </a>
 
                   {/* Music */}
                   <Link className="sg-pillar" to="/music">
+                    <span className="sg-folio-no" aria-hidden="true">२</span>
                     <div className="sg-motif" aria-hidden="true">
                       <svg viewBox="0 0 120 140">
                         <circle className="ln" cx="60" cy="58" r="44" />
@@ -658,13 +671,14 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       </svg>
                     </div>
                     <span className="sg-eyebrow">Music</span>
-                    <h3 className="sg-pillar-title">Hypnotic Techno</h3>
-                    <p className="sg-pillar-text">Deep, meditative techno released through Aedi Records within the Hypnus ecosystem.</p>
+                    <h3 className="sg-pillar-title">Releases</h3>
+                    <p className="sg-pillar-text">Deep techno, released on Aedi Records.</p>
                     <span className="sg-enter">Hear the Music →</span>
                   </Link>
 
                   {/* Art & Practice */}
                   <a className="sg-pillar" href="#gallery">
+                    <span className="sg-folio-no" aria-hidden="true">३</span>
                     <div className="sg-motif" aria-hidden="true">
                       <svg viewBox="0 0 120 140">
                         <circle className="ln" cx="60" cy="64" r="48" />
@@ -677,7 +691,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                     </div>
                     <span className="sg-eyebrow">Art &amp; Practice</span>
                     <h3 className="sg-pillar-title">The Vision</h3>
-                    <p className="sg-pillar-text">A gallery of Shaivo-futurist works and contemplative tools — the soul of the project made visible.</p>
+                    <p className="sg-pillar-text">A gallery of Shaivo-futurist works, and tools for contemplative practice.</p>
                     <span className="sg-enter">View the Gallery →</span>
                   </a>
                 </div>
@@ -691,13 +705,13 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       src="/assets/nadi-gui.jpg"
                       alt="The Nadi 1.3 interface: the Shakti and the seven chakras on the left, the painting of the subtle body in the centre, and the tuning, dials and yantra on the right."
                     />
-                    <figcaption>NADI · SATTVAGENIC</figcaption>
+                    <figcaption>Fig. 02 · Nadi 1.3 · 7 resonators · 14 ragas · 28 materials</figcaption>
                   </figure>
 
                   <div className="sg-feature-copy">
-                    <span className="sg-eyebrow">Flagship Plugin · Public Beta</span>
+                    <span className="sg-eyebrow">Plugin · Free Public Beta</span>
                     <h3 className="sg-feature-title">Nadi</h3>
-                    <p className="sg-feature-tagline">Hypnotic Resonator FX for evolving, rhythmic textures.</p>
+                    <p className="sg-feature-tagline">Resonator FX for evolving, rhythmic textures.</p>
 
                     <div className="sg-ornament" aria-hidden="true">
                       <span className="ln"></span>
@@ -775,7 +789,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
                   </div>
                   <span className="sg-eyebrow sg-eyebrow-dark">Practice · Experience</span>
                   <h2 className="sg-tratak-title">Tratak</h2>
-                  <p className="sg-tratak-lede">A Sri Yantra that pulses at the rhythm of attention — part music visualiser, part concentration practice. Gaze into the centre, let the breath settle, and let single-pointed focus arise. Best full-screen, with sound.</p>
+                  <p className="sg-tratak-lede">A Sri Yantra that moves with the music. Dance with it, travel inward through its nine enclosures, or hold it still. Rest your gaze on the centre point and let single-pointed focus arise. Best full screen, with sound.</p>
                   <a className="sg-btn sg-tratak-btn" href="/Tratak/" target="_blank" rel="noopener noreferrer">Enter Tratak →</a>
                 </div>
               </section>
