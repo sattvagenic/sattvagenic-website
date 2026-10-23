@@ -358,8 +358,8 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:po
     <div class="dock-row">
       <label class="sr" for="track">Sound</label>
       <select id="track">
-        <option value="Bhopura.mp3" data-bpm="120" data-color="#4FD4C6">Bhopura</option>
-        <option value="Nocturnal_OM.mp3" data-bpm="124" data-color="#E8A54B">Nocturnal OM</option>
+        <option value="Bhopura.mp3" data-bpm="120" data-color="#4FD4C6" data-palette="temple">Bhupura</option>
+        <option value="Nocturnal_OM.mp3" data-bpm="124" data-color="#E8A54B" data-palette="cyber">Chandrabindu</option>
         <option value="external">My own music</option>
       </select>
       <div class="seg" role="group" aria-label="View">
@@ -389,9 +389,9 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:po
     <section>
       <span class="label">Colour</span>
       <div class="seg" role="group" aria-label="Colour">
-        <button type="button" data-colour="drift" aria-pressed="true">Drift</button>
+        <button type="button" data-colour="drift" aria-pressed="false">Drift</button>
         <button type="button" data-colour="steady" aria-pressed="false">Steady</button>
-        <button type="button" data-colour="temple" aria-pressed="false">Temple</button>
+        <button type="button" data-colour="temple" aria-pressed="true">Temple</button>
         <button type="button" data-colour="cyber" aria-pressed="false">Cyber</button>
       </div>
       <p class="note" id="colourNote"></p>
@@ -556,7 +556,7 @@ const MIN_BPM = 40, MAX_BPM = 240;
 
 const state = {
   accepted:false, playing:false, starting:false, token:0, raf:null,
-  mode:'dance', light:'strobe', colour:'drift', pace:8, bpm:120, brightness:1, intensity:1, immersive:false,
+  mode:'dance', light:'strobe', colour:'temple', colourChosen:false, pace:8, bpm:120, brightness:1, intensity:1, immersive:false,
   sourceAnchor:0, beatAnchor:0, elapsed:0, wallAnchor:0, color:'#4FD4C6',
   syncHeld:false, hideTimer:null, wakeLock:null, taps:[], holdTimer:null, suppressClickUntil:0,
   lastFrame:0, lastProgress:0, stageKey:'', weights:{}, trail:{}, pin:true,
@@ -973,6 +973,8 @@ function changeSource() {
     if (!['Bhopura.mp3','Nocturnal_OM.mp3'].includes(o.value)) return;
     audio.src = o.value; audio.load();
     state.bpm = Number(o.dataset.bpm); state.color = o.dataset.color;
+    // Each track has its own colouring (Bhupura: Temple, Chandrabindu: Cyber) unless a colour has been chosen by hand.
+    if (!state.colourChosen && o.dataset.palette) { state.colour = o.dataset.palette; applyColour(); }
   }
   $('bpm').value = String(state.bpm);
   $('progress').hidden = external();
@@ -1077,7 +1079,7 @@ $('beatBtn').addEventListener('click', beatOne);
 $('brightness').addEventListener('input', () => { state.brightness = Number($('brightness').value); $('brightnessOut').textContent = Math.round(state.brightness * 100) + '%'; if (!state.playing) staticView(); });
 $('intensity').addEventListener('input', () => { state.intensity = Number($('intensity').value); $('intensityOut').textContent = Math.round(state.intensity * 100) + '%'; });
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => setClose(b.dataset.close)));
-document.querySelectorAll('[data-colour]').forEach(b => b.addEventListener('click', () => { state.colour = b.dataset.colour; applyColour(); }));
+document.querySelectorAll('[data-colour]').forEach(b => b.addEventListener('click', () => { state.colour = b.dataset.colour; state.colourChosen = true; applyColour(); }));
 $('pin').addEventListener('change', () => { state.pin = $('pin').checked; document.body.classList.toggle('pin', state.pin); });
 $('immersive').addEventListener('change', () => { state.immersive = $('immersive').checked; if (!state.immersive) resetSpace(); });
 $('seek').addEventListener('input', () => {
