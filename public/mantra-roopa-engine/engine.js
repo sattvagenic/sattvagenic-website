@@ -170,7 +170,11 @@ const HUD_CSS = `
 @media (max-width: 640px) {
   .mr-grid, .mr-grid-label, .mr-trace { display: none; }
   .mr-padas { bottom: 14%; }
-  .mr-data { top: auto; bottom: 25%; }
+  /* the readouts sit beside the four lines, below the form, rather than over it */
+  .mr-data { top: auto; bottom: 14.5%; width: min(140px, 42%); }
+  /* the figure line would wrap into the pause button: the caption carries the page on its own */
+  .mr-caption small { display: none; }
+  .mr-caption { bottom: 8%; }
   .mr-svg text { font-size: 9px; }
 }
 `;
@@ -670,7 +674,7 @@ export function mount(container, options = {}) {
 
     // camera: slow drift, breathing dolly, focus that rests on the near wall and pulls to the Om at bindu
     const aspect = W / H, tanH = Math.tan(THREE.MathUtils.degToRad(15));
-    const dist = Math.max(RT / (tanH * 0.47), (R + RT) / (tanH * aspect * (aspect < 0.6 ? 0.95 : 0.8))) * (1.0 - 0.035 * Math.sin(t * 0.045) - 0.02 * bindu);
+    const dist = (aspect >= 1 ? 0.925 : 1) * Math.max(RT / (tanH * 0.47), (R + RT) / (tanH * aspect * (aspect < 0.6 ? 0.95 : 0.8))) * (1.0 - 0.035 * Math.sin(t * 0.045) - 0.02 * bindu);
     const az = 0.35 * Math.sin(t * 0.019) + 0.12 * Math.sin(t * 0.047 + 1.3);
     const el = 0.2 + 0.07 * Math.sin(t * 0.031 + 0.8);
     const ty = aspect < 1 ? -0.16 : -0.05;
@@ -732,7 +736,7 @@ export function mount(container, options = {}) {
     const om = project(new THREE.Vector3(0, 0, 0));
     const spin = t * 0.022;
     const nadiP = new THREE.Vector3((R + RT * Math.cos(0.5)) * Math.cos(2.9 + spin), RT * Math.sin(0.5), (R + RT * Math.cos(0.5)) * Math.sin(2.9 + spin));
-    const outerP = new THREE.Vector3((R + RT * Math.cos(-0.5)) * Math.cos(-0.4 + spin), RT * Math.sin(-0.5), (R + RT * Math.cos(-0.5)) * Math.sin(-0.4 + spin));
+    const outerP = new THREE.Vector3((R + RT * Math.cos(0.55)) * Math.cos(-0.25 + spin), RT * Math.sin(0.55), (R + RT * Math.cos(0.55)) * Math.sin(-0.25 + spin));
     const nd = project(nadiP), ou = project(outerP);
     const small = W < 640;
     const lab = (from, to, text, side) => {
@@ -745,7 +749,7 @@ export function mount(container, options = {}) {
     hud.svg.innerHTML =
       lab([om[0] + W * 0.05, om[1] - H * 0.028], [W * (small ? 0.6 : 0.66), H * (small ? 0.25 : 0.215)], small ? M.callouts.heartShort : M.callouts.heart, 'right') +
       lab(nd, [W * (small ? 0.3 : 0.2), H * 0.245], M.callouts.nadi, 'left') +
-      (small ? '' : lab(ou, [W * 0.86, H * 0.71], M.callouts.outer, 'left'));
+      (small ? '' : lab(ou, [W * 0.955, H * 0.31], M.callouts.outer, 'left'));   // up by the readouts, clear of the glass at any width
   }
 
   // ---- running

@@ -32,7 +32,6 @@ export const MANTRAS = [
     notes: [
       'Digitally manifesting as Hiranyagarbha, the heart of which is Om, the seed of all mantras.',
       '54 mantric pathways mirrored for 108 repetitions: the pulsing nadis of the spanda field.',
-      'Each cycle compounds the protective field, building a firewall of shakti.',
     ],
   },
   // Next: Om Namah Shivaya. A starting point, to fill in when it's ready:
