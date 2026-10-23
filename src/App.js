@@ -2,11 +2,10 @@ import './App.css';
 import './meditation-styles.css';
 import SanskritRain from './components/SanskritRain';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import MobileLingamMenu from './components/MobileLingamMenu';
 import HomeDecor from './components/HomeDecor';
-import ConsciousnessLab from './components/ConsciousnessLab';
 import About from './components/About';
 import StoneColumns from './StoneColumns';
 // Imports for currently hidden routes (kept for future re-enabling):
@@ -14,6 +13,7 @@ import StoneColumns from './StoneColumns';
 // import MantraScene from './components/MantraScene';
 // import ConsciousnessSlider from './components/ConsciousnessSlider';
 // import MettaMorphosis from './components/MettaMorphosis';
+// import ConsciousnessLab from './components/ConsciousnessLab';
 // import EnergyScene from './components/EnergyScene';
 // import SriYantra from './SriYantra';
 // import SriYantraMeru from './components/SriYantraMeru';
@@ -34,6 +34,9 @@ import bodhisattva from './images/The Bodhisattva.jpg';
 import vibromancer from './images/The Vibromancer.jpg';
 import sacredStudy from './images/Sacred Study.jpg';
 import Music, { releases } from './components/Music';
+
+// Metta-Morph loads only when its page is opened, so the face-reading code never slows the homepage.
+const MettaMorph = React.lazy(() => import('./components/MettaMorph'));
 
 // Pick the most recent release by parsing its "Month Year" date string.
 const latestRelease = [...releases].sort(
@@ -570,7 +573,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
   const isHomePage = location.pathname === '/';
 
   return (
-    <div className={`App ${isMettaMorphPage ? 'metta-morph-background' : ''}${isHomePage ? ' home-frame' : ''}`}>
+    <div className={`App ${isMettaMorphPage ? 'mm-page' : ''}${isHomePage ? ' home-frame' : ''}`}>
       {isHomePage && <HomeDecor />}
       <header>
         <img src={logo} alt="Sattvagenic" class="logo--white" className="site-logo" />
@@ -685,8 +688,8 @@ function AppContent({ selectedImage, setSelectedImage }) {
                 <div className="sg-feature-grid">
                   <figure className="sg-shot">
                     <img
-                      src="/assets/nadi-gui.png"
-                      alt="The Nadi plugin interface — seven chakra resonator faders, the Kundalini's energy path, and the main control knobs over a meditative figure."
+                      src="/assets/nadi-gui.jpg"
+                      alt="The Nadi 1.3 interface: the Shakti and the seven chakras on the left, the painting of the subtle body in the centre, and the tuning, dials and yantra on the right."
                     />
                     <figcaption>NADI · SATTVAGENIC</figcaption>
                   </figure>
@@ -705,13 +708,13 @@ function AppContent({ selectedImage, setSelectedImage }) {
                       <span className="ln"></span>
                     </div>
 
-                    <p className="sg-feature-lede">Seven chakra-tuned resonators channel the flow of subtle energy into sound — rich resonances, rhythmic pulses and evolving textures, with an internal mix engine that keeps them clear and produced. VST3 &amp; AU, Mac &amp; Windows.</p>
+                    <p className="sg-feature-lede">Seven chakra-tuned resonators channel the flow of subtle energy into sound: rich resonances, rhythmic pulses and evolving textures in fourteen ragas, with 28 materials and an internal mix engine that keeps them clear and produced. VST3 &amp; AU, Mac &amp; Windows.</p>
 
                     <div className="sg-cta-row">
                       <a className="sg-btn sg-btn-buy" href="/nadi">Explore Nadi →</a>
                       <a className="sg-btn sg-btn-trial" href="/nadi#trial">Join the Free Beta</a>
                     </div>
-                    <p className="sg-price-note">Free during the beta, in return for your email. The full release is coming soon, with a new interface and new resonant materials.</p>
+                    <p className="sg-price-note">Version 1.3 is free during the beta, in return for your email: the new interface, 28 resonant materials and aux sends for every chakra.</p>
                     <p className="sg-price-note">
                       <a href="/tunings.html" style={{ color: 'inherit', textUnderlineOffset: '3px' }}>Free raga tunings for Live 12 &amp; Scala →</a>
                     </p>
@@ -794,9 +797,14 @@ function AppContent({ selectedImage, setSelectedImage }) {
           </main>
         } />
         <Route path="/music" element={<Music />} />
-        <Route path="/metta-morph" element={<ConsciousnessLab />} />
+        <Route path="/metta-morph" element={
+          <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
+            <MettaMorph />
+          </Suspense>
+        } />
         <Route path="/about" element={<About />} />
         {/* Hidden routes kept in code for future polish:
+            <Route path="/consciousness-lab" element={<ConsciousnessLab />} />
             <Route path="/meditation" element={<SriYantra />} />
             <Route path="/mantra" element={<MantraVisualization />} />
             <Route path="/torus-mantra" element={<MantraScene />} />
