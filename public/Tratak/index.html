@@ -1,868 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sattvagenic Tratak</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Iceland&family=Cormorant+Garamond:wght@300;400&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --bg-color: #0a0a0f;
-            --yantra-color: #4FD4C6;
-            --text-color: #e0e0e0;
-            --accent-color: #4FD4C6;
-            --min-brightness: 0.15;
-            --max-brightness: 1.0;
-        }
-        
-        body {
-            font-family: 'Iceland', 'Cormorant Garamond', serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        /* Background image layer - shifted left to center the portal void */
-        .background-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('background.jpg') calc(50% - 30px) center / cover no-repeat;
-            opacity: 0.5;
-            z-index: -2;
-            transition: opacity 0.5s ease;
-        }
-        
-        /* Dark overlay for better yantra contrast */
-        .overlay-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, transparent 15%, rgba(5,5,10,0.7) 50%, rgba(5,5,10,0.9) 100%);
-            z-index: -1;
-            transition: background 0.5s ease;
-        }
-        
-        /* Fullscreen: nearly black background for focus */
-        body.fullscreen .background-layer {
-            opacity: 0.1;
-        }
-        
-        body.fullscreen .overlay-layer {
-            background: radial-gradient(circle at center, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.9) 40%, rgba(0,0,0,0.98) 100%);
-        }
-        
-        /* Mobile: increase background visibility */
-        @media (max-width: 768px) {
-            .background-layer {
-                opacity: 0.6;
-                background-position: calc(50% - 15px) center;
-            }
-        }
-        
-        /* Pre-play glow animation */
-        @keyframes gentleGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 8px currentColor);
-                opacity: 0.7;
-                transform: scale(1);
-            }
-            50% {
-                filter: drop-shadow(0 0 25px currentColor);
-                opacity: 1;
-                transform: scale(1.02);
-            }
-        }
-        
-        .yantra-container svg.idle-glow {
-            animation: gentleGlow 4s ease-in-out infinite;
-        }
-        
-        /* Settings Panel */
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.8) 70%, transparent 100%);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 20px;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            max-height: 80px;
-        }
-        
-        .settings-panel.hidden {
-            opacity: 0;
-            transform: translateY(-100%);
-            pointer-events: none;
-        }
-        
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-            .settings-panel {
-                padding: 10px 15px;
-                gap: 10px 15px;
-            }
-            
-            .setting-group label {
-                font-size: 10px;
-            }
-            
-            .setting-group input[type="range"] {
-                width: 80px;
-            }
-            
-            .btn {
-                padding: 8px 14px;
-                font-size: 11px;
-            }
-            
-            .icon-btn {
-                width: 32px;
-                height: 32px;
-            }
-            
-            .icon-btn svg {
-                width: 16px;
-                height: 16px;
-            }
-            
-            .yantra-container {
-                width: 70vmin;
-                height: 70vmin;
-            }
-            
-            .instructions {
-                font-size: 11px;
-                padding: 0 20px;
-            }
-            
-            .progress-container {
-                width: 250px;
-            }
-            
-            .moon-phase {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .settings-panel {
-                padding: 8px 10px;
-                gap: 8px 12px;
-            }
-            
-            .setting-group input[type="range"] {
-                width: 60px;
-            }
-            
-            .btn {
-                padding: 6px 10px;
-                font-size: 10px;
-                letter-spacing: 1px;
-            }
-            
-            .icon-btn {
-                width: 28px;
-                height: 28px;
-            }
-            
-            .icon-btn svg {
-                width: 14px;
-                height: 14px;
-            }
-            
-            .controls-group {
-                gap: 8px;
-            }
-            
-            .yantra-container {
-                width: 75vmin;
-                height: 75vmin;
-            }
-            
-            .toggle-switch {
-                width: 36px;
-                height: 20px;
-            }
-            
-            .toggle-switch::after {
-                width: 16px;
-                height: 16px;
-            }
-            
-            .toggle-switch.active::after {
-                transform: translateX(16px);
-            }
-        }
-        
-        .setting-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
-        .setting-group label {
-            font-family: 'Iceland', sans-serif;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #888;
-        }
-        
-        .setting-group input[type="range"] {
-            width: 100px;
-            height: 4px;
-            -webkit-appearance: none;
-            appearance: none;
-            background: linear-gradient(to right, #333, #555);
-            border-radius: 2px;
-            outline: none;
-        }
-        
-        .setting-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 8px var(--accent-color);
-        }
-        
-        .setting-group input[type="range"]::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 8px var(--accent-color);
-        }
-        
-        .setting-group input[type="color"] {
-            width: 40px;
-            height: 26px;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: transparent;
-            cursor: pointer;
-            padding: 2px;
-        }
-        
-        .setting-group input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        
-        .setting-group input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 2px;
-        }
-        
-        .setting-group select {
-            padding: 4px 8px;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #444;
-            border-radius: 4px;
-            color: var(--text-color);
-            font-family: 'Iceland', sans-serif;
-            font-size: 12px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            min-width: 90px;
-        }
-        
-        .setting-group select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 8px rgba(79, 212, 198, 0.3);
-        }
-        
-        .toggle-switch {
-            position: relative;
-            width: 38px;
-            height: 20px;
-            background: #333;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid #444;
-        }
-        
-        .toggle-switch.active {
-            background: rgba(79, 212, 198, 0.3);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(79, 212, 198, 0.3);
-        }
-        
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            background: #888;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-        
-        .toggle-switch.active::after {
-            transform: translateX(18px);
-            background: var(--accent-color);
-            box-shadow: 0 0 8px var(--accent-color);
-        }
-        
-        /* Settings Dropdown */
-        .settings-dropdown {
-            position: relative;
-        }
-        
-        .settings-menu {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-top: 10px;
-            padding: 15px;
-            background: rgba(10, 10, 15, 0.95);
-            border: 1px solid #333;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 160px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 200;
-        }
-        
-        .settings-menu.visible {
-            display: flex;
-        }
-        
-        .settings-menu .setting-group {
-            gap: 8px;
-        }
-        
-        .settings-menu .setting-group input[type="range"] {
-            width: 100%;
-        }
-        
-        .setting-group.toggle-row {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .toggle-switch.small {
-            width: 32px;
-            height: 18px;
-        }
-        
-        .toggle-switch.small::after {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .toggle-switch.small.active::after {
-            transform: translateX(14px);
-        }
-        
-        /* Immersive Mode */
-        body.controls-hidden .settings-panel {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        body.controls-hidden .progress-container {
-            opacity: 0;
-        }
-        
-        body.controls-hidden .instructions {
-            opacity: 0;
-        }
-        
-        body.controls-hidden .logo {
-            opacity: 0;
-        }
-        
-        body.controls-hidden .moon-phase {
-            opacity: 0;
-        }
-        
-        body.controls-hidden {
-            cursor: none;
-        }
-        
-        /* Next Track Button */
-        .next-track-btn {
-            position: fixed;
-            top: 50%;
-            right: 8%;
-            transform: translateY(-50%);
-            padding: 15px 25px;
-            border: 1px solid var(--accent-color);
-            border-radius: 8px;
-            background: rgba(0,0,0,0.7);
-            color: var(--accent-color);
-            font-family: 'Iceland', sans-serif;
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            z-index: 150;
-            opacity: 0;
-        }
-        
-        .next-track-btn.visible {
-            display: flex;
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-50%) scale(0.9); }
-            to { opacity: 1; transform: translateY(-50%) scale(1); }
-        }
-        
-        .next-track-btn:hover {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 20px var(--accent-color);
-        }
-        
-        .next-track-btn svg {
-            fill: currentColor;
-            stroke: none;
-        }
-        
-        /* Mobile: position below yantra */
-        @media (max-width: 768px) {
-            .next-track-btn {
-                top: auto;
-                bottom: 15%;
-                right: 50%;
-                transform: translateX(50%);
-                padding: 12px 20px;
-                font-size: 12px;
-            }
-            
-            .next-track-btn.visible {
-                animation: fadeInMobile 0.5s ease forwards;
-            }
-            
-            @keyframes fadeInMobile {
-                from { opacity: 0; transform: translateX(50%) scale(0.9); }
-                to { opacity: 1; transform: translateX(50%) scale(1); }
-            }
-        }
-        
-        /* Sync indicator */
-        .sync-indicator {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 8px 16px;
-            background: rgba(79, 212, 198, 0.15);
-            border: 1px solid var(--accent-color);
-            border-radius: 4px;
-            font-family: 'Iceland', sans-serif;
-            font-size: 13px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent-color);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        .sync-indicator.visible {
-            opacity: 1;
-        }
-        
-        body.fullscreen .sync-indicator {
-            bottom: 40px;
-        }
-        
-        /* Logo */
-        .logo {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            height: 24px;
-            filter: invert(1);
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-            z-index: 50;
-        }
-        
-        .logo:hover {
-            opacity: 1;
-        }
-        
-        body.fullscreen .logo {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .logo {
-                height: 18px;
-                bottom: 8px;
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            
-            .progress-container {
-                bottom: 80px;
-            }
-            
-            .instructions {
-                bottom: 50px;
-            }
-        }
-        
-        .btn {
-            padding: 10px 18px;
-            border: 1px solid var(--accent-color);
-            background: rgba(0,0,0,0.5);
-            color: var(--accent-color);
-            font-family: 'Iceland', sans-serif;
-            font-size: 14px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        .btn:hover {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px var(--accent-color);
-        }
-        
-        .btn.active {
-            background: var(--accent-color);
-            color: var(--bg-color);
-        }
-        
-        /* Controls group - centered play with icons either side */
-        .controls-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        /* Icon buttons (settings, fullscreen) */
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background: rgba(0,0,0,0.5);
-            color: #888;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        .icon-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-        
-        .icon-btn.active {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(79, 212, 198, 0.3);
-        }
-        
-        /* Yantra Container */
-        .yantra-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70vmin;
-            height: 70vmin;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-        
-        .yantra-container svg {
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        /* Layer styles - each layer will have its opacity animated */
-        .layer-bindu {
-            opacity: var(--max-brightness);
-        }
-        
-        .layer-triangles-down,
-        .layer-triangles-up {
-            opacity: var(--max-brightness);
-            transition: opacity 0.05s ease-out;
-        }
-        
-        .layer-inner-circles,
-        .layer-lotus-inner,
-        .layer-lotus-outer {
-            opacity: var(--max-brightness);
-            transition: opacity 0.03s ease-out;
-        }
-        
-        .layer-gates {
-            opacity: var(--max-brightness);
-            transition: opacity 0.1s ease-out;
-        }
-        
-        /* Fullscreen styles */
-        body.fullscreen .settings-panel {
-            opacity: 0;
-            transform: translateY(-100%);
-        }
-        
-        body.fullscreen .yantra-container {
-            width: 85vmin;
-            height: 85vmin;
-        }
-        
-        /* Instructions */
-        .instructions {
-            position: fixed;
-            bottom: 25px;
-            text-align: center;
-            font-family: 'Iceland', sans-serif;
-            font-size: 13px;
-            color: #555;
-            letter-spacing: 2px;
-            transition: opacity 0.5s ease;
-        }
-        
-        .mobile-instructions {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .desktop-instructions {
-                display: none;
-            }
-            .mobile-instructions {
-                display: inline;
-            }
-        }
-        
-        body.fullscreen .instructions {
-            opacity: 0;
-        }
-        
-        /* Moon phase indicator */
-        .moon-phase {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-family: 'Iceland', sans-serif;
-            font-size: 12px;
-            color: #444;
-            text-align: right;
-            letter-spacing: 1px;
-            transition: opacity 0.5s ease;
-        }
-        
-        body.fullscreen .moon-phase {
-            opacity: 0;
-        }
-        
-        /* Warning overlay */
-        .warning-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10,10,15,0.98);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .warning-overlay.hidden {
-            display: none;
-        }
-        
-        .warning-overlay h1 {
-            font-family: 'Iceland', sans-serif;
-            font-size: 28px;
-            font-weight: 400;
-            margin-bottom: 30px;
-            letter-spacing: 6px;
-            color: var(--accent-color);
-        }
-        
-        .warning-overlay p {
-            font-family: 'Cormorant Garamond', serif;
-            max-width: 500px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: #999;
-        }
-        
-        .warning-overlay .btn {
-            margin-top: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080d10">
+  <meta name="description" content="Sattvagenic Tratak: gaze practice with the Sri Yantra. A journey through its nine enclosures, the original pulse, or a still view, with music or your own.">
+  <title>Tratak · Sattvagenic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Iceland&family=Chakra+Petch:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+:root{color-scheme:dark;--bg:#080d10;--accent:#4fd4c6;--ink:#e3ece8;--muted:#93a7a1;--faint:#5d716b;
+  --line:color-mix(in srgb,var(--accent) 22%,transparent);--glass:rgba(8,14,16,.72);--yantra:min(70vmin,calc(100dvh - 250px))}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.4 'Chakra Petch',system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:rgba(14,24,26,.7);border-radius:999px;min-height:40px;padding:8px 16px;letter-spacing:.04em;transition:background .2s,border-color .2s,color .2s}
+button:hover{border-color:var(--accent);background:rgba(20,36,38,.85)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+select{appearance:none;-webkit-appearance:none;border:1px solid var(--line);border-radius:999px;background:rgba(14,24,26,.7) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M1 1l4 4 4-4' fill='none' stroke='%2393a7a1' stroke-width='1.4'/></svg>") right 14px center no-repeat;min-height:40px;padding:8px 34px 8px 16px;cursor:pointer;letter-spacing:.03em}
+option{background:#0e191c;color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0;cursor:pointer}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
 
-        /* Audio progress bar */
-        .progress-container {
-            position: fixed;
-            bottom: 60px;
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            transition: opacity 0.5s ease;
-        }
+/* backdrop */
+.backdrop,.vignette{position:fixed;inset:0;pointer-events:none}
+.backdrop{z-index:-2;background:url('background.jpg') calc(50% - 30px) center/cover no-repeat;opacity:.4;transition:opacity 1.2s}
+.vignette{z-index:-1;background:radial-gradient(ellipse at center,rgba(8,13,16,.1) 15%,rgba(8,13,16,.66) 62%,#080d10 100%)}
 
-        body.fullscreen .progress-container {
-            opacity: 0;
-        }
+/* chrome fades while practising */
+.chrome{transition:opacity .7s,visibility .7s}
+.hide-chrome .chrome{opacity:0;visibility:hidden;pointer-events:none}
 
-        .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: rgba(50,50,60,0.5);
-            border-radius: 2px;
-            cursor: pointer;
-            overflow: hidden;
-        }
+/* top */
+.top{position:fixed;inset:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;padding:22px 28px;z-index:20}
+.wordmark{display:flex;flex-direction:column;gap:2px}
+.wordmark small{font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+.wordmark strong{font:400 34px/1 'Iceland',sans-serif;letter-spacing:.12em}
+.wordmark em{font:italic 15px 'Cormorant Garamond',Georgia,serif;color:var(--muted);margin-top:4px}
+.icon{width:42px;height:42px;padding:0;display:grid;place-items:center}
+.icon svg{width:19px;height:19px}
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--accent-color), rgba(79, 212, 198, 0.6));
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.1s linear;
-            box-shadow: 0 0 8px var(--accent-color);
-        }
+/* the yantra */
+.practice{position:fixed;inset:0;display:grid;place-items:center}
+.yantra-button{position:absolute;left:50%;top:calc(50% - 34px);transform:translate(-50%,-50%);width:var(--yantra-size,var(--yantra));height:var(--yantra-size,var(--yantra));padding:0;border:0;background:none!important;border-radius:50%;min-height:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+.fullscreen .yantra-button{top:50%;--yantra:86vmin}
+#sriYantra{display:block;width:100%;height:100%;color:var(--accent);overflow:visible;pointer-events:none;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--accent) 30%,transparent))}
+#avaranaFills polygon{opacity:1}
+#avaranaFills g{opacity:0}
 
-        .time-display {
-            font-family: 'Iceland', sans-serif;
-            font-size: 12px;
-            color: #555;
-            letter-spacing: 2px;
-        }
-    </style>
+/* journey map (wide screens) */
+.map{position:fixed;left:28px;top:50%;transform:translateY(-50%);width:230px;z-index:5;pointer-events:none}
+.map .dir{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.map .dir i{font-style:normal;color:var(--accent)}
+.map ol{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.map li{display:grid;grid-template-columns:40px 1fr;align-items:baseline;color:var(--faint);font-size:14px;transition:color .8s}
+.map li b{font:400 17px/1 'Iceland',sans-serif;letter-spacing:.06em;color:inherit}
+.map li.lit{color:var(--muted)}
+.map li.now{color:var(--ink)}
+.map li.now b{color:var(--accent);text-shadow:0 0 12px color-mix(in srgb,var(--accent) 60%,transparent)}
+.map .gloss{margin-top:16px;padding-left:12px;border-left:1px solid var(--accent);min-height:52px}
+.map .gloss em{display:block;font:italic 19px/1.2 'Cormorant Garamond',Georgia,serif;color:var(--ink)}
+.map .gloss span{display:block;font:300 15px/1.35 'Cormorant Garamond',Georgia,serif;color:var(--muted);margin-top:3px}
+.mode-pulse .map,.mode-still .map,.mode-dance .map{display:none}
+.ticks{display:grid;gap:3px;margin-top:14px;width:100%}
+.ticks i{display:block;height:3px;border-radius:2px;background:color-mix(in srgb,var(--accent) 16%,transparent);overflow:hidden}
+.ticks i.done{background:color-mix(in srgb,var(--accent) 55%,transparent)}
+.ticks i span{display:block;height:100%;width:0;background:var(--accent)}
+.pin.hide-chrome .map,.pin.hide-chrome .caption{opacity:.8;visibility:visible}
+.caption{position:fixed;left:50%;transform:translateX(-50%);top:calc(50% - 34px + var(--yantra-size,var(--yantra)) / 2 + 14px);text-align:center;pointer-events:none;display:none;width:min(300px,80vw)}
+.caption .ticks{margin-top:8px}
+.mode-dance .caption{display:block}
+.caption b{font:400 15px 'Iceland',sans-serif;letter-spacing:.14em;color:var(--accent);margin-right:8px}
+.caption em{font:italic 18px 'Cormorant Garamond',Georgia,serif;color:var(--ink)}
+
+/* dock */
+.dock{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(760px,calc(100vw - 24px))}
+.dock-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:rgba(14,24,26,.7)}
+.seg button{border:0;background:none;min-height:34px;padding:6px 15px;border-radius:999px;color:var(--muted)}
+.seg button:hover{color:var(--ink);background:none}
+.seg button[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 55%,transparent)}
+.play{min-width:96px;background:var(--accent);border-color:var(--accent);color:#061110;font-weight:600}
+.play:hover{background:var(--accent);filter:brightness(1.08)}
+.progress{display:flex;align-items:center;gap:12px;width:min(420px,100%)}
+.progress input{height:18px}
+.progress span{font-size:12.5px;color:var(--muted);min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
+.tempo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.tempo input{width:78px;min-height:40px;border:1px solid var(--line);border-radius:999px;background:rgba(14,24,26,.7);padding:6px 12px;text-align:center}
+.hint{margin:0;font-size:12.5px;color:var(--muted);text-align:center}
+.status{margin:0;font-size:13px;color:#e8c78b;text-align:center}.status:empty{display:none}
+
+/* more panel */
+.more{position:fixed;right:24px;bottom:96px;width:330px;max-height:calc(100dvh - 130px);overflow:auto;z-index:30;background:rgba(9,16,18,.94);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:0 20px 70px #000a;backdrop-filter:blur(6px);scrollbar-width:thin}
+.more h2{font:400 22px 'Iceland',sans-serif;letter-spacing:.1em;margin:0}
+.more header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.more header button{border:0;background:none;min-height:30px;padding:4px;color:var(--muted)}
+.more section{padding:14px 0;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.more section:last-of-type{border-bottom:0}
+.more .label{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.more .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.more .row output{color:var(--muted);font-size:13px}
+.more .check{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+.more .check small{display:block;color:var(--muted);font-size:12px}
+.more .note{margin:0;font-size:12.5px;color:var(--muted)}
+.more details summary{cursor:pointer;color:var(--accent);padding:4px 0}
+.more details p{font:16px/1.5 'Cormorant Garamond',Georgia,serif;color:#cfdcd7;margin:10px 0}
+.more .keys{font-size:12px;color:var(--muted);margin:12px 0 0}
+
+/* paused-while-hidden helpers */
+.reveal{position:fixed;left:20px;bottom:20px;z-index:40;font-size:13px;min-height:36px;color:var(--muted);background:rgba(10,18,20,.6)}
+.logo{position:fixed;right:28px;bottom:28px;width:104px;filter:invert(1);opacity:.45;pointer-events:none}
+
+/* welcome */
+.welcome{width:min(480px,calc(100vw - 28px));padding:38px 34px;background:rgba(10,17,19,.97);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 100px #000c;text-align:center;max-height:calc(100dvh - 24px);overflow:auto}
+.welcome::backdrop{background:rgba(5,9,12,.9)}
+.welcome small{font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+.welcome h1{font:400 70px/1 'Iceland',sans-serif;letter-spacing:.14em;margin:16px 0 10px}
+.welcome .sub{font:300 25px/1.25 'Cormorant Garamond',Georgia,serif;color:#d6e4de;margin:0 0 22px}
+.welcome .warn{font-size:13px;line-height:1.55;color:#e5cda5;background:rgba(219,169,98,.06);border:1px solid rgba(219,169,98,.2);border-radius:8px;padding:12px 14px;margin:0 0 14px}
+.welcome .note{font-size:13px;line-height:1.55;color:var(--muted);margin:0 0 22px}
+.welcome .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+@media (max-width:1100px){.map{display:none}.caption{display:block}.mode-pulse .caption,.mode-still .caption{display:none}}
+@media (max-width:700px){
+  :root{--yantra:min(92vw,calc(100dvh - 330px))}
+  .top{padding:16px 16px}.wordmark strong{font-size:29px}.wordmark em{display:none}
+  .yantra-button{top:calc(50% - 50px)}
+  .caption{top:calc(50% - 50px + var(--yantra-size,var(--yantra)) / 2 + 10px)}.caption em{font-size:16px}
+  .dock{gap:8px}.dock-row{gap:8px}
+  .seg button{padding:6px 11px}
+  .more{left:12px;right:12px;width:auto;bottom:150px;max-height:calc(100dvh - 190px)}
+  .logo{display:none}
+  .welcome{padding:28px 22px}.welcome h1{font-size:60px}
+}
+@media (max-height:560px) and (min-width:600px){
+  :root{--yantra:min(70vmin,calc(100dvh - 120px))}.yantra-button{top:calc(50% - 20px)}.caption,.hint,.map{display:none!important}.dock{bottom:10px;gap:6px}.top{padding:10px 18px}.wordmark small,.wordmark em{display:none}
+}
+/* closing rest */
+.veil{position:fixed;inset:0;z-index:60;background:#030506;opacity:0;visibility:hidden;transition:opacity .9s,visibility 0s .9s}
+.closing-dark .veil{opacity:1;visibility:visible;transition:opacity .9s}
+.closing-return .veil{transition:opacity 5s,visibility 0s 5s}
+.closing .chrome,.closing .reveal,.pin.closing .map,.pin.closing .caption{opacity:0!important;visibility:hidden!important;transition:opacity .8s,visibility .8s}
+.cue{position:fixed;left:16px;right:16px;bottom:max(70px,11vh);z-index:61;text-align:center;font:italic 300 27px/1.3 'Cormorant Garamond',Georgia,serif;color:var(--ink);opacity:0;transition:opacity 1.4s;pointer-events:none}
+.cue.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+  </style>
 </head>
-<body>
-    <!-- Background layers (for mobile compatibility) -->
-    <div class="background-layer"></div>
-    <div class="overlay-layer"></div>
+<body class="mode-dance pin">
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
-    <!-- Photosensitivity Warning -->
-    <div class="warning-overlay" id="warningOverlay">
-        <h1>Sattvagenic Tratak</h1>
-        <p style="color: #c44;">⚠️ Warning: Contains flickering visuals between 2-8 Hz. If you have photosensitive epilepsy or are prone to seizures, please do not continue.</p>
-        <p>For best experience, use headphones and practise in a darkened room. Keep your gaze fixed gently but steadily on the central dot. You can adjust brightness and colour in the settings.</p>
-        <button class="btn" onclick="acceptWarning()">I Understand — Begin</button>
+  <dialog class="welcome" id="welcome" aria-labelledby="welcomeTitle" aria-describedby="welcomeWarn">
+    <small>Sattvagenic · contemplative instruments</small>
+    <h1 id="welcomeTitle">Tratak</h1>
+    <p class="sub">Nine enclosures.<br>One point of stillness.</p>
+    <p class="warn" id="welcomeWarn">The moving views pulse and can flash. If you have photosensitive epilepsy or flashing light affects you, choose the still view. Stop if anything feels uncomfortable.</p>
+    <p class="note">Rest your gaze softly on the centre point. Blink when you need to, keep a little light in the room, and take breaks.</p>
+    <div class="actions">
+      <button type="button" class="play" id="beginBtn">Begin</button>
+      <button type="button" id="beginStillBtn">Still view</button>
     </div>
+  </dialog>
 
-    <!-- Settings Panel -->
-    <div class="settings-panel" id="settingsPanel">
-        <div class="setting-group">
-            <label>Track</label>
-            <select id="trackSelect" onchange="changeTrack()">
-                <option value="Bhopura.mp3" data-bpm="120" data-color="#4FD4C6">Bhopura (120 BPM)</option>
-                <option value="Nocturnal_OM.mp3" data-bpm="124" data-color="#E8A54B">Nocturnal OM (124 BPM)</option>
-            </select>
-        </div>
-        <div class="setting-group">
-            <label>Colour Cycle</label>
-            <div class="toggle-switch" id="cycleToggle" onclick="toggleColourCycle()"></div>
-        </div>
-        <div class="controls-group">
-            <div class="settings-dropdown">
-                <button class="icon-btn" id="settingsBtn" onclick="toggleSettings()" title="Settings">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                </button>
-                <div class="settings-menu" id="settingsMenu">
-                    <div class="setting-group">
-                        <label>Brightness</label>
-                        <input type="range" id="brightnessSlider" min="0.3" max="1" step="0.05" value="1">
-                    </div>
-                    <div class="setting-group">
-                        <label>Intensity</label>
-                        <input type="range" id="pulseDepthSlider" min="0.2" max="1" step="0.05" value="1">
-                    </div>
-                    <div class="setting-group toggle-row">
-                        <label>Immersive</label>
-                        <div class="toggle-switch small" id="immersiveToggle" onclick="toggleImmersiveMode()"></div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn" id="playBtn" onclick="togglePlay()">Play</button>
-            <button class="icon-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="Fullscreen">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
+  <header class="top chrome">
+    <div class="wordmark"><small>Sattvagenic</small><strong>Tratak</strong><em id="moon"></em></div>
+    <button type="button" class="icon" id="fullscreenBtn" aria-label="Enter fullscreen" title="Fullscreen (F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg>
+    </button>
+  </header>
 
-    <!-- Moon Phase -->
-    <div class="moon-phase" id="moonPhase"></div>
+  <nav class="map chrome" aria-label="Journey through the nine enclosures">
+    <div class="dir"><span id="mapDir">Inward</span><i id="mapArrow">↓</i></div>
+    <ol id="mapList"></ol>
+    <div class="gloss" aria-live="polite"><em id="glossName"></em><span id="glossMeaning"></span></div>
+    <div class="ticks" id="mapTicks" aria-hidden="true"></div>
+  </nav>
 
-    <!-- Sri Yantra -->
-    <div class="yantra-container">
-        <svg id="sriYantra" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
-            <!-- Gates (Bhupura) - Quarter notes -->
+  <main class="practice" aria-label="Tratak practice">
+    <button type="button" class="yantra-button" id="yantraButton" aria-label="Play">
+      <svg id="sriYantra" role="img" aria-label="Sri Yantra with a steady central bindu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
+        <defs>
+          <radialGradient id="haloGrad"><stop offset="0" stop-color="currentColor" stop-opacity=".9"/><stop offset=".35" stop-color="currentColor" stop-opacity=".35"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient>
+        </defs>
+            <!-- Gates (Bhupura) -->
             <g class="layer-gates" id="layerGates">
                 <polygon points="351.14 351.14 351.16 248.48 383.44 248.48 383.44 280.66 395.86 280.66 395.86 151.43 383.44 151.43 383.44 183.61 351.16 183.61 351.1 80.9 248.39 80.84 248.39 48.56 280.57 48.56 280.57 36.14 151.34 36.14 151.34 48.56 183.52 48.56 183.52 80.84 80.86 80.86 80.84 183.52 48.56 183.52 48.56 151.34 36.14 151.34 36.14 280.57 48.56 280.57 48.56 248.39 80.84 248.39 80.9 351.1 183.61 351.16 183.61 383.44 151.43 383.44 151.43 395.86 280.66 395.86 280.66 383.44 248.48 383.44 248.48 351.16 351.14 351.14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                 <polygon points="355.99 76.01 356.04 178.07 378.54 178.07 378.54 145.03 402.35 145.03 402.35 287.06 378.54 287.06 378.54 254.03 356.04 254.03 356.03 356.04 254.02 356.05 254.02 378.55 287.05 378.55 287.05 402.36 145.02 402.36 145.02 378.55 178.06 378.55 178.06 356.05 76.01 355.99 75.96 253.93 53.46 253.93 53.46 286.97 29.65 286.97 29.65 144.94 53.46 144.94 53.46 177.97 75.96 177.97 75.97 75.96 177.98 75.95 177.98 53.45 144.95 53.45 144.95 29.64 286.98 29.64 286.98 53.45 253.94 53.45 253.94 75.95 355.99 76.01" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                 <polygon points="360.95 360.69 361.29 260.82 372.37 260.82 372.37 293.44 409.16 293.44 409.16 215.97 409.16 138.51 372.37 138.51 372.37 171.12 361.29 171.12 361.04 71.29 260.95 71.3 260.95 60.22 293.56 60.22 293.56 23.43 216.1 23.43 138.63 23.43 138.63 60.22 171.24 60.22 171.24 71.3 71.05 71.31 70.71 171.18 59.63 171.18 59.63 138.56 22.84 138.56 22.84 216.03 22.84 293.49 59.63 293.49 59.63 260.88 70.71 260.88 70.96 360.71 171.05 360.7 171.05 371.78 138.44 371.78 138.44 408.57 215.9 408.57 293.37 408.57 293.37 371.78 260.76 371.78 260.76 360.7 360.95 360.69" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
             </g>
             
-            <!-- Inner Circles - 7:8 polyrhythm -->
+            <!-- Inner Circles -->
             <g class="layer-inner-circles" id="layerInnerCircles">
                 <circle cx="216" cy="216" r="122.77" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                 <circle cx="216" cy="216" r="126.78" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
@@ -870,21 +200,104 @@
                 <circle cx="216" cy="216" r="134.83" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
             </g>
             
-            <!-- Triangles Down - 8th notes -->
-            <g class="layer-triangles-down" id="layerTrianglesDown">
-                <polygon points="216 306.44 302.69 193.74 129.31 193.74 216 306.44" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 278.96 277.88 174.25 154.12 174.25 216 278.96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 227.62 267.15 154.03 164.85 154.03 216 227.62" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 260.94 245.09 202.97 186.91 202.97 216 260.94" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 239.26 237.51 212.3 194.49 212.3 216 239.26" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <!-- Avarana fills: regions of the nine triangles, grouped by how many triangles overlap them (rings IV-VIII) -->
+            <g id="avaranaFills" fill="currentColor" stroke="none">
+                <g id="avarana4" data-avarana="4">
+                    <polygon points="235.75,151.29 216.00,126.00 196.25,151.29 216.00,151.29"/>
+                    <polygon points="235.75,151.29 253.33,173.81 269.56,151.29"/>
+                    <polygon points="267.44,191.88 278.11,173.81 253.33,173.81"/>
+                    <polygon points="285.32,214.77 302.71,191.88 267.44,191.88 267.44,191.88"/>
+                    <polygon points="285.32,214.77 267.80,237.82 303.31,237.82"/>
+                    <polygon points="267.80,237.82 251.61,259.13 251.61,259.13 280.56,259.13"/>
+                    <polygon points="251.61,259.13 236.49,279.03 262.15,279.03"/>
+                    <polygon points="216.00,306.00 236.49,279.03 195.51,279.03"/>
+                    <polygon points="195.51,279.03 180.39,259.13 169.85,279.03"/>
+                    <polygon points="180.39,259.13 164.20,237.82 151.44,259.13"/>
+                    <polygon points="164.20,237.82 146.68,214.77 128.69,237.82"/>
+                    <polygon points="164.56,191.88 129.29,191.88 146.68,214.77"/>
+                    <polygon points="153.89,173.81 164.56,191.88 178.67,173.81"/>
+                    <polygon points="178.67,173.81 196.25,151.29 162.44,151.29"/>
+                </g>
+                <g id="avarana5" data-avarana="5">
+                    <polygon points="253.33,173.81 235.75,151.29 216.00,151.29 229.48,173.81"/>
+                    <polygon points="240.30,191.88 267.44,191.88 253.33,173.81"/>
+                    <polygon points="267.80,237.82 285.32,214.77 267.44,191.88 253.97,214.71"/>
+                    <polygon points="251.61,259.13 267.80,237.82 240.33,237.82"/>
+                    <polygon points="236.49,279.03 251.61,259.13 227.75,259.13 216.00,279.03"/>
+                    <polygon points="180.39,259.13 195.51,279.03 216.00,279.03 204.25,259.13"/>
+                    <polygon points="164.20,237.82 180.39,259.13 191.67,237.82"/>
+                    <polygon points="146.68,214.77 164.20,237.82 178.03,214.71 164.56,191.88"/>
+                    <polygon points="164.56,191.88 191.70,191.88 191.70,191.88 178.67,173.81"/>
+                    <polygon points="196.25,151.29 178.67,173.81 178.67,173.81 202.52,173.81 216.00,151.29"/>
+                </g>
+                <g id="avarana6" data-avarana="6">
+                    <polygon points="229.48,173.81 216.00,151.29 202.52,173.81 216.00,173.81"/>
+                    <polygon points="227.01,191.88 240.30,191.88 229.48,173.81 216.00,173.81"/>
+                    <polygon points="229.48,173.81 240.30,191.88 253.33,173.81"/>
+                    <polygon points="267.44,191.88 240.30,191.88 253.97,214.71"/>
+                    <polygon points="240.30,191.88 233.10,201.88 246.28,201.88 240.16,213.46 247.55,225.59 233.85,225.59 240.33,237.82 253.97,214.71"/>
+                    <polygon points="267.80,237.82 253.97,214.71 240.33,237.82 240.33,237.82"/>
+                    <polygon points="251.61,259.13 240.33,237.82 240.33,237.82 227.75,259.13"/>
+                    <polygon points="240.33,237.82 227.27,237.82 216.00,259.13 227.75,259.13"/>
+                    <polygon points="227.75,259.13 216.00,259.13 204.25,259.13 216.00,279.03"/>
+                    <polygon points="204.73,237.82 191.67,237.82 204.25,259.13 216.00,259.13"/>
+                    <polygon points="180.39,259.13 204.25,259.13 191.67,237.82 191.67,237.82"/>
+                    <polygon points="164.20,237.82 191.67,237.82 191.67,237.82 178.03,214.71"/>
+                    <polygon points="191.67,237.82 198.15,225.59 184.45,225.59 191.84,213.46 185.72,201.88 178.03,214.71"/>
+                    <polygon points="191.70,191.88 164.56,191.88 164.56,191.88 178.03,214.71"/>
+                    <polygon points="191.70,191.88 185.72,201.88 198.90,201.88 198.90,201.88"/>
+                    <polygon points="191.70,191.88 202.52,173.81 178.67,173.81"/>
+                    <polygon points="191.70,191.88 204.99,191.88 216.00,173.81 202.52,173.81"/>
+                </g>
+                <g id="avarana7" data-avarana="7">
+                    <polygon points="204.99,191.88 227.01,191.88 216.00,173.81"/>
+                    <polygon points="226.29,211.32 221.29,201.88 210.71,201.88 205.71,211.32"/>
+                    <polygon points="227.01,191.88 216.00,191.88 221.29,201.88 233.10,201.88"/>
+                    <polygon points="240.30,191.88 227.01,191.88 233.10,201.88"/>
+                    <polygon points="221.29,201.88 226.29,211.32 233.10,201.88"/>
+                    <polygon points="233.10,201.88 240.16,213.46 246.28,201.88"/>
+                    <polygon points="226.29,211.32 238.85,211.32 231.07,220.34 233.80,225.49 240.16,213.46 233.10,201.88"/>
+                    <polygon points="226.29,211.32 231.07,220.34 238.85,211.32"/>
+                    <polygon points="233.80,225.49 233.85,225.59 247.55,225.59 240.16,213.46"/>
+                    <polygon points="231.07,220.34 226.29,211.32 216.00,225.59 226.54,225.59"/>
+                    <polygon points="233.80,225.49 231.07,220.34 226.54,225.59 233.74,225.59"/>
+                    <polygon points="227.27,237.82 240.33,237.82 233.85,225.59 233.74,225.59"/>
+                    <polygon points="216.00,237.82 227.27,237.82 233.74,225.59 226.54,225.59"/>
+                    <polygon points="226.54,225.59 216.00,225.59 205.46,225.59 216.00,237.82"/>
+                    <polygon points="227.27,237.82 204.73,237.82 216.00,259.13"/>
+                    <polygon points="204.73,237.82 216.00,237.82 205.46,225.59 198.26,225.59"/>
+                    <polygon points="191.67,237.82 204.73,237.82 198.26,225.59 198.15,225.59"/>
+                    <polygon points="200.93,220.34 198.20,225.49 198.26,225.59 205.46,225.59"/>
+                    <polygon points="205.71,211.32 200.93,220.34 205.46,225.59 216.00,225.59"/>
+                    <polygon points="198.15,225.59 198.20,225.49 191.84,213.46 184.45,225.59"/>
+                    <polygon points="200.93,220.34 205.71,211.32 193.15,211.32"/>
+                    <polygon points="198.20,225.49 200.93,220.34 193.15,211.32 205.71,211.32 198.90,201.88 191.84,213.46"/>
+                    <polygon points="185.72,201.88 191.84,213.46 198.90,201.88"/>
+                    <polygon points="205.71,211.32 210.71,201.88 198.90,201.88"/>
+                    <polygon points="204.99,191.88 191.70,191.88 198.90,201.88"/>
+                    <polygon points="216.00,191.88 204.99,191.88 198.90,201.88 210.71,201.88"/>
+                    <polygon points="221.29,201.88 216.00,191.88 210.71,201.88"/>
+                </g>
+                <g id="avarana8" data-avarana="8">
+                    <polygon points="216.00,225.59 226.29,211.32 205.71,211.32"/>
+                </g>
             </g>
             
-            <!-- Triangles Up - 8th notes -->
+            <!-- Triangles Down (Shakti): classic construction, scaled to the inner circle -->
+            <g class="layer-triangles-down" id="layerTrianglesDown">
+                <polygon points="216.00 306.00 302.71 191.88 129.29 191.88 216.00 306.00" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 279.03 278.11 173.81 153.89 173.81 216.00 279.03" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 225.59 269.56 151.29 162.44 151.29 216.00 225.59" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 259.13 246.28 201.88 185.72 201.88 216.00 259.13" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 237.82 238.85 211.32 193.15 211.32 216.00 237.82" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </g>
+            
+            <!-- Triangles Up (Shiva): classic construction -->
             <g class="layer-triangles-up" id="layerTrianglesUp">
-                <polygon points="216 126.55 302.69 239.26 129.31 239.26 216 126.55" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 154.03 280.37 260.94 151.63 260.94 216 154.03" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 193.74 260.5 278.96 171.5 278.96 216 193.74" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                <polygon points="216 174.25 246.17 227.62 185.83 227.62 216 174.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 126.00 303.31 237.82 128.69 237.82 216.00 126.00" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 151.29 280.56 259.13 151.44 259.13 216.00 151.29" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 191.88 262.15 279.03 169.85 279.03 216.00 191.88" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <polygon points="216.00 173.81 247.55 225.59 184.45 225.59 216.00 173.81" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
             </g>
             
             <!-- Lotus circles -->
@@ -925,809 +338,809 @@
                 <path d="M236.07,319.34s2.09,5.93,6.1,6.99c4.02,1.06,12.5-1.69,19.89,2.39,2.42-8.1,10.4-12.07,12.52-15.64,2.13-3.57-.54-9.26-.54-9.26" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
             </g>
             
+            <!-- Bindu halo: breathes at the centre -->
+            <circle id="binduHalo" cx="216" cy="216" r="34" fill="url(#haloGrad)" style="opacity:0"/>
             <!-- Bindu (static) -->
             <circle class="layer-bindu" id="layerBindu" cx="216" cy="216" r="3" fill="currentColor"/>
-        </svg>
-    </div>
 
-    <!-- Progress Bar -->
-    <div class="progress-container">
-        <div class="progress-bar" onclick="seek(event)">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
-    </div>
-
-    <!-- Instructions -->
-    <div class="instructions">
-        <span class="desktop-instructions">Space: play/pause • F: fullscreen • Hold S: sync strobe</span>
-        <span class="mobile-instructions">Tap yantra to play/pause</span>
-    </div>
-    
-    <!-- Sync Indicator -->
-    <div class="sync-indicator" id="syncIndicator">Sync: 16ths</div>
-    
-    <!-- Next Track Button -->
-    <button class="next-track-btn" id="nextTrackBtn" onclick="playNextTrack()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5 4 15 12 5 20 5 4"></polygon>
-            <line x1="19" y1="5" x2="19" y2="19"></line>
-        </svg>
-        <span>Next Track</span>
+      </svg>
     </button>
-    
-    <!-- Logo -->
-    <img src="logo.jpg" alt="Sattvagenic" class="logo">
+    <div class="caption chrome" aria-hidden="true"><b id="capNum"></b><em id="capName"></em><div class="ticks" id="capTicks"></div></div>
+  </main>
 
-    <!-- Audio Element -->
-    <audio id="audioPlayer" preload="auto" playsinline>
-        <source src="Bhopura.mp3" type="audio/mpeg">
-    </audio>
+  <footer class="dock chrome">
+    <div class="progress" id="progress"><label for="seek" class="sr">Track position</label><input type="range" id="seek" min="0" max="1000" value="0" step="1" disabled><span id="time">0:00 / —</span></div>
+    <div class="tempo" id="tempoRow" hidden>
+      <label class="sr" for="bpm">Tempo in BPM</label><input id="bpm" type="number" min="40" max="240" step="0.1" value="120" inputmode="decimal">
+      <button type="button" id="tapBtn" title="Tap along with your music (T)">Tap tempo</button>
+      <button type="button" id="beatBtn" title="Press on a downbeat (R)">Beat 1</button>
+    </div>
+    <div class="dock-row">
+      <label class="sr" for="track">Sound</label>
+      <select id="track">
+        <option value="Bhopura.mp3" data-bpm="120" data-color="#4FD4C6">Bhopura</option>
+        <option value="Nocturnal_OM.mp3" data-bpm="124" data-color="#E8A54B">Nocturnal OM</option>
+        <option value="external">My own music</option>
+      </select>
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" data-mode="dance" aria-pressed="true">Dance</button>
+        <button type="button" data-mode="journey" aria-pressed="false">Journey</button>
+        <button type="button" data-mode="pulse" aria-pressed="false">Pulse</button>
+        <button type="button" data-mode="still" aria-pressed="false">Still</button>
+      </div>
+      <button type="button" class="play" id="playBtn">Play</button>
+      <button type="button" id="moreBtn" aria-controls="more" aria-expanded="false">More</button>
+    </div>
+    <p class="hint" id="hint">Rest your gaze on the centre · tap the yantra to pause</p>
+    <p class="status" id="status" role="status"></p>
+  </footer>
 
-    <script>
-        // Configuration - will be updated when track changes
-        let BPM = 120;
-        let BEAT_DURATION = 60 / BPM; // seconds per beat
-        
-        // Timing divisions (in beats) - recalculated when BPM changes
-        const DIVISIONS = {
-            gates: 1,           // Quarter notes
-            triangles: 0.5,     // 8th notes
-            lotus: 8/7,         // 7:8 polyrhythm - 7 pulses over 8 8th notes
-            sixteenths: 0.25,   // 16th notes for sync mode
-        };
-        
-        // DOM Elements
-        const audio = document.getElementById('audioPlayer');
-        const svg = document.getElementById('sriYantra');
-        const playBtn = document.getElementById('playBtn');
-        const brightnessSlider = document.getElementById('brightnessSlider');
-        const pulseDepthSlider = document.getElementById('pulseDepthSlider');
-        const progressFill = document.getElementById('progressFill');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const warningOverlay = document.getElementById('warningOverlay');
-        const cycleToggle = document.getElementById('cycleToggle');
-        const syncIndicator = document.getElementById('syncIndicator');
-        const trackSelect = document.getElementById('trackSelect');
-        
-        // Layers
-        const layers = {
-            gates: document.getElementById('layerGates'),
-            trianglesDown: document.getElementById('layerTrianglesDown'),
-            trianglesUp: document.getElementById('layerTrianglesUp'),
-            innerCircles: document.getElementById('layerInnerCircles'),
-            lotusCircles: document.getElementById('layerLotusCircles'),
-            lotusInner: document.getElementById('layerLotusInner'),
-            lotusOuter: document.getElementById('layerLotusOuter'),
-            bindu: document.getElementById('layerBindu')
-        };
-        
-        // State
-        let isPlaying = false;
-        let animationId = null;
-        let startTime = 0;
-        let colourCycleEnabled = false;
-        let currentHue = 174; // Starting hue (teal)
-        let syncMode = null; // null or 'sixteenths'
-        let trackDefaultColor = '#4FD4C6'; // Current track's default color
-        let immersiveMode = false;
-        let controlsTimeout = null;
-        
-        // DOM elements for immersive mode
-        const backgroundLayer = document.querySelector('.background-layer');
-        const yantraContainer = document.querySelector('.yantra-container');
-        const immersiveToggle = document.getElementById('immersiveToggle');
-        
-        // Settings
-        let maxBrightness = 1.0;
-        let pulseDepth = 1.0; // Multiplier for pulse intensity (0.2 = subtle, 1 = full)
-        
-        // Track change function
-        function changeTrack() {
-            const wasPlaying = isPlaying;
-            
-            // Stop current playback
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                cancelAnimationFrame(animationId);
-                stopKeepAlive();
-            }
-            
-            // Hide next track button
-            hideNextTrackButton();
-            
-            // Update BPM and color from selected track
-            const selectedOption = trackSelect.options[trackSelect.selectedIndex];
-            BPM = parseInt(selectedOption.dataset.bpm);
-            BEAT_DURATION = 60 / BPM;
-            trackDefaultColor = selectedOption.dataset.color;
-            
-            // Apply track's default color (only if not cycling)
-            if (!colourCycleEnabled) {
-                updateColor(trackDefaultColor);
-            }
-            
-            // Change audio source
-            audio.src = trackSelect.value;
-            audio.load();
-            
-            // Reset UI
-            playBtn.textContent = 'Play';
-            playBtn.classList.remove('active');
-            progressFill.style.width = '0%';
-            timeDisplay.textContent = '0:00 / 0:00';
-            setAllLayersMax();
-            svg.classList.add('idle-glow');
-        }
-        
-        // Accept warning and show app
-        function acceptWarning() {
-            warningOverlay.classList.add('hidden');
-        }
-        
-        // Settings dropdown toggle
-        const settingsBtn = document.getElementById('settingsBtn');
-        const settingsMenu = document.getElementById('settingsMenu');
-        
-        function toggleSettings() {
-            settingsMenu.classList.toggle('visible');
-            settingsBtn.classList.toggle('active');
-        }
-        
-        // Close settings when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.settings-dropdown')) {
-                settingsMenu.classList.remove('visible');
-                settingsBtn.classList.remove('active');
-            }
-        });
-        
-        // Immersive Mode
-        function toggleImmersiveMode() {
-            immersiveMode = !immersiveMode;
-            immersiveToggle.classList.toggle('active', immersiveMode);
-            document.body.classList.toggle('immersive', immersiveMode);
-            
-            if (!immersiveMode) {
-                // Reset immersive visuals when turning off
-                resetImmersiveVisuals();
-            }
-        }
-        
-        function startControlsAutoHide() {
-            showControlsTemporarily();
-        }
-        
-        function stopControlsAutoHide() {
-            if (controlsTimeout) {
-                clearTimeout(controlsTimeout);
-                controlsTimeout = null;
-            }
-        }
-        
-        function showControlsTemporarily() {
-            document.body.classList.remove('controls-hidden');
-            stopControlsAutoHide();
-            
-            if (isPlaying) {
-                controlsTimeout = setTimeout(() => {
-                    document.body.classList.add('controls-hidden');
-                }, 3000); // Hide after 3 seconds
-            }
-        }
-        
-        function resetImmersiveVisuals() {
-            // Reset background opacity
-            backgroundLayer.style.opacity = '';
-            // Reset yantra size
-            yantraContainer.style.width = '';
-            yantraContainer.style.height = '';
-        }
-        
-        // Next track button
-        const nextTrackBtn = document.getElementById('nextTrackBtn');
-        
-        function showNextTrackButton() {
-            // Always show - cycles through all tracks
-            nextTrackBtn.classList.add('visible');
-        }
-        
-        function hideNextTrackButton() {
-            nextTrackBtn.classList.remove('visible');
-        }
-        
-        function playNextTrack() {
-            hideNextTrackButton();
-            
-            // Move to next track, loop back to first if at end
-            const currentIndex = trackSelect.selectedIndex;
-            const nextIndex = (currentIndex + 1) % trackSelect.options.length;
-            trackSelect.selectedIndex = nextIndex;
-            changeTrack();
-            
-            // Auto-play after a brief moment
-            setTimeout(() => {
-                togglePlay();
-            }, 500);
-        }
-        
-        // Update immersive visuals based on playback position
-        function updateImmersiveVisuals(currentTime, duration) {
-            if (!immersiveMode) return;
-            
-            const immersiveDuration = 150; // 2.5 minutes in seconds
-            
-            if (currentTime < immersiveDuration) {
-                // Progress from 0 to 1 over first 2.5 minutes
-                const progress = currentTime / immersiveDuration;
-                
-                // Fade background: 0.5 opacity down to 0
-                const bgOpacity = 0.5 * (1 - progress);
-                backgroundLayer.style.opacity = bgOpacity;
-                
-                // Grow yantra: 70vmin to 90vmin
-                const startSize = 70;
-                const endSize = 90;
-                const currentSize = startSize + (endSize - startSize) * progress;
-                yantraContainer.style.width = currentSize + 'vmin';
-                yantraContainer.style.height = currentSize + 'vmin';
-            } else {
-                // After 2.5 minutes, keep at final values
-                backgroundLayer.style.opacity = 0;
-                yantraContainer.style.width = '90vmin';
-                yantraContainer.style.height = '90vmin';
-            }
-        }
-        
-        // Show controls on mouse move or touch
-        document.addEventListener('mousemove', () => {
-            if (isPlaying) {
-                showControlsTemporarily();
-            }
-        });
-        
-        document.addEventListener('touchstart', () => {
-            if (isPlaying) {
-                showControlsTemporarily();
-            }
-        }, { passive: true });
-        
-        // Calculate moon phase (0-1, where 0 = new moon, 0.5 = full moon)
-        function getMoonPhase() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            
-            // Simple moon phase calculation
-            const c = Math.floor(365.25 * year);
-            const e = Math.floor(30.6 * month);
-            const jd = c + e + day - 694039.09;
-            const phase = jd / 29.53058867;
-            return phase - Math.floor(phase);
-        }
-        
-        function getMoonPhaseName(phase) {
-            if (phase < 0.0625) return 'New Moon';
-            if (phase < 0.1875) return 'Waxing Crescent';
-            if (phase < 0.3125) return 'First Quarter';
-            if (phase < 0.4375) return 'Waxing Gibbous';
-            if (phase < 0.5625) return 'Full Moon';
-            if (phase < 0.6875) return 'Waning Gibbous';
-            if (phase < 0.8125) return 'Last Quarter';
-            if (phase < 0.9375) return 'Waning Crescent';
-            return 'New Moon';
-        }
-        
-        function updateMoonPhase() {
-            const phase = getMoonPhase();
-            const phaseName = getMoonPhaseName(phase);
-            const moonEl = document.getElementById('moonPhase');
-            
-            moonEl.innerHTML = `${phaseName}<br><small>Lunar cycle: ${Math.round(phase * 100)}%</small>`;
-        }
-        
-        // Colour cycling
-        function toggleColourCycle() {
-            colourCycleEnabled = !colourCycleEnabled;
-            cycleToggle.classList.toggle('active', colourCycleEnabled);
-            if (colourCycleEnabled) {
-                // Get current hue from track default color
-                currentHue = hexToHue(trackDefaultColor);
-            } else {
-                // Reset to track default color when cycling stops
-                updateColor(trackDefaultColor);
-            }
-        }
-        
-        function hexToHue(hex) {
-            const r = parseInt(hex.slice(1, 3), 16) / 255;
-            const g = parseInt(hex.slice(3, 5), 16) / 255;
-            const b = parseInt(hex.slice(5, 7), 16) / 255;
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            let h;
-            if (max === min) {
-                h = 0;
-            } else if (max === r) {
-                h = 60 * (((g - b) / (max - min)) % 6);
-            } else if (max === g) {
-                h = 60 * ((b - r) / (max - min) + 2);
-            } else {
-                h = 60 * ((r - g) / (max - min) + 4);
-            }
-            if (h < 0) h += 360;
-            return h;
-        }
-        
-        function hslToHex(h, s, l) {
-            s /= 100;
-            l /= 100;
-            const a = s * Math.min(l, 1 - l);
-            const f = n => {
-                const k = (n + h / 30) % 12;
-                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-                return Math.round(255 * color).toString(16).padStart(2, '0');
-            };
-            return `#${f(0)}${f(8)}${f(4)}`;
-        }
-        
-        function updateColourCycle(deltaTime) {
-            if (!colourCycleEnabled) return;
-            
-            // Fixed slow speed: 180 seconds for full spectrum
-            const cycleSeconds = 180;
-            const huePerSecond = 360 / cycleSeconds;
-            currentHue = (currentHue + huePerSecond * deltaTime) % 360;
-            
-            const newColor = hslToHex(currentHue, 70, 60);
-            updateColor(newColor);
-        }
-        
-        // Sine wave pulse function (0 to 1)
-        function sineWave(time, period) {
-            return (Math.sin(time * Math.PI * 2 / period) + 1) / 2;
-        }
-        
-        // Calculate opacity for a layer based on current time
-        function getLayerOpacity(currentBeat, division, customPulseDepth = null) {
-            const activePulseDepth = customPulseDepth !== null ? customPulseDepth : pulseDepth;
-            const cyclePosition = (currentBeat % division) / division;
-            const sineValue = (Math.sin(cyclePosition * Math.PI * 2 - Math.PI/2) + 1) / 2;
-            const minOpacity = maxBrightness * (1 - activePulseDepth);
-            return minOpacity + (sineValue * maxBrightness * activePulseDepth);
-        }
-        
-        // Set all layers to maximum brightness
-        function setAllLayersMax() {
-            Object.values(layers).forEach(layer => {
-                layer.style.opacity = maxBrightness;
-            });
-        }
-        
-        // Animation loop
-        let lastTimestamp = 0;
-        
-        // Calculate ramped pulse depth based on position in track
-        function getRampedPulseDepth(currentTime, duration) {
-            const rampUpDuration = 60; // First 60 seconds
-            const rampDownDuration = 60; // Last 60 seconds
-            const minPulse = 0.2;
-            const maxPulse = 1.0;
-            const endPulse = 0.6;
-            
-            if (currentTime < rampUpDuration) {
-                // Ramping up: 20% to 100% over first minute
-                const progress = currentTime / rampUpDuration;
-                return minPulse + (maxPulse - minPulse) * progress;
-            } else if (currentTime > duration - rampDownDuration) {
-                // Ramping down: 100% to 60% over last minute
-                const timeFromEnd = duration - currentTime;
-                const progress = timeFromEnd / rampDownDuration;
-                return endPulse + (maxPulse - endPulse) * progress;
-            } else {
-                // Middle section: full intensity
-                return maxPulse;
-            }
-        }
-        
-        function animate(timestamp) {
-            if (!isPlaying) return;
-            
-            const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 1000 : 0;
-            lastTimestamp = timestamp;
-            
-            const currentTime = audio.currentTime;
-            const currentBeat = currentTime / BEAT_DURATION;
-            
-            // Update colour cycle
-            updateColourCycle(deltaTime);
-            
-            // Determine which division to use based on sync mode
-            // When synced, use higher pulse depth for more intensity
-            let gatesDivision = DIVISIONS.gates;
-            let trianglesDivision = DIVISIONS.triangles;
-            let lotusDivision = DIVISIONS.lotus;
-            
-            // Get ramped pulse depth based on position in track, multiplied by slider value
-            let effectivePulseDepth = getRampedPulseDepth(currentTime, audio.duration) * pulseDepth;
-            
-            if (syncMode === 'sixteenths') {
-                gatesDivision = DIVISIONS.sixteenths;
-                trianglesDivision = DIVISIONS.sixteenths;
-                lotusDivision = DIVISIONS.sixteenths;
-                effectivePulseDepth = Math.max(effectivePulseDepth, 0.85); // Boost intensity during sync
-            }
-            
-            // Update each layer
-            // Gates
-            layers.gates.style.opacity = getLayerOpacity(currentBeat, gatesDivision, effectivePulseDepth);
-            
-            // Triangles
-            const triangleOpacity = getLayerOpacity(currentBeat, trianglesDivision, effectivePulseDepth);
-            layers.trianglesDown.style.opacity = triangleOpacity;
-            layers.trianglesUp.style.opacity = triangleOpacity;
-            
-            // Lotus and circles
-            const lotusOpacity = getLayerOpacity(currentBeat, lotusDivision, effectivePulseDepth);
-            layers.innerCircles.style.opacity = lotusOpacity;
-            layers.lotusCircles.style.opacity = lotusOpacity;
-            layers.lotusInner.style.opacity = lotusOpacity;
-            layers.lotusOuter.style.opacity = lotusOpacity;
-            
-            // Bindu stays static
-            layers.bindu.style.opacity = maxBrightness;
-            
-            // Update progress bar
-            const progress = (currentTime / audio.duration) * 100;
-            progressFill.style.width = `${progress}%`;
-            
-            // Update time display
-            const currentMins = Math.floor(currentTime / 60);
-            const currentSecs = Math.floor(currentTime % 60);
-            const totalMins = Math.floor(audio.duration / 60);
-            const totalSecs = Math.floor(audio.duration % 60);
-            timeDisplay.textContent = `${currentMins}:${currentSecs.toString().padStart(2, '0')} / ${totalMins}:${totalSecs.toString().padStart(2, '0')}`;
-            
-            // Update immersive mode visuals
-            updateImmersiveVisuals(currentTime, audio.duration);
-            
-            animationId = requestAnimationFrame(animate);
-        }
-        
-        // Play/Pause toggle
-        function togglePlay() {
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                playBtn.textContent = 'Play';
-                playBtn.classList.remove('active');
-                cancelAnimationFrame(animationId);
-                setAllLayersMax(); // Snap to full brightness on pause
-                svg.classList.add('idle-glow'); // Resume glow when paused
-                stopKeepAlive();
-                // Show controls on pause
-                stopControlsAutoHide();
-                document.body.classList.remove('controls-hidden');
-                if (immersiveMode) {
-                    resetImmersiveVisuals();
-                }
-            } else {
-                svg.classList.remove('idle-glow'); // Stop glow when playing
-                hideNextTrackButton(); // Hide next track button
-                // For mobile: audio.play() must be called directly in user gesture handler
-                const playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        // Audio started successfully
-                        isPlaying = true;
-                        playBtn.textContent = 'Pause';
-                        playBtn.classList.add('active');
-                        lastTimestamp = 0;
-                        animationId = requestAnimationFrame(animate);
-                        startKeepAlive();
-                        // Start auto-hide
-                        startControlsAutoHide();
-                    }).catch((error) => {
-                        // Autoplay was prevented
-                        console.log('Audio play failed:', error);
-                        // Try to recover - some browsers need a second tap
-                        isPlaying = false;
-                        playBtn.textContent = 'Tap Again';
-                        svg.classList.add('idle-glow');
-                    });
-                } else {
-                    // Older browsers without promise support
-                    isPlaying = true;
-                    playBtn.textContent = 'Pause';
-                    playBtn.classList.add('active');
-                    lastTimestamp = 0;
-                    animationId = requestAnimationFrame(animate);
-                    startKeepAlive();
-                    // Start auto-hide
-                    startControlsAutoHide();
-                }
-            }
-        }
-        
-        // Fullscreen toggle
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                document.body.classList.add('fullscreen');
-            } else {
-                document.exitFullscreen();
-                document.body.classList.remove('fullscreen');
-            }
-        }
-        
-        // Seek in track
-        function seek(event) {
-            const bar = event.currentTarget;
-            const rect = bar.getBoundingClientRect();
-            const percent = (event.clientX - rect.left) / rect.width;
-            audio.currentTime = percent * audio.duration;
-        }
-        
-        // Update color
-        function updateColor(color) {
-            svg.style.color = color;
-            document.documentElement.style.setProperty('--accent-color', color);
-        }
-        
-        // Sync mode functions
-        function setSyncMode(mode) {
-            syncMode = mode;
-            if (mode === 'sixteenths') {
-                syncIndicator.textContent = 'Sync: 16ths';
-                syncIndicator.classList.add('visible');
-            } else {
-                syncIndicator.classList.remove('visible');
-            }
-        }
-        
-        // Event listeners
-        brightnessSlider.addEventListener('input', (e) => {
-            maxBrightness = parseFloat(e.target.value);
-        });
-        
-        pulseDepthSlider.addEventListener('input', (e) => {
-            pulseDepth = parseFloat(e.target.value);
-        });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                togglePlay();
-            } else if (e.code === 'KeyF') {
-                toggleFullscreen();
-            } else if (e.code === 'KeyS' && !e.repeat) {
-                setSyncMode('sixteenths');
-            }
-        });
-        
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'KeyS') {
-                setSyncMode(null);
-            }
-        });
-        
-        // Handle fullscreen change
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
-                document.body.classList.remove('fullscreen');
-            }
-        });
-        
-        // Touch support for sync on mobile (touch and hold yantra)
-        // Quick tap = play/pause, hold 200ms+ = sync
-        let touchStartTime = 0;
-        let touchSyncActive = false;
-        let touchTimeout = null;
-        
-        svg.addEventListener('touchstart', (e) => {
-            touchStartTime = Date.now();
-            // After 200ms of holding, activate sync
-            touchTimeout = setTimeout(() => {
-                if (touchStartTime > 0) {
-                    touchSyncActive = true;
-                    setSyncMode('sixteenths');
-                }
-            }, 200);
-        });
-        
-        svg.addEventListener('touchend', (e) => {
-            const touchDuration = Date.now() - touchStartTime;
-            clearTimeout(touchTimeout);
-            
-            if (touchSyncActive) {
-                // Was holding for sync, release it
-                touchSyncActive = false;
-                setSyncMode(null);
-            } else if (touchDuration < 200) {
-                // Quick tap - toggle play/pause
-                e.preventDefault();
-                togglePlay();
-            }
-            
-            touchStartTime = 0;
-        });
-        
-        svg.addEventListener('touchcancel', () => {
-            clearTimeout(touchTimeout);
-            touchStartTime = 0;
-            if (touchSyncActive) {
-                touchSyncActive = false;
-                setSyncMode(null);
-            }
-        });
-        
-        // Desktop click on yantra to play/pause (fullscreen mode)
-        svg.addEventListener('click', (e) => {
-            // Only respond to click if in fullscreen, to avoid conflict with other controls
-            if (document.fullscreenElement) {
-                togglePlay();
-            }
-        });
-        
-        // Audio ended
-        audio.addEventListener('ended', () => {
-            isPlaying = false;
-            playBtn.textContent = 'Play';
-            playBtn.classList.remove('active');
-            cancelAnimationFrame(animationId);
-            setAllLayersMax(); // Snap to full brightness when track ends
-            svg.classList.remove('idle-glow'); // No glow for crystal clear yantra
-            stopKeepAlive();
-            
-            // 12 second delay before showing controls and resetting visuals
-            setTimeout(() => {
-                svg.classList.add('idle-glow'); // Resume glow after delay
-                document.body.classList.remove('controls-hidden');
-                if (immersiveMode) {
-                    resetImmersiveVisuals();
-                }
-                // Show next track button
-                showNextTrackButton();
-            }, 12000);
-        });
-        
-        // Mobile audio resilience - handle stalls and errors
-        audio.addEventListener('stalled', () => {
-            console.log('Audio stalled at:', audio.currentTime);
-        });
-        
-        audio.addEventListener('error', (e) => {
-            console.log('Audio error:', e);
-        });
-        
-        audio.addEventListener('waiting', () => {
-            console.log('Audio buffering at:', audio.currentTime);
-        });
-        
-        audio.addEventListener('pause', () => {
-            console.log('Audio paused at:', audio.currentTime, 'isPlaying state:', isPlaying);
-        });
-        
-        // Handle visibility change (tab backgrounded/foregrounded)
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && isPlaying) {
-                // Try to resume if we were playing
-                if (audio.paused) {
-                    audio.play().catch(e => console.log('Resume on visibility failed:', e));
-                }
-                // Restart animation if needed
-                if (!animationId) {
-                    lastTimestamp = 0;
-                    animationId = requestAnimationFrame(animate);
-                }
-            }
-        });
-        
-        // Keep audio context alive on mobile with periodic interaction
-        let keepAliveInterval = null;
-        let lastKnownTime = 0;
-        let wakeLock = null;
-        let recoveryAttempts = 0;
-        const MAX_RECOVERY_ATTEMPTS = 5;
-        
-        // Request wake lock to prevent screen from sleeping
-        async function requestWakeLock() {
-            if ('wakeLock' in navigator) {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake lock acquired');
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Wake lock released');
-                    });
-                } catch (err) {
-                    console.log('Wake lock failed:', err);
-                }
-            }
-        }
-        
-        function releaseWakeLock() {
-            if (wakeLock) {
-                wakeLock.release();
-                wakeLock = null;
-            }
-        }
-        
-        async function attemptRecovery() {
-            if (recoveryAttempts >= MAX_RECOVERY_ATTEMPTS) {
-                console.log('Max recovery attempts reached, giving up');
-                // Update UI to show it stopped
-                isPlaying = false;
-                playBtn.textContent = 'Play';
-                playBtn.classList.remove('active');
-                return;
-            }
-            
-            recoveryAttempts++;
-            console.log('Recovery attempt', recoveryAttempts, 'from position', lastKnownTime);
-            
-            try {
-                // Set position first
-                audio.currentTime = lastKnownTime;
-                
-                // Small delay then play
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                await audio.play();
-                console.log('Recovery successful, playing from', audio.currentTime);
-                recoveryAttempts = 0; // Reset on success
-            } catch (e) {
-                console.log('Recovery attempt', recoveryAttempts, 'failed:', e);
-                // Try again shortly
-                setTimeout(attemptRecovery, 500);
-            }
-        }
-        
-        function startKeepAlive() {
-            if (keepAliveInterval) return;
-            requestWakeLock();
-            recoveryAttempts = 0;
-            
-            keepAliveInterval = setInterval(() => {
-                if (isPlaying) {
-                    // Track position in case we need to resume
-                    if (!audio.paused && audio.currentTime > 0) {
-                        lastKnownTime = audio.currentTime;
-                    }
-                    
-                    // Check if audio stopped unexpectedly
-                    if (audio.paused && lastKnownTime > 0) {
-                        console.log('Keep-alive: audio paused unexpectedly at', lastKnownTime);
-                        attemptRecovery();
-                    }
-                }
-            }, 500);
-        }
-        
-        function stopKeepAlive() {
-            if (keepAliveInterval) {
-                clearInterval(keepAliveInterval);
-                keepAliveInterval = null;
-            }
-            lastKnownTime = 0;
-            recoveryAttempts = 0;
-            releaseWakeLock();
-        }
-        
-        // Initialize
-        updateMoonPhase();
-        
-        // Get initial color from selected track
-        const initialOption = trackSelect.options[trackSelect.selectedIndex];
-        trackDefaultColor = initialOption.dataset.color;
-        updateColor(trackDefaultColor);
-        
-        // Set initial opacity to max and start idle glow
-        setAllLayersMax();
-        svg.classList.add('idle-glow');
-    </script>
+  <aside class="more" id="more" aria-labelledby="moreTitle" hidden>
+    <header><h2 id="moreTitle">More</h2><button type="button" id="closeMore" aria-label="Close">Close ×</button></header>
+    <section id="paceSection">
+      <span class="label">Journey pace</span>
+      <div class="seg" role="group" aria-label="Journey pace">
+        <button type="button" data-pace="4" aria-pressed="false">Brisk</button>
+        <button type="button" data-pace="8" aria-pressed="true">Steady</button>
+        <button type="button" data-pace="16" aria-pressed="false">Slow</button>
+      </div>
+      <p class="note" id="paceNote"></p>
+    </section>
+    <section>
+      <span class="label">Colour</span>
+      <div class="seg" role="group" aria-label="Colour">
+        <button type="button" data-colour="drift" aria-pressed="true">Drift</button>
+        <button type="button" data-colour="steady" aria-pressed="false">Steady</button>
+        <button type="button" data-colour="temple" aria-pressed="false">Temple</button>
+        <button type="button" data-colour="cyber" aria-pressed="false">Cyber</button>
+      </div>
+      <p class="note" id="colourNote"></p>
+    </section>
+    <section>
+      <span class="label">Light</span>
+      <div class="seg" role="group" aria-label="Light">
+        <button type="button" data-light="strobe" aria-pressed="true">Strobe</button>
+        <button type="button" data-light="soft" aria-pressed="false">Flowing</button>
+      </div>
+      <p class="note" id="strobeNote" hidden>Strobe uses brief flashes. Start with low intensity; the centre stays steady.</p>
+      <div class="row"><label for="brightness">Brightness</label><output id="brightnessOut">100%</output></div>
+      <input id="brightness" type="range" min="0.2" max="1" step="0.05" value="1">
+      <div class="row"><label for="intensity">Intensity</label><output id="intensityOut">100%</output></div>
+      <input id="intensity" type="range" min="0" max="1" step="0.05" value="1">
+      <label class="check"><span>Show where you are<small>Keep the stage names and progress on screen while the controls are hidden</small></span><input type="checkbox" id="pin" checked></label>
+      <label class="check"><span>Immersive<small>The yantra slowly grows; the background fades</small></span><input type="checkbox" id="immersive"></label>
+    </section>
+    <section>
+      <span class="label">Closing rest</span>
+      <div class="seg" role="group" aria-label="Closing rest">
+        <button type="button" data-close="end" aria-pressed="true">Track end</button>
+        <button type="button" data-close="600" aria-pressed="false">10 min</button>
+        <button type="button" data-close="1200" aria-pressed="false">20 min</button>
+        <button type="button" data-close="off" aria-pressed="false">Off</button>
+      </div>
+      <p class="note" id="closeNote"></p>
+    </section>
+    <section>
+      <details><summary>About Tratak</summary>
+        <p>The Sri Yantra is drawn as nine enclosures, the āvaraṇas, nested around the bindu. In the Journey the light moves through them one by one: from the square of gates, through the two lotuses and the rings of triangles, to the central point, and back out again.</p>
+        <p>The enclosure you have reached glows; those you have passed stay faintly lit. Throughout, Shiva's four upward triangles and Shakti's five downward triangles keep two rhythms in conversation, drawing closer as you move inward until they meet at the central triangle. At the bindu everything rests.</p>
+        <p>Dance sets every part moving at once, each in its own rhythm: the gates ripple, the circles and petals chase and shimmer, the two currents cross, and waves of light run through the rings of triangles. The figure changes every eight bars.</p>
+        <p>Temple colours the yantra the way painted Sri Yantras often are, though painters and texts vary: the gates in white, yellow and blue; red outer petals and white inner petals; Shiva's upward triangles white and Shakti's downward triangles red; red rings around a white central triangle; and a red bindu. Cyber carries the same scheme into neon: white becomes ice and cyan, red becomes magenta, yellow becomes amber.</p>
+        <p>At the end, the yantra holds still for a few seconds. Close your eyes and rest with the afterimage; after a minute a soft chime calls you back. Click or press any key to end the rest early.</p>
+        <p>Pulse is the original rhythm: gates on the beat, triangles on eighth notes, lotus on seven over eight. Still keeps the yantra steady.</p>
+      </details>
+      <p class="keys">Space play/pause · F fullscreen · M more · T tap tempo · R beat 1 · hold S or press and hold the yantra to pulse everything together</p>
+    </section>
+  </aside>
+
+  <div class="veil" aria-hidden="true"></div>
+  <p class="cue" id="cue" role="status" aria-live="polite"></p>
+  <button type="button" class="reveal" id="revealBtn" hidden>Controls</button>
+  <img src="logo.jpg" alt="Sattvagenic" class="logo chrome" id="logo">
+  <audio id="audio" preload="none" playsinline src="Bhopura.mp3"></audio>
+  <noscript><p class="status" style="position:fixed;bottom:12px;left:0;right:0">Tratak needs JavaScript for its controls. The yantra itself is shown above.</p></noscript>
+  <script>
+'use strict';
+// Self-contained: no framework, remote scripts, storage or analytics.
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+const backdrop = document.querySelector('.backdrop');
+const root = document.documentElement;
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const L = {
+  gates:$('layerGates'), innerCircles:$('layerInnerCircles'), up:$('layerTrianglesUp'), down:$('layerTrianglesDown'),
+  lotusCircles:$('layerLotusCircles'), lotusInner:$('layerLotusInner'), lotusOuter:$('layerLotusOuter'), bindu:$('layerBindu'), halo:$('binduHalo')
+};
+const RINGS = {4:$('avarana4'), 5:$('avarana5'), 6:$('avarana6'), 7:$('avarana7'), 8:$('avarana8')};
+const bboxW = el => el.getBBox().width;
+const angleOf = el => { const b = el.getBBox(); return (Math.atan2(b.y + b.height/2 - 216, b.x + b.width/2 - 216) + Math.PI*2.5) % (Math.PI*2); };
+const GATES = [...L.gates.children].sort((a,b) => bboxW(b) - bboxW(a));          // outer → inner
+const PETALS16 = [...L.lotusOuter.children].sort((a,b) => angleOf(a) - angleOf(b)); // clockwise from the top
+const PETALS8 = [...L.lotusInner.children].sort((a,b) => angleOf(a) - angleOf(b));
+const ICIRC = [...L.innerCircles.children];   // innermost → outermost
+const LCIRC = [...L.lotusCircles.children];
+const CHILDREN = [...GATES, ...ICIRC, ...LCIRC, ...PETALS16, ...PETALS8];
+
+/* The nine enclosures, outermost first. */
+const AVARANA = [
+  null,
+  { form:'Bhūpura · the gates',            name:'Trailokya Mohana',     gloss:'enchanter of the three worlds' },
+  { form:'Sixteen-petalled lotus',          name:'Sarvāśā Paripūraka',   gloss:'fulfiller of all hopes' },
+  { form:'Eight-petalled lotus',            name:'Sarva Saṅkṣobhaṇa',    gloss:'stirrer of all' },
+  { form:'Fourteen triangles',              name:'Sarva Saubhāgyadāyaka',gloss:'giver of all good fortune' },
+  { form:'Ten triangles',                   name:'Sarvārtha Sādhaka',    gloss:'accomplisher of all aims' },
+  { form:'Ten inner triangles',             name:'Sarva Rakṣākara',      gloss:'protector of all' },
+  { form:'Eight triangles',                 name:'Sarva Rogahara',       gloss:'remover of all ills' },
+  { form:'Central triangle',                name:'Sarva Siddhiprada',    gloss:'giver of every attainment' },
+  { form:'Bindu',                           name:'Sarvānandamaya',       gloss:'made entirely of bliss' }
+];
+const NUMERAL = ['','I','II','III','IV','V','VI','VII','VIII','IX'];
+const SHORT = ['','Gates','Sixteen petals','Eight petals','Fourteen','Ten','Ten within','Eight','Triangle','Bindu'];
+// Inward to the bindu, then back out; the next pass begins again at the gates.
+const SEQUENCE = [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2];
+// Shiva : Shakti pulses per half bar. The two currents draw closer as the journey moves inward.
+// Smaller enclosures need a little more light to read as clearly as the outer rings.
+const RING_GAIN = {4:1, 5:1, 6:1.1, 7:1.25, 8:2};
+const RATIO = {1:[3,2],2:[3,2],3:[3,2],4:[3,2],5:[4,3],6:[5,4],7:[6,5],8:[2,2],9:null};
+/* Pattern library. Each returns 0..1 for element i at a given beat. */
+const GATE = {   // i: 0 outer … 2 inner
+  inward:  (b, i, l) => ripple(mod(b - i / 3, 1), l),
+  outward: (b, i, l) => ripple(mod(b - (2 - i) / 3, 1), l),
+  answer:  (b, i, l) => ripple(mod(b - (i === 1 ? 0.5 : 0), 1), l),            // outer and inner on the beat, middle answers
+  climb:   (b, i, l) => { const k = Math.floor(mod(b, 4)); return k === 3 || k === i ? swell(mod(b, 1), l) : 0; }
+};
+const CIRC = {   // i: 0 inner … 3 outer
+  outward: (b, i, l) => ripple(mod(b - i / 4, 1), l),
+  inward:  (b, i, l) => ripple(mod(b - (3 - i) / 4, 1), l),
+  triplet: (b, i, l) => comet(mod(b * 3 - i, 4), 0.8, l),                          // three steps a beat across four circles
+  pairs:   (b, i, l) => ripple(mod(b * 2 - (i % 2) * 0.5, 1), l)
+};
+const LCIR = {
+  answer:  (b, i, l) => ripple(mod(b - i * 0.5, 1), l),
+  dotted:  (b, i, l) => ripple(mod(b / 0.75, 1), l),                               // dotted eighths against the beat
+  breathe: (b, i, l) => swell(mod(b, 4), l)
+};
+const P16 = {
+  turn:    (b, i, l) => comet(mod(b * 4 - i, 16), 2.2, l),                         // one petal per sixteenth, a turn a bar
+  twin:    (b, i, l) => comet(mod(b * 2 - i, 8), 1.4, l),                          // two heads, opposite
+  four:    (b, i, l) => comet(mod(b * 2 - i, 4), 0.9, l),                          // four heads, stepping in eighths
+  shimmer: (b, i, l) => ripple(mod(b * 2 - (i % 2) * 0.5, 1), l),                   // odd and even petals alternate
+  counter: (b, i, l) => comet(mod(b * 4 + i, 16), 2.2, l),                         // the other way round
+  bloom:   (b, i, l) => swell(mod(b, 2), l)
+};
+const P8 = {
+  turn:    (b, i, l) => comet(mod(b * 2 - i, 8), 1.5, l),
+  counter: (b, i, l) => comet(mod(b * 2 + i, 8), 1.5, l),
+  triplet: (b, i, l) => comet(mod(b * 3 - i, 8), 1.2, l),                          // three a beat: eight petals drift against the bar
+  pairs:   (b, i, l) => comet(mod(b * 2 - i, 4), 0.8, l),
+  shimmer: (b, i, l) => ripple(mod(b - (i % 2) * 0.5, 1), l)
+};
+const RINGP = {  // r: 0 = IV (outer) … 4 = VIII (centre)
+  inward:  (b, r, l) => comet(mod(b * 5 / 4 - r, 5), 0.7, l),                       // five steps a bar: five against four
+  outward: (b, r, l) => comet(mod(b * 5 / 4 - (4 - r), 5), 0.7, l),
+  answer:  (b, r, l) => swell(mod(b - (r % 2) * 0.5, 1) * 2, l),
+  breathe: (b, r, l) => 0.5 - 0.5 * Math.cos(Math.PI * 2 * b / 8)
+};
+// Dance: every part moves at once; the figure changes every eight bars.
+const FIGURES = [
+  { g:'inward',  c:'outward', lc:'answer',  p16:'turn',    p8:'counter', ratio:[3,2], rings:'answer'  },
+  { g:'inward',  c:'triplet', lc:'dotted',  p16:'four',    p8:'triplet', ratio:[4,3], rings:'inward'  },
+  { g:'answer',  c:'inward',  lc:'answer',  p16:'twin',    p8:'pairs',   ratio:[3,2], rings:'outward' },
+  { g:'climb',   c:'pairs',   lc:'breathe', p16:'shimmer', p8:'shimmer', ratio:[5,4], rings:'breathe' },
+  { g:'outward', c:'outward', lc:'dotted',  p16:'counter', p8:'turn',    ratio:[4,3], rings:'inward'  },
+  { g:'inward',  c:'triplet', lc:'answer',  p16:'four',    p8:'triplet', ratio:[5,3], rings:'answer'  },
+  { g:'answer',  c:'pairs',   lc:'dotted',  p16:'turn',    p8:'counter', ratio:[2,2], rings:'outward' },
+  { g:'climb',   c:'inward',  lc:'breathe', p16:'bloom',   p8:'pairs',   ratio:[3,2], rings:'breathe' }
+];
+const FIGURE_BARS = 8;
+const JOURNEY_GATES = ['inward','outward','answer','climb'], JOURNEY_CIRC = ['outward','inward','pairs','triplet'];
+const JOURNEY_P16 = ['turn','twin','four','counter'], JOURNEY_P8 = ['turn','triplet','pairs','counter'];
+/* Colour. Drift glides between the two track colours; Temple and Cyber colour each part of the yantra. */
+const HSL = { '#4FD4C6':[173.7,60.7,57.1], '#E8A54B':[34.4,77.3,60.2] };
+const PALETTES = {
+  temple: { ui:'#E2B154', glow:'drop-shadow(0 0 3px rgba(255,226,186,.28))',
+    gates:['#F4ECD8','#E8B83A','#4F86E8'], innerCircles:'#D9A441', lotusCircles:'#D9A441', lotusOuter:'#E8412F', lotusInner:'#F4ECD8',
+    up:'#F4ECD8', down:'#E8412F', rings:{4:'#E8412F',5:'#E8412F',6:'#E8412F',7:'#E8412F',8:'#F4ECD8'}, bindu:'#FF3B2A', halo:'#FF6A3D' },
+  cyber:  { ui:'#FF2BD6', glow:'drop-shadow(0 0 3px rgba(255,43,214,.55)) drop-shadow(0 0 12px rgba(0,229,255,.3))',
+    gates:['#CFFBFF','#FFC400','#6A5CFF'], innerCircles:'#FFC400', lotusCircles:'#FFC400', lotusOuter:'#FF2A6D', lotusInner:'#CFFBFF',
+    up:'#00E5FF', down:'#FF2BD6', rings:{4:'#FF2BD6',5:'#FF2BD6',6:'#FF2BD6',7:'#FF2BD6',8:'#00E5FF'}, bindu:'#FF2A6D', halo:'#FF2BD6' }
+};
+const COLOUR_NOTES = {
+  drift:'Glides slowly between teal and gold, starting from the track’s colour.',
+  steady:'The track’s own colour throughout.',
+  temple:'White for Shiva, red for Shakti, as in painted Sri Yantras.',
+  cyber:'The temple colours in neon.'
+};
+const ORIGINAL = Object.freeze({ gates:1, triangles:0.5, lotus:8/7, sync:0.25 });
+const MIN_BPM = 40, MAX_BPM = 240;
+
+const state = {
+  accepted:false, playing:false, starting:false, token:0, raf:null,
+  mode:'dance', light:'strobe', colour:'drift', pace:8, bpm:120, brightness:1, intensity:1, immersive:false,
+  sourceAnchor:0, beatAnchor:0, elapsed:0, wallAnchor:0, color:'#4FD4C6',
+  syncHeld:false, hideTimer:null, wakeLock:null, taps:[], holdTimer:null, suppressClickUntil:0,
+  lastFrame:0, lastProgress:0, stageKey:'', weights:{}, trail:{}, pin:true,
+  closeAfter:'end', closing:null, closeToken:0, closeTimers:[], session:0, lastTick:0, restSeconds:60, ac:null
+};
+for (let a = 1; a <= 9; a++) { state.weights[a] = 0; state.trail[a] = 0; }
+
+/* ---------- time ---------- */
+const external = () => $('track').value === 'external';
+function mod(v, d) { const r = ((v % d) + d) % d; return r < 1e-10 || d - r < 1e-10 ? 0 : r; }
+function sourceSeconds(now = performance.now()) {
+  return external() ? state.elapsed + (state.playing ? (now - state.wallAnchor) / 1000 : 0)
+                    : (Number.isFinite(audio.currentTime) ? audio.currentTime : 0);
+}
+function beatNow(now = performance.now()) { return Math.max(0, state.beatAnchor + (sourceSeconds(now) - state.sourceAnchor) * state.bpm / 60); }
+function anchorBeat(beat = 0) { state.beatAnchor = beat; state.sourceAnchor = sourceSeconds(); state.stageKey = ''; }
+const fmt = v => Number.isFinite(v) ? Math.floor(Math.max(0, v) / 60) + ':' + String(Math.floor(Math.max(0, v)) % 60).padStart(2, '0') : '—';
+const say = (m = '') => { $('status').textContent = m; };
+
+/* ---------- light shapes ---------- */
+// A rounded pulse at the start of each of `count` slots in a cycle; strobe gives a short flash instead.
+function pulse(phase, count, cycleSeconds, light, offset = 0) {
+  const period = cycleSeconds / count;
+  const s = mod(phase * count - offset, 1) * period;
+  if (light === 'strobe') return s < period * 0.4 ? 1 : 0;
+  const dur = Math.min(period * 0.82, 1.8);
+  return s < dur ? Math.sin(Math.PI * s / dur) ** 2 : 0;
+}
+// A head of light with a fading tail, for chases around the lotus. x counts steps since this element was lit.
+const comet = (x, tail, light) => light === 'strobe' ? (x < 0.5 ? 1 : 0) : Math.exp(-x / tail);
+const ripple = (x, light) => light === 'strobe' ? (x < 0.2 ? 1 : 0) : (x < 0.42 ? Math.sin(Math.PI * x / 0.42) ** 2 : 0);
+const swell = (x, light) => light === 'strobe' ? (x < 0.25 ? 1 : 0) : (x < 0.35 ? Math.sin(Math.PI / 2 * x / 0.35) ** 2 : Math.exp(-(x - 0.35) / 1.3));
+function originalPulse(beat, division, light, offset = 0) {
+  const p = mod(beat / division - offset, 1);
+  if (light === 'strobe') return mod(p - 0.5, 1) < 0.4 ? 1 : 0;
+  return (Math.sin(p * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+}
+function rampedDepth(seconds, duration) {
+  // A gentle entry over the first minute and a softer last minute, as in the original.
+  if (seconds < 60) return 0.2 + 0.8 * Math.max(0, seconds) / 60;
+  if (Number.isFinite(duration) && seconds > duration - 60) return 0.6 + 0.4 * Math.max(0, duration - seconds) / 60;
+  return 1;
+}
+
+/* ---------- drawing ---------- */
+const op = (el, v) => { el.style.opacity = (Math.round(v * 1000) / 1000).toString(); };
+function resetParts() {
+  for (const el of CHILDREN) el.style.removeProperty('opacity');
+  for (const g of Object.values(RINGS)) op(g, 0);
+  op(L.halo, 0);
+}
+function staticView() {
+  resetParts();
+  for (const k of ['gates','innerCircles','up','down','lotusCircles','lotusInner','lotusOuter','bindu']) op(L[k], state.brightness);
+}
+function journeyAt(beat) {
+  const stageBeats = state.pace * 4;
+  const n = Math.floor(beat / stageBeats);
+  const idx = n % SEQUENCE.length;
+  return { a:SEQUENCE[idx], idx, inward: idx < 9, x:beat - n * stageBeats, stageBeats };
+}
+function buildTicks(n) {
+  for (const id of ['mapTicks','capTicks']) {
+    const el = $(id);
+    if (el.children.length === n) continue;
+    el.style.gridTemplateColumns = `repeat(${n},1fr)`;
+    el.innerHTML = '<i><span></span></i>'.repeat(n);
+  }
+}
+function setTicks(index, frac) {
+  for (const id of ['mapTicks','capTicks']) {
+    [...$(id).children].forEach((t, i) => {
+      t.classList.toggle('done', i < index);
+      t.firstChild.style.width = i === index ? (frac * 100).toFixed(1) + '%' : '0';
+    });
+  }
+}
+function updateStage(j) {
+  const key = state.mode === 'journey' ? j.idx + ':' + state.pace : state.mode;
+  if (key !== state.stageKey) { state.stageKey = key; showStage(j); }
+  setTicks(j.idx, j.x / j.stageBeats);
+}
+function showStage(j) {
+  buildTicks(SEQUENCE.length);
+  const av = AVARANA[j.a];
+  [...$('mapList').children].forEach((li, i) => {
+    const a = i + 1;
+    li.classList.toggle('now', a === j.a);
+    li.classList.toggle('lit', j.inward ? a < j.a : a > j.a);
+  });
+  $('mapDir').textContent = j.a === 9 ? 'At the centre' : j.inward ? 'Inward' : 'Outward';
+  $('mapArrow').textContent = j.a === 9 ? '·' : j.inward ? '↓' : '↑';
+  $('glossName').textContent = av.name;
+  $('glossMeaning').textContent = av.form + ' · ' + av.gloss;
+  $('capNum').textContent = NUMERAL[j.a];
+  $('capName').textContent = av.form;
+}
+function danceAt(beat) {
+  const figBeats = FIGURE_BARS * 4, n = Math.floor(beat / figBeats), idx = n % FIGURES.length;
+  return { fig:FIGURES[idx], idx, x:beat - n * figBeats, figBeats };
+}
+function updateDance(d) {
+  const key = 'dance:' + d.idx;
+  if (key !== state.stageKey) {
+    state.stageKey = key;
+    buildTicks(FIGURES.length);
+    $('capNum').textContent = 'Figure ' + NUMERAL[d.idx + 1];
+    $('capName').textContent = `Shiva ${d.fig.ratio[0]} : Shakti ${d.fig.ratio[1]}`;
+  }
+  setTicks(d.idx, d.x / d.figBeats);
+}
+function renderJourney(beat, depth, dt) {
+  const j = journeyAt(beat), light = state.light, spb = 60 / state.bpm;
+  updateStage(j);
+  // Ease the spotlight between enclosures rather than switching it.
+  const k = 1 - Math.exp(-dt / 0.6);
+  for (let a = 1; a <= 9; a++) {
+    state.weights[a] += ((a === j.a ? 1 : 0) - state.weights[a]) * k;
+    const passed = a !== j.a && (j.inward ? a < j.a : a > j.a);
+    state.trail[a] += ((passed || j.a === 9 ? 1 : 0) - state.trail[a]) * k;
+  }
+  const W = state.weights, T = state.trail, b = state.brightness;
+  const mix = (rest, v) => b * ((1 - depth) + depth * (rest + (1 - rest) * v));
+
+  // Two currents: Shiva (upward) and Shakti (downward), half-bar cycle.
+  const r = RATIO[j.a], cyc = 2 * spb, ph = mod(beat, 2) / 2;
+  let up = 0, down = 0;
+  if (r) { up = pulse(ph, r[0], cyc, light); down = r[0] === r[1] ? up : pulse(ph, r[1], cyc, light); }
+  const rest9 = W[9];                        // at the bindu the currents fall quiet
+  op(L.up, mix(0.38 + 0.2 * rest9, up * (1 - rest9)));
+  op(L.down, mix(0.38 + 0.2 * rest9, down * (1 - rest9)));
+
+  // I–III: the outer forms change their pattern every two bars while they hold the focus.
+  const vary = Math.floor(j.x / 8);
+  const focusChild = (els, w, fn, floor) => els.forEach((el, i) => { el.style.opacity = (floor + (1 - floor) * (w * fn(beat, i, light) + (1 - w))).toFixed(3); });
+  // I · Gates ripple, with the three circles answering.
+  focusChild(GATES, W[1], GATE[JOURNEY_GATES[vary % 4]], 0.3);
+  focusChild(ICIRC, W[1], CIRC[JOURNEY_CIRC[vary % 4]], 0.3);
+  op(L.gates, mix(0.34 + 0.3 * T[1], W[1]));
+  op(L.innerCircles, mix(0.3 + 0.3 * Math.max(T[1], T[2]), W[1]));
+  // II · Sixteen petals: chases and turns.
+  focusChild(PETALS16, W[2], P16[JOURNEY_P16[vary % 4]], 0.25);
+  op(L.lotusOuter, mix(0.34 + 0.3 * T[2], W[2]));
+  // III · Eight petals.
+  focusChild(PETALS8, W[3], P8[JOURNEY_P8[vary % 4]], 0.25);
+  op(L.lotusInner, mix(0.34 + 0.3 * T[3], W[3]));
+  const wl = Math.max(W[2], W[3]);
+  focusChild(LCIRC, wl, LCIR[W[2] > W[3] ? 'answer' : 'dotted'], 0.3);
+  op(L.lotusCircles, mix(0.32 + 0.3 * Math.max(T[2], T[3]), wl));
+
+  // IV–VIII · Rings of triangles: the enclosure swells once a bar, with a lighter touch on each beat.
+  for (let a = 4; a <= 8; a++) {
+    const v = 0.65 * swell(mod(beat, 4), light) + 0.35 * swell(mod(beat, 1) * 2, light);
+    const fill = Math.min(0.85, RING_GAIN[a] * (W[a] * (0.12 + 0.3 * v) + T[a] * 0.07));
+    op(RINGS[a], b * depth * fill);
+  }
+  // IX · Bindu: the point stays steady; a slow breath of light gathers around it.
+  const breath = 0.5 - 0.5 * Math.cos(Math.PI * 2 * beat / 8);
+  op(L.halo, b * depth * W[9] * (0.3 + 0.6 * breath));
+  op(L.bindu, b);
+}
+function renderDance(beat, depth) {
+  const d = danceAt(beat), f = d.fig, light = state.light, spb = 60 / state.bpm, b = state.brightness;
+  updateDance(d);
+  const lvl = v => ((1 - depth) + depth * (0.22 + 0.78 * v)).toFixed(3);
+  const drive = (els, fn) => els.forEach((el, i) => { el.style.opacity = lvl(fn(beat, i, light)); });
+  drive(GATES, GATE[f.g]); drive(ICIRC, CIRC[f.c]); drive(LCIRC, LCIR[f.lc]);
+  drive(PETALS16, P16[f.p16]); drive(PETALS8, P8[f.p8]);
+  for (const k of ['gates','innerCircles','lotusCircles','lotusOuter','lotusInner']) op(L[k], b);
+  const ph = mod(beat, 2) / 2, cyc = 2 * spb;
+  const up = pulse(ph, f.ratio[0], cyc, light), down = f.ratio[0] === f.ratio[1] ? up : pulse(ph, f.ratio[1], cyc, light);
+  op(L.up, b * ((1 - depth) + depth * (0.3 + 0.7 * up)));
+  op(L.down, b * ((1 - depth) + depth * (0.3 + 0.7 * down)));
+  for (let r = 0; r < 5; r++) op(RINGS[r + 4], b * depth * Math.min(0.8, RING_GAIN[r + 4] * (0.03 + 0.3 * RINGP[f.rings](beat, r, light))));
+  op(L.halo, b * depth * 0.22 * (0.5 - 0.5 * Math.cos(Math.PI * 2 * beat / 8)));
+  op(L.bindu, b);
+}
+function renderPulse(beat, depth, sync = false) {
+  resetParts();
+  const light = state.light;
+  const g = originalPulse(beat, sync ? ORIGINAL.sync : ORIGINAL.gates, light);
+  const t = sync ? ORIGINAL.sync : ORIGINAL.triangles;
+  const lot = originalPulse(beat, sync ? ORIGINAL.sync : ORIGINAL.lotus, light);
+  const vals = { gates:g, up:originalPulse(beat, t, light), down:originalPulse(beat, t, light), innerCircles:lot, lotusCircles:lot, lotusInner:lot, lotusOuter:lot };
+  for (const [k, v] of Object.entries(vals)) op(L[k], state.brightness * ((1 - depth) + depth * v));
+  op(L.bindu, state.brightness);
+}
+function render(now) {
+  const dt = state.lastFrame ? Math.min(0.25, (now - state.lastFrame) / 1000) : 0.016;
+  state.lastFrame = now;
+  const beat = beatNow(now);
+  if (state.mode === 'still' || !state.playing) {
+    staticView();
+    if (state.mode === 'journey') updateStage(journeyAt(beat));
+    if (state.mode === 'dance') updateDance(danceAt(beat));
+    return;
+  }
+  let depth = state.intensity * rampedDepth(sourceSeconds(now), external() ? Infinity : audio.duration);
+  if (state.syncHeld) { renderPulse(beat, Math.max(depth, state.intensity * 0.85), true); return; }
+  if (state.mode === 'pulse') renderPulse(beat, depth);
+  else if (state.mode === 'dance') renderDance(beat, depth);
+  else renderJourney(beat, depth, dt);
+}
+const baseAccent = () => PALETTES[state.colour] ? PALETTES[state.colour].ui : state.color;
+function driftColour(t) {
+  // Starts exactly on the track's colour and takes three minutes to go to the other and back.
+  const a = HSL[state.color] || HSL['#4FD4C6'], b = HSL[state.color === '#E8A54B' ? '#4FD4C6' : '#E8A54B'];
+  const k = 0.5 - 0.5 * Math.cos(t / 180 * Math.PI * 2), m = i => (a[i] + (b[i] - a[i]) * k).toFixed(1);
+  return `hsl(${m(0)} ${m(1)}% ${m(2)}%)`;
+}
+function applyColour() {
+  const p = PALETTES[state.colour];
+  const set = (el, c) => { if (c) el.style.color = c; else el.style.removeProperty('color'); };
+  GATES.forEach((el, i) => set(el, p && p.gates[i]));
+  for (const k of ['innerCircles','lotusCircles','lotusOuter','lotusInner','up','down','bindu']) set(L[k], p && p[k]);
+  for (let a = 4; a <= 8; a++) set(RINGS[a], p && p.rings[a]);
+  set($('haloGrad'), p && p.halo);
+  $('sriYantra').style.filter = p ? p.glow : '';
+  root.style.setProperty('--accent', state.colour === 'drift' && state.playing && state.mode !== 'still' ? driftColour(sourceSeconds()) : baseAccent());
+  document.querySelectorAll('[data-colour]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.colour === state.colour)));
+  $('colourNote').textContent = COLOUR_NOTES[state.colour];
+}
+function space(now) {
+  const moving = state.mode !== 'still' && !reducedMotion.matches;
+  if (state.colour === 'drift' && moving) root.style.setProperty('--accent', driftColour(sourceSeconds(now)));
+  if (state.immersive && moving) {
+    const p = Math.min(1, sourceSeconds(now) / 150);
+    backdrop.style.opacity = String(0.4 * (1 - p));
+    root.style.setProperty('--yantra-size', `calc(var(--yantra) + ${(p * 14).toFixed(2)}vmin)`);
+  }
+}
+function frame(now) {
+  state.raf = null;
+  if (!state.playing) return;
+  if (state.lastTick) state.session += Math.min(0.25, (now - state.lastTick) / 1000);
+  state.lastTick = now;
+  if (typeof state.closeAfter === 'number' && state.session >= state.closeAfter) { startClosing(false); return; }
+  render(now); space(now);
+  if (now - state.lastProgress > 200) { progress(); state.lastProgress = now; }
+  state.raf = requestAnimationFrame(frame);
+}
+function resetSpace() {
+  backdrop.style.removeProperty('opacity');
+  root.style.removeProperty('--yantra-size');
+  if (state.colour !== 'drift' || state.mode === 'still') root.style.setProperty('--accent', baseAccent());
+}
+
+/* ---------- transport ---------- */
+function progress() {
+  if (external()) return;
+  const d = audio.duration, ok = Number.isFinite(d) && d > 0;
+  $('seek').disabled = !ok;
+  if (document.activeElement !== $('seek')) $('seek').value = ok ? String(audio.currentTime / d * 1000) : '0';
+  const label = fmt(audio.currentTime) + ' / ' + fmt(d);
+  if ($('time').textContent !== label) $('time').textContent = label;
+  $('seek').setAttribute('aria-valuetext', label);
+}
+function transportUI() {
+  const active = state.playing || state.starting;
+  $('playBtn').textContent = state.starting ? 'Starting…' : state.playing ? 'Pause' : 'Play';
+  $('yantraButton').setAttribute('aria-label', active ? 'Pause' : 'Play');
+}
+async function requestWakeLock() {
+  if (!state.playing || state.wakeLock || document.hidden || !navigator.wakeLock) return;
+  const token = state.token;
+  try {
+    const lock = await navigator.wakeLock.request('screen');
+    if (!state.playing || token !== state.token || document.hidden) { await lock.release(); return; }
+    state.wakeLock = lock;
+    lock.addEventListener('release', () => { if (state.wakeLock === lock) state.wakeLock = null; });
+  } catch (_) { /* optional */ }
+}
+function releaseWakeLock() { const l = state.wakeLock; state.wakeLock = null; if (l) l.release().catch(() => {}); }
+function pause(message) {
+  state.elapsed = sourceSeconds();
+  state.token++; state.playing = false; state.starting = false; state.syncHeld = false;
+  clearTimeout(state.holdTimer);
+  if (state.raf !== null) cancelAnimationFrame(state.raf);
+  state.raf = null; state.lastFrame = 0; state.lastTick = 0;
+  audio.pause(); releaseWakeLock(); staticView(); resetSpace(); transportUI(); showChrome(false); progress();
+  if (typeof message === 'string') say(message);
+}
+async function play() {
+  if (!state.accepted || state.playing || state.starting) return;
+  const token = ++state.token;
+  ensureAudioContext();   // created inside the tap, so the closing chime is allowed to sound later
+  state.starting = true; say(); $('status').hidden = false; transportUI();
+  try {
+    if (!external()) { if (audio.ended) { audio.currentTime = 0; anchorBeat(); } await audio.play(); }
+    if (token !== state.token) { if (!state.playing && !state.starting) audio.pause(); return; }
+    state.starting = false; state.playing = true; state.wallAnchor = performance.now(); state.stageKey = '';
+    transportUI();
+    if (state.raf === null) state.raf = requestAnimationFrame(frame);
+    requestWakeLock(); scheduleHide();
+  } catch (_) {
+    if (token !== state.token) return;
+    pause('The track could not start. Try Play again, or choose “My own music”.');
+  }
+}
+/* ---------- closing rest ---------- */
+const HOLD_SECONDS = 5;
+function ensureAudioContext() {
+  try {
+    if (!state.ac) state.ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (state.ac.state === 'suspended') state.ac.resume().catch(() => {});
+  } catch (_) { state.ac = null; }
+}
+function chime() {
+  // A small singing bowl: a fundamental with a slow beat and a few inharmonic partials, struck twice.
+  const ac = state.ac; if (!ac) return;
+  if (ac.state === 'suspended') ac.resume().catch(() => {});
+  const out = ac.createGain(); out.gain.value = 0.22; out.connect(ac.destination);
+  const strike = (t, level) => [[1,1,7],[1.004,0.6,7],[2.71,0.35,4],[5.16,0.14,2.2],[8.6,0.06,1.2]].forEach(([r, a, d]) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = 261.6 * r;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(a * level, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + d + 0.2);
+  });
+  const t = ac.currentTime + 0.05;
+  strike(t, 1); strike(t + 4, 0.55);
+}
+function cue(text) { const c = $('cue'); if (text) c.textContent = text; c.classList.toggle('on', !!text); }
+function fadeOutAudio(seconds, token) {
+  if (external() || audio.paused) return;
+  const v0 = audio.volume, t0 = performance.now();
+  const step = () => {
+    if (token !== state.closeToken) { audio.volume = 1; return; }
+    const k = Math.min(1, (performance.now() - t0) / (seconds * 1000));
+    try { audio.volume = Math.max(0, v0 * (1 - k)); } catch (_) {}
+    if (k < 1) setTimeout(step, 50); else { audio.pause(); audio.volume = 1; }
+  };
+  step();
+}
+function startClosing(ended) {
+  if (state.closing) return;
+  const token = ++state.closeToken;
+  state.closing = { ended };
+  // Stop the motion but keep the screen awake through the rest.
+  state.elapsed = sourceSeconds();
+  state.token++; state.playing = false; state.starting = false; state.syncHeld = false;
+  if (state.raf !== null) cancelAnimationFrame(state.raf);
+  state.raf = null; state.lastFrame = 0; state.lastTick = 0;
+  staticView(); resetSpace(); transportUI();
+  $('more').hidden = true; $('moreBtn').setAttribute('aria-expanded', 'false');
+  clearTimeout(state.hideTimer); document.body.classList.remove('hide-chrome'); $('revealBtn').hidden = true;
+  document.body.classList.add('closing');
+  if (!ended) fadeOutAudio(8, token);
+  cue('Close your eyes and rest with the afterimage');
+  state.closeTimers = [
+    setTimeout(() => { document.body.classList.add('closing-dark'); cue(''); }, HOLD_SECONDS * 1000),
+    setTimeout(() => {
+      chime();
+      document.body.classList.remove('closing-dark'); document.body.classList.add('closing-return');
+      cue('Open your eyes when you’re ready');
+    }, (HOLD_SECONDS + state.restSeconds) * 1000),
+    setTimeout(() => endClosing(), (HOLD_SECONDS + state.restSeconds + 9) * 1000)
+  ];
+}
+function endClosing() {
+  if (!state.closing) return;
+  const ended = state.closing.ended;
+  state.closeToken++; state.closeTimers.forEach(clearTimeout); state.closeTimers = []; state.closing = null;
+  if (!external() && !audio.paused) audio.pause();
+  audio.volume = 1;
+  document.body.classList.remove('closing', 'closing-dark', 'closing-return'); cue('');
+  state.session = 0;
+  releaseWakeLock(); staticView(); transportUI(); showChrome(false); progress();
+  if (ended) {
+    const t = $('track'); t.selectedIndex = (t.selectedIndex + 1) % 2; changeSource();
+    say('Track complete. Press Play for the next track.');
+  } else say('Session complete. Press Play to carry on.');
+}
+function setClose(v) {
+  state.closeAfter = v === 'end' || v === 'off' ? v : Number(v);
+  document.querySelectorAll('[data-close]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.close === String(v))));
+  closeNote();
+}
+function closeNote() {
+  const c = state.closeAfter, own = external();
+  $('closeNote').textContent =
+    c === 'off' ? 'The practice runs until you stop it.' :
+    c === 'end' ? (own ? 'With your own music, choose a time instead.' : 'When the track ends: close your eyes, rest a minute with the afterimage, and a soft chime calls you back.') :
+    `After ${c / 60} minutes ${own ? 'the yantra holds still (your music carries on)' : 'the music fades and the yantra holds still'}: close your eyes and rest; a soft chime calls you back.`;
+}
+const toggle = () => { if (!state.accepted) return; (state.playing || state.starting) ? pause() : play(); };
+
+function setTempo(value, fromTap = false) {
+  const v = Number(value);
+  if (!Number.isFinite(v) || v < MIN_BPM || v > MAX_BPM) { $('bpm').value = String(state.bpm); say('Choose a tempo between 40 and 240 BPM.'); return false; }
+  const beat = beatNow(), pos = sourceSeconds();
+  state.bpm = Math.round(v * 10) / 10; state.beatAnchor = beat; state.sourceAnchor = pos;
+  $('bpm').value = String(state.bpm);
+  if (!fromTap) state.taps = [];
+  paceNote();
+  return true;
+}
+function tap(now = performance.now()) {
+  if (state.taps.length && now - state.taps.at(-1) > 2000) state.taps = [];
+  state.taps.push(now); state.taps = state.taps.slice(-7);
+  if (state.taps.length < 2) { say('Keep tapping on the beat…'); return; }
+  const iv = state.taps.slice(1).map((t, i) => t - state.taps[i]);
+  const med = [...iv].sort((a, b) => a - b)[Math.floor(iv.length / 2)];
+  const close = iv.filter(x => Math.abs(x - med) < med * 0.25);
+  if (setTempo(60000 / (close.reduce((s, x) => s + x, 0) / close.length), true)) say(`${state.bpm} BPM. Press Beat 1 on a downbeat.`);
+}
+function beatOne() { anchorBeat(); render(performance.now()); say(state.mode === 'dance' ? 'Beat 1 · the dance starts again from the first figure.' : 'Beat 1 · the journey starts again from the gates.'); }
+
+function changeSource() {
+  pause();
+  state.elapsed = 0; state.beatAnchor = 0; state.sourceAnchor = 0; state.taps = []; state.session = 0; say();
+  if (external()) { audio.removeAttribute('src'); audio.load(); }
+  else {
+    const o = $('track').selectedOptions[0];
+    if (!['Bhopura.mp3','Nocturnal_OM.mp3'].includes(o.value)) return;
+    audio.src = o.value; audio.load();
+    state.bpm = Number(o.dataset.bpm); state.color = o.dataset.color;
+  }
+  $('bpm').value = String(state.bpm);
+  $('progress').hidden = external();
+  $('tempoRow').hidden = !external();
+  $('hint').textContent = external() ? 'Start your music, match its tempo, then press Beat 1 on a downbeat' : 'Rest your gaze on the centre · tap the yantra to pause';
+  root.style.setProperty('--accent', baseAccent());
+  state.stageKey = ''; paceNote(); closeNote(); progress(); render(performance.now());
+}
+function setMode(mode) {
+  state.mode = mode;
+  document.body.classList.remove('mode-journey','mode-dance','mode-pulse','mode-still');
+  document.body.classList.add('mode-' + mode);
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  $('paceSection').hidden = mode !== 'journey';
+  state.stageKey = ''; resetSpace();
+  if (!state.playing) staticView();
+  render(performance.now());
+}
+function setLight(light) {
+  state.light = light;
+  document.querySelectorAll('[data-light]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.light === light)));
+  $('strobeNote').hidden = light !== 'strobe';
+}
+function setPace(bars) {
+  // Keep the current place in the journey when the pace changes.
+  const beat = beatNow(), j = journeyAt(beat);
+  state.pace = bars;
+  const newBeat = (Math.floor(beat / (j.stageBeats * SEQUENCE.length)) * SEQUENCE.length + j.idx) * bars * 4 + (j.x / j.stageBeats) * bars * 4;
+  state.beatAnchor = newBeat; state.sourceAnchor = sourceSeconds(); state.stageKey = '';
+  document.querySelectorAll('[data-pace]').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pace) === bars)));
+  paceNote();
+}
+function paceNote() {
+  const stage = state.pace * 4 * 60 / state.bpm, lap = stage * SEQUENCE.length;
+  $('paceNote').textContent = `${state.pace} bars in each enclosure · in and out again in about ${Math.round(lap / 60)} minutes`;
+}
+
+/* ---------- chrome ---------- */
+function scheduleHide() {
+  clearTimeout(state.hideTimer);
+  if (!state.playing || !$('more').hidden) return;
+  state.hideTimer = setTimeout(() => {
+    if (!state.playing || !$('more').hidden || document.activeElement?.matches('input,select')) return;
+    document.body.classList.add('hide-chrome'); $('revealBtn').hidden = false;
+  }, 4500);
+}
+function showChrome(restart = true) {
+  clearTimeout(state.hideTimer);
+  document.body.classList.remove('hide-chrome'); $('revealBtn').hidden = true;
+  if (restart) scheduleHide();
+}
+function openMore(open) {
+  showChrome(false);
+  $('more').hidden = !open; $('moreBtn').setAttribute('aria-expanded', String(open));
+  if (!open) { $('moreBtn').focus(); scheduleHide(); }
+}
+async function fullscreen() {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else if (root.requestFullscreen) await root.requestFullscreen();
+    else say('Fullscreen is not available in this browser.');
+  } catch (_) { say('Fullscreen could not open.'); }
+}
+function enter(mode) {
+  state.accepted = true;
+  $('welcome').close();
+  setMode(mode);
+  $('playBtn').focus();
+}
+function moon() {
+  const c = mod((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 86400000, 29.530588853) / 29.530588853;
+  $('moon').textContent = ['New moon','Waxing crescent','First quarter','Waxing gibbous','Full moon','Waning gibbous','Last quarter','Waning crescent'][Math.round(c * 8) % 8];
+}
+
+/* ---------- events ---------- */
+$('beginBtn').addEventListener('click', () => enter(reducedMotion.matches ? 'still' : 'dance'));
+$('beginStillBtn').addEventListener('click', () => enter('still'));
+$('welcome').addEventListener('cancel', e => { e.preventDefault(); enter('still'); });
+$('playBtn').addEventListener('click', toggle);
+$('yantraButton').addEventListener('click', e => { if (e.detail > 0 && performance.now() < state.suppressClickUntil) return; toggle(); });
+$('yantraButton').addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'touch' || !state.playing || state.mode === 'still') return;
+  $('yantraButton').setPointerCapture(e.pointerId);
+  clearTimeout(state.holdTimer);
+  state.holdTimer = setTimeout(() => { if (state.playing && state.mode !== 'still') state.syncHeld = true; }, 300);
+});
+function releaseHold() { clearTimeout(state.holdTimer); if (state.syncHeld) state.suppressClickUntil = performance.now() + 500; state.syncHeld = false; }
+$('yantraButton').addEventListener('pointerup', releaseHold);
+$('yantraButton').addEventListener('pointercancel', releaseHold);
+$('yantraButton').addEventListener('contextmenu', e => e.preventDefault());
+$('track').addEventListener('change', changeSource);
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+document.querySelectorAll('[data-light]').forEach(b => b.addEventListener('click', () => setLight(b.dataset.light)));
+document.querySelectorAll('[data-pace]').forEach(b => b.addEventListener('click', () => setPace(Number(b.dataset.pace))));
+$('moreBtn').addEventListener('click', () => openMore($('more').hidden));
+$('closeMore').addEventListener('click', () => openMore(false));
+$('revealBtn').addEventListener('click', () => { showChrome(); $('playBtn').focus(); });
+$('fullscreenBtn').addEventListener('click', fullscreen);
+$('bpm').addEventListener('change', () => setTempo($('bpm').value));
+$('tapBtn').addEventListener('click', () => tap());
+$('beatBtn').addEventListener('click', beatOne);
+$('brightness').addEventListener('input', () => { state.brightness = Number($('brightness').value); $('brightnessOut').textContent = Math.round(state.brightness * 100) + '%'; if (!state.playing) staticView(); });
+$('intensity').addEventListener('input', () => { state.intensity = Number($('intensity').value); $('intensityOut').textContent = Math.round(state.intensity * 100) + '%'; });
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => setClose(b.dataset.close)));
+document.querySelectorAll('[data-colour]').forEach(b => b.addEventListener('click', () => { state.colour = b.dataset.colour; applyColour(); }));
+$('pin').addEventListener('change', () => { state.pin = $('pin').checked; document.body.classList.toggle('pin', state.pin); });
+$('immersive').addEventListener('change', () => { state.immersive = $('immersive').checked; if (!state.immersive) resetSpace(); });
+$('seek').addEventListener('input', () => {
+  if (external() || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+  const t = Math.max(0, Math.min(1, Number($('seek').value) / 1000)) * audio.duration;
+  audio.currentTime = t; state.sourceAnchor = t; state.beatAnchor = t * state.bpm / 60; state.stageKey = '';
+  progress(); render(performance.now());
+});
+document.addEventListener('click', e => {
+  if (!state.closing) return;
+  e.stopPropagation(); e.preventDefault(); endClosing();
+}, true);
+document.addEventListener('keydown', e => {
+  if (state.closing) { e.preventDefault(); endClosing(); return; }
+  if (!state.accepted || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'Escape') { e.preventDefault(); if (!$('more').hidden) openMore(false); else pause(); return; }
+  if (e.target instanceof Element && e.target.closest('input,select,textarea') || e.repeat) return;
+  if (e.code === 'Space' && e.target instanceof Element && e.target.closest('button,summary')) return;
+  switch (e.code) {
+    case 'Space': e.preventDefault(); toggle(); break;
+    case 'KeyF': e.preventDefault(); fullscreen(); break;
+    case 'KeyM': e.preventDefault(); openMore($('more').hidden); break;
+    case 'KeyT': e.preventDefault(); tap(); break;
+    case 'KeyR': e.preventDefault(); beatOne(); break;
+    case 'KeyS': e.preventDefault(); state.syncHeld = state.playing && state.mode !== 'still'; break;
+  }
+});
+document.addEventListener('keyup', e => { if (e.code === 'KeyS') state.syncHeld = false; });
+window.addEventListener('blur', releaseHold);
+window.addEventListener('pagehide', () => { if (state.closing) endClosing(); pause(); });
+document.addEventListener('pointermove', e => { if (state.accepted && !state.closing && e.target !== $('revealBtn')) showChrome(); }, { passive:true });
+document.addEventListener('pointerdown', e => { if (state.accepted && !state.closing && e.target !== $('revealBtn')) showChrome(); }, { passive:true });
+document.addEventListener('focusin', e => { if (state.accepted && !state.closing && e.target !== $('revealBtn')) showChrome(); });
+document.addEventListener('fullscreenchange', () => {
+  const on = !!document.fullscreenElement;
+  document.body.classList.toggle('fullscreen', on);
+  $('fullscreenBtn').setAttribute('aria-label', on ? 'Exit fullscreen' : 'Enter fullscreen');
+  showChrome();
+});
+document.addEventListener('visibilitychange', () => { state.syncHeld = false; if (document.hidden) releaseWakeLock(); else if (state.playing) requestWakeLock(); });
+reducedMotion.addEventListener('change', e => { if (e.matches) { setMode('still'); say('Reduced motion is on, so the still view is selected.'); } });
+audio.addEventListener('loadedmetadata', progress);
+audio.addEventListener('durationchange', progress);
+audio.addEventListener('pause', () => { if (state.playing && !external()) pause(); });
+audio.addEventListener('waiting', () => { if (state.playing || state.starting) say('Buffering…'); });
+audio.addEventListener('playing', () => { if (state.playing || state.starting) say(); });
+audio.addEventListener('error', () => { if (!external() && (state.playing || state.starting)) pause('This track could not load. Try again, or choose “My own music”.'); });
+audio.addEventListener('ended', () => {
+  if (external()) return;
+  if (state.closing) { state.closing.ended = true; return; }
+  if (state.closeAfter !== 'off') { startClosing(true); return; }
+  const t = $('track');
+  pause('Track complete. Sit for a moment, or press Play for the next track.');
+  t.selectedIndex = (t.selectedIndex + 1) % 2; changeSource();
+  say('Track complete. Sit for a moment, or press Play for the next track.');
+});
+$('logo').addEventListener('error', () => { $('logo').hidden = true; });
+
+// The journey map.
+$('mapList').innerHTML = AVARANA.slice(1).map((a, i) => `<li><b>${NUMERAL[i + 1]}</b><span>${SHORT[i + 1]}</span></li>`).join('');
+if (reducedMotion.matches) $('beginBtn').textContent = 'Begin · still view';
+moon(); setLight('strobe'); applyColour(); setClose('end'); paceNote(); staticView(); updateDance(danceAt(0));
+$('welcome').showModal();
+  </script>
 </body>
 </html>
