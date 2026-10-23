@@ -53,14 +53,11 @@ const MobileLingamMenu = () => {
               <a href="/Tratak/" target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Tratak</a>
             </div>
 
-            {/* Mantric Art — hidden until the pages are polished and republished.
-                To restore: uncomment this block.
             <div className="menu-section">
-              <h3>Mantric Art</h3>
-              <Link to="/mantra" onClick={closeMenu}>Mritunjay</Link>
-              <Link to="/torus-mantra" onClick={closeMenu}>Om Namah Shivaya</Link>
+              <h3>Mantra Roopa</h3>
+              <Link to="/mantra-roopa/mahamrityunjaya" onClick={closeMenu}>Mahamrityunjaya</Link>
+              {/* <Link to="/mantra-roopa/om-namah-shivaya" onClick={closeMenu}>Om Namah Shivaya</Link> */}
             </div>
-            */}
 
             {/* Writing — hidden until there is content to link to.
                 To restore: uncomment this block.

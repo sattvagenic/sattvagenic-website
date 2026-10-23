@@ -1,7 +1,7 @@
 import './App.css';
 import './meditation-styles.css';
 import SanskritRain from './components/SanskritRain';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import MobileLingamMenu from './components/MobileLingamMenu';
@@ -40,6 +40,7 @@ import Music, { releases } from './components/Music';
 
 // Metta-Morph loads only when its page is opened, so the face-reading code never slows the homepage.
 const MettaMorph = React.lazy(() => import('./components/MettaMorph'));
+const MantraRoopa = React.lazy(() => import('./components/MantraRoopa'));
 
 // Pick the most recent release by parsing its "Month Year" date string.
 const latestRelease = [...releases].sort(
@@ -590,6 +591,7 @@ function AppContent({ selectedImage, setSelectedImage }) {
       <span>Practices</span>
       <ul className="dropdown-menu">
         <li><Link to="/metta-morph">Metta-Morph</Link></li>
+        <li><Link to="/mantra-roopa">Mantra Roopa</Link></li>
         <li><a href="/Tratak/" target="_blank" rel="noopener noreferrer">Tratak</a></li>
       </ul>
     </li>
@@ -820,6 +822,18 @@ function AppContent({ selectedImage, setSelectedImage }) {
           </Suspense>
         } />
         <Route path="/about" element={<About />} />
+        <Route path="/mantra-roopa" element={
+          <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
+            <MantraRoopa />
+          </Suspense>
+        } />
+        <Route path="/mantra-roopa/:slug" element={
+          <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
+            <MantraRoopa />
+          </Suspense>
+        } />
+        {/* the old Mrityunjaya address now opens the new piece */}
+        <Route path="/mantra" element={<Navigate to="/mantra-roopa/mahamrityunjaya" replace />} />
         {/* Hidden routes kept in code for future polish:
             <Route path="/consciousness-lab" element={<ConsciousnessLab />} />
             <Route path="/meditation" element={<SriYantra />} />
