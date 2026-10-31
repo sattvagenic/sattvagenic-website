@@ -60,7 +60,7 @@ const About = () => {
               {videoPlaying ? (
                 <iframe
                   title="AI x Neuro – Mindful Alignment (Chiang Mai)"
-                  src="https://www.youtube.com/embed/sKYs3BXFP1s?start=257&autoplay=1"
+                  src="https://www.youtube-nocookie.com/embed/sKYs3BXFP1s?start=257&autoplay=1"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>

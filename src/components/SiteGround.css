@@ -99,3 +99,14 @@
 
 /* App.css gives main width:100% plus padding on phones, which pushes it 20px past the screen */
 @media (max-width: 768px) { .App.sg-night > main { box-sizing: border-box; } }
+
+/* ---------- the legal line at the foot of every page ---------- */
+.App.sg-night .sg-legal {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 26px;
+  margin: 40px auto 0; padding: 22px 16px 28px;
+  border-top: 1px solid var(--hp-line);
+  font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--hp-bone-faint);
+}
+.App.sg-night .sg-legal a { color: var(--hp-bone-dim); text-decoration: none; }
+.App.sg-night .sg-legal a:hover { color: var(--hp-jade); }

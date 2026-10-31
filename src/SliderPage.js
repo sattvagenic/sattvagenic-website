@@ -6,7 +6,7 @@ function SliderPage() {
   React.useEffect(() => {
     // Create a link element for the Google Fonts
     const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Iceland&display=swap';
+    fontLink.href = '/fonts/fonts.css';
     fontLink.rel = 'stylesheet';
     
     // Add it to the document head

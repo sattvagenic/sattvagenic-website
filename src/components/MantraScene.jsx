@@ -122,7 +122,7 @@ const MantraScene = () => {
       position: 'relative',
     }}>
       <link 
-        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500&display=swap" 
+        href="/fonts/fonts.css" 
         rel="stylesheet" 
       />
 

@@ -7,8 +7,7 @@ import './SiteGround.css';
  * site's fonts and darkens the page behind the site, so overscroll never flashes
  * the old light stone. Decorative only: aria-hidden, no pointer events.
  */
-const FONTS = 'https://fonts.googleapis.com/css2?family=Iceland&family=Share+Tech+Mono'
-  + '&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Tiro+Devanagari+Sanskrit&display=swap';
+const FONTS = '/fonts/fonts.css';   // served from this site (public/fonts), not Google
 
 function SiteGround() {
   // An @import inside App.css arrives too late in the file to count, so the fonts are linked here.

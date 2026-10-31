@@ -843,6 +843,15 @@ function AppContent({ selectedImage, setSelectedImage }) {
             <Route path="/sri-yantra" element={<SriYantraMeru />} />
         */}
       </Routes>
+
+      {/* the quiet line at the foot of every React page (Metta Morph runs full-screen, so not there) */}
+      {!isMettaMorphPage && (
+        <footer className="sg-legal">
+          <span>© 2026 Sattvagenic</span>
+          <a href="/privacy.html">Privacy</a>
+          <a href="mailto:hello@sattvagenic.com">hello@sattvagenic.com</a>
+        </footer>
+      )}
       
       {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
     </div>
